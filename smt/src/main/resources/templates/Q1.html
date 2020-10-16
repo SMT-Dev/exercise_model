@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>答题界面</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/Q1.css" type="text/css" rel="stylesheet">
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+</head>
+<body>
+<div id="app">
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="u26" class="clock">
+        <img src="/image/u207.svg" class="clock_img"/>
+        <div id="u26_text" class="ellipse_text">
+            <p><span>倒计时</span><br><span>14 min</span><br><span>59 sec</span></p>
+        </div>
+    </div>
+    <div id="u27">
+        <button type="button" class="white_button">答题卡</button>
+    </div>
+    <div id="u28">
+        <button type="button" class="white_button">交 卷</button>
+    </div>
+    <div id="u29" class="q_box">
+        <div id="u30">
+            <div id="u31">
+                <p><span>题号： {{ num }} / {{ totalNum }}</span></p>
+            </div>
+            <div id="u32">
+                <p><span>单选题</span></p>
+            </div>
+            <div id="u33">
+                <p><span>(&nbsp;&nbsp;&nbsp;&nbsp;) ____ is my grandmother.</span></p>
+            </div>
+
+            <div id="u34" class="option">
+                <div id="choice-a" @click="chooseAnswer('a')">
+                    <img id="img-a" src="/image/u173.svg" class="option_img"/>
+                    <div id="u34_text" class="option_text">
+                        <p class="choice"><span>A</span></p>
+                    </div>
+                </div>
+                <div id="u34_option">
+                    <p class="choice"><span>{{ answers.A }}</span></p>
+                </div>
+            </div>
+            <div id="u35" class="option">
+                <div id="choice-b" @click="chooseAnswer('b')">
+                    <img id="img-b" src="/image/u173.svg" class="option_img"/>
+                    <div id="u35_text" class="option_text">
+                        <p class="choice"><span>B</span></p>
+                    </div>
+                </div>
+                <div id="u35_option">
+                    <p class="choice"><span>{{ answers.B }}</span></p>
+                </div>
+            </div>
+            <div id="u36" class="option">
+                <div id="choice-c" @click="chooseAnswer('c')">
+                    <img id="img-c" src="/image/u173.svg" class="option_img"/>
+                    <div id="u36_text" class="option_text">
+                        <p class="choice"><span>C</span></p>
+                    </div>
+                </div>
+                <div id="u36_option">
+                    <p class="choice"><span>{{ answers.C }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="u37">
+            <button type="button" class="blue_button" @click="nextProblem">下一题</button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            num: 1,
+            totalNum: 20,
+            answers: {A: "He", B: "She", C: "It"},
+            default_img_src: "/image/u173.svg",
+            chose_img_src: "/image/u173_mouseOver.svg",
+            formData: {
+                idx: this.num,
+                finish: 0,
+                choice: "",
+                text: ""
+            },
+            answers_list:[]
+        },
+        methods: {
+            chooseAnswer: function (option) {
+                if (option === 'a') {
+                    document.getElementById('img-a').src = this.chose_img_src;
+                    document.getElementById('img-b').src = this.default_img_src;
+                    document.getElementById('img-c').src = this.default_img_src;
+                    this.formData.choice = 'a';
+                    this.formData.text = this.answers.A;
+                }
+                else if (option === 'b') {
+                    document.getElementById('img-b').src = this.chose_img_src;
+                    document.getElementById('img-a').src = this.default_img_src;
+                    document.getElementById('img-c').src = this.default_img_src;
+                    this.formData.choice = 'b';
+                    this.formData.text = this.answers.B;
+                }
+                else if (option === 'c') {
+                    document.getElementById('img-c').src = this.chose_img_src;
+                    document.getElementById('img-a').src = this.default_img_src;
+                    document.getElementById('img-b').src = this.default_img_src;
+                    this.formData.choice = 'c';
+                    this.formData.text = this.answers.C;
+                }
+                this.formData.idx = this.num;
+                this.formData.finish = 1;
+
+                axios.post("/sheet/post", $.param(this.formData)  //引入jQuery的作用
+                ).then((response) => {
+                        this.$message({
+                            type: 'info',
+                            message: response.data
+                        });
+                    }
+                );
+
+                this.setSheet();
+            },
+
+            nextProblem: function () {
+                window.location.href = "/exercise/2"
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get("/sheet/get"
+                    ).then((response) => {
+                        // console.log('response.data.sheet_list:', response.data.sheet_list);
+                        this.answers_list = response.data.sheet_list;
+                        resolve(response.data.sheet_list);
+                    });
+                })
+            },
+
+            //一个坑：js 执行存在异步、不按顺序；.then里的函数就是一个异步任务
+            //解决：配合使用 Promise、async、await 函数
+
+            setSheet: async function () {
+                this.answers_list = await this.getSheet();
+                // console.log("开始执行变色",'当前', this.answers_list);
+                for (var i=0; i<this.answers_list.length; i++) {
+                    ans = this.answers_list[i];
+                    document.getElementById('answer_'+ans["idx"].toString()).src = this.chose_img_src;
+                }
+            },
+
+            mounted: function() {
+                this.setSheet();
+            }
+        }
+    })
+</script>
+</html>

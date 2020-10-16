@@ -1,0 +1,98 @@
+<!DOCTYPE html >
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>历史记录</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/history.css" type="text/css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<div th:replace="include::sidebar"></div>
+<div id="u3" class="module_name">
+    <p><span>历史记录</span></p>
+</div>
+<div id="u4" class="level_info">
+    <p><span>当前等级</span><br><span>SMT Lev.3</span></p>
+</div>
+<div id="u5" class="">
+    <p><span>课课练</span></p>
+</div>
+<div id="u6" class="table">
+    <table id="u6_table" cellpadding="10">
+        <tr id="u6row1">
+            <td id="row1_col1">练习</td>
+            <td id="row1_col2">时间</td>
+            <td id="row1_col3">分数</td>
+        </tr>
+        <tr id="u6row2">
+            <td id="row2_col1">Lesson 2</td>
+            <td id="row2_col2">2020.9.22 09:39</td>
+            <td id="row2_col3">82&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+        <tr id="u6row3">
+            <td id="row3_col1">Lesson 1</td>
+            <td id="row3_col2">2020.8.11 08:21</td>
+            <td id="row3_col3">79&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+    </table>
+</div>
+<div id="u7" class="">
+    <p><span>AI练习</span></p>
+</div>
+<div id="u8" class="table">
+    <table id="u8_table" cellpadding="10">
+        <tr id="u8row1">
+            <td id="row1_col1">练习</td>
+            <td id="row1_col2">时间</td>
+            <td id="row1_col3">分数</td>
+        </tr>
+        <tr id="u8row2">
+            <td id="row2_col1">人教版体系出题</td>
+            <td id="row2_col2">2020.9.13 09:39</td>
+            <td id="row2_col3">87&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+        <tr id="u8row3">
+            <td id="row3_col1">错题集出题</td>
+            <td id="row3_col2">2020.8.24 08:21</td>
+            <td id="row3_col3">92&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+        <tr id="u8row4">
+            <td id="row2_col1">人教版体系出题</td>
+            <td id="row2_col2">2020.8.13 09:39</td>
+            <td id="row2_col3">75&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+        <tr id="u8row5">
+            <td id="row2_col1">人教版体系出题</td>
+            <td id="row2_col2">2020.8.10 08:28</td>
+            <td id="row2_col3">81&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+        <tr id="u8row6">
+            <td id="row2_col1">人教版体系出题</td>
+            <td id="row2_col2">2020.8.8 07:19</td>
+            <td id="row2_col3">62&nbsp;<button type="button" class="button_open">详情</button>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: "app",
+        data: {
+            massage: "666"
+        },
+
+        mounted: function () {
+            document.getElementById('history').style.backgroundColor = '#bebebe';
+            console.log("come");
+        }
+    })
+</script>
+</html>

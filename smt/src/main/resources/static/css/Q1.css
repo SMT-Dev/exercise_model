@@ -1,0 +1,167 @@
+.text {
+    margin: 8px;
+}
+.choice {
+    margin: 4px;
+}
+input {
+    border-radius: 6px;
+    border: 1px solid black;
+    font-size: 24px;
+    width: 300px;
+    padding: 5px 0px;
+}
+#u1 {
+    position: absolute;
+    background-color:rgba(138, 136, 136, 0.123);
+    height: 500px;
+    width: 260px;
+    top: 120px;
+    right: 0px;
+}
+#u2,#u3,#u24,#u25 {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 2px 20px;
+    padding: 0px;
+    border: none;
+}
+.ellipse {
+    position: relative;
+    width:55px;
+    height:55px;
+    display:flex;
+    cursor: pointer;
+}
+.image {
+    width: 100%;
+    margin: 8px;
+}
+.ellipse_text {
+    position:absolute;
+    text-align: center;
+    width:100%;
+}
+#u26 {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    top: 20px;
+    right: 300px;
+}
+.clock_img {
+    height: 100px;
+    width: 100px;
+}
+#u27 {
+    position: absolute;
+    width: 260px;
+    top: 50px;
+    right: 0px;
+    height: 50px;
+    text-align: center;
+}
+#u28 {
+    position: absolute;
+    width: 260px;
+    right: 0px;
+    bottom: 30px;
+    height: 50px;
+    text-align: center;
+}
+.white_button {
+    height: 50px;
+    width: 120px;
+    border: 1px solid black;
+    background-color: white;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    outline: none;
+}
+.blue_button {
+    height: 50px;
+    width: 200px;
+    color: white;
+    background-color:dodgerblue;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bolder;
+    cursor: pointer;
+    outline: none;
+}
+.q_box {
+    position: absolute;
+    border: 1px solid black;
+    top: 120px;
+    left: 200px;
+    width: 900px;
+    height:500px;
+}
+#u31,#u32,#u33,#u34,#u35,#u36 {
+    position: absolute;
+    font-size: 24px;
+    font-weight: 400;
+    padding: 0 30px;
+}
+#u31 {
+    left: 0px;
+}
+#u32 {
+    right: 0px;
+}
+#u33 {
+    left: 0px;
+    top: 100px;
+}
+#u34 {
+    left: 0px;
+    top: 220px;
+    width: 200px;
+    height: 60px;
+}
+#u35 {
+    left: 0px;
+    top: 290px;
+    width: 200px;
+    height: 60px;
+}
+#u36 {
+    left: 0px;
+    top: 360px;
+    width: 200px;
+    height: 60px;
+}
+.option_img {
+    height:40px;
+    width: 40px;
+}
+.option_text {
+    position:absolute;
+    text-align: center;
+    width:100%;
+    padding: 0;
+}
+#choice-a,#choice-b,#choice-c {
+    position: absolute;
+    align-self: center;
+    width: 40px;
+    height: 40px;
+    margin: 10px 0px;
+    display: flex;
+    cursor: pointer;
+}
+#u34_option,#u35_option,#u36_option {
+    position: absolute;
+    height: 40px;
+    top: 10px;
+    left: 90px;
+}
+#u37 {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+}

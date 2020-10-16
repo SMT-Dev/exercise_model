@@ -1,0 +1,226 @@
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid black;
+    position: absolute;
+    top: 100px;
+}
+
+#title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 20px;
+    padding: 15px;
+}
+
+#u2 a {
+    display: block;
+    color: black;
+    background-color: white;
+    width: 120px;
+    text-align: center;
+    font-size: 18px;
+    padding: 15px;
+    text-decoration: none;
+}
+
+#u3 {
+    color: black;
+    position: absolute;
+    width: 160px;
+    top: 50px;
+    left: 240px;
+    font-size: 40px;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+#u4 {
+    color: black;
+    position: absolute;
+    top: 75px;
+    left: 440px;
+    width: 100px;
+    font-size: 18px;
+}
+
+#u5 {
+    color: black;
+    position: absolute;
+    top: 170px;
+    left: 240px;
+    width: 120px;
+    font-size: 20px;
+}
+
+#u7, #u8 {
+    position: absolute;
+    width: 100px;
+    top: 240px;
+    padding: 4px;
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+#u7 {
+    left: 240px;
+}
+
+#u8 {
+    left: 370px;
+}
+
+#u9 {
+    color: black;
+    position: absolute;
+    top: 280px;
+    left: 240px;
+    width: 80px;
+    font-size: 20px;
+}
+
+.line {
+    position: absolute;
+    left: 386px;
+    top: 232px;
+    transform: rotate(-90deg);
+}
+
+#u11, #u12, #u13, #u14, #u15, #u16 {
+    position: absolute;
+    top: 362px;
+}
+
+#u11 {
+    left: 240px;
+}
+
+#u12 {
+    left: 295px;
+}
+
+#u13 {
+    left: 350.5px;
+}
+
+#u14 {
+    left: 405.5px;
+}
+
+#u15 {
+    left: 461px;
+}
+
+#u16 {
+    left: 516px;
+}
+
+#u17 {
+    position: absolute;
+    top: 335px;
+    left: 347px;
+}
+
+#u18, #u19, #u20, #u21, #u22, #u23 {
+    position: absolute;
+    border: none;
+    text-align: center;
+    width: 40px;
+    font-size: 14px;
+    top: 370px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#u18 {
+    left: 230px;
+}
+
+#u19 {
+    left: 285px;
+}
+
+#u20 {
+    left: 340px;
+}
+
+#u21 {
+    left: 396px;
+}
+
+#u22 {
+    left: 451px;
+}
+
+#u23 {
+    left: 506px;
+}
+
+#u24 {
+    position: absolute;
+    top: 330px;
+    left: 373px;
+    width: 140px;
+    font-size: 12px;
+    color: rgb(29, 171, 236);
+}
+
+#u25 {
+    color: black;
+    position: absolute;
+    top: 410px;
+    left: 240px;
+    width: 80px;
+    font-size: 20px;
+}
+
+.set {
+    position: absolute;
+    font-size: 12px;
+    text-align: center;
+    top: 480px;
+}
+
+#u26 {
+    width: 50px;
+    left: 270px;
+    top: 470px;
+}
+
+#u27 {
+    width: 30px;
+    left: 320px;
+    cursor: pointer;
+}
+
+#u28 {
+    width: 30px;
+    left: 240px;
+    cursor: pointer;
+}
+
+#u29 {
+    position: absolute;
+    top: 540px;
+    width: 100%;
+    text-align: center;
+}
+
+#u29_button {
+    height: 60px;
+    width: 120px;
+    background-color: rgba(36, 151, 218, 0.774);
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    border: none;
+    border-radius: 8px;
+    -webkit-border-radius: 8px; /*适配以webkit为核心的浏览器(chrome、safari等)*/
+    -moz-border-radius: 8px; /*适配firefox浏览器*/
+    -ms-border-radius: 8px; /*适配IE浏览器*/
+    -o-border-radius: 8px; /*适配opera浏览器*/
+    outline: none;
+}
