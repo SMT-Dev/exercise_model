@@ -93,7 +93,7 @@
                 this.formData.text = this.txt1+'\n'+this.txt2;
 
                 console.log(this.formData);
-                axios.post("/sheet/post", $.param(this.formData)
+                axios.post("postSheet", $.param(this.formData)
                 ).then((response) => {
                     this.$message({
                         type: 'info',
@@ -130,9 +130,8 @@
 
             getSheet: function () {
                 return new Promise(resolve => {
-                    axios.get("/sheet/get"
+                    axios.get("/getSheet"
                     ).then((response) => {
-                        // console.log('response.data.sheet_list:', response.data.sheet_list);
                         this.answers_list = response.data.sheet_list;
                         resolve(response.data.sheet_list);
                     });
@@ -141,16 +140,16 @@
 
             setSheet: async function () {
                 this.answers_list = await this.getSheet();
-                // console.log("开始执行变色",'当前', this.answers_list);
                 for (var i=0; i<this.answers_list.length; i++) {
                     ans = this.answers_list[i];
                     document.getElementById('answer_'+ans["idx"].toString()).src = this.chose_img_src;
                 }
-            },
-
-            mounted: function() {
-                this.setSheet();
             }
+        },
+
+        mounted() {
+            // 一加载就更新答题卡
+            this.setSheet();
         }
     })
 </script>

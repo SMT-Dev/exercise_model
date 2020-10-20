@@ -13,6 +13,7 @@ public class Problem {
     @GeneratedValue
     private Long prob_id;
 
+    private Long options_id;
     private String prob_text;
     private String prob_attr;
     private String prob_level;
@@ -22,6 +23,8 @@ public class Problem {
     private Long point_id;
 
     public Problem() {};
+
+    public Long getOptions_id() { return options_id; }
 
     public Long getProb_id() {
         return prob_id;
@@ -79,10 +82,13 @@ public class Problem {
         this.point_id = point_id;
     }
 
+    public void setOptions_id(Long options_id) { this.options_id = options_id; }
+
     @Override
     public String toString() {
         return "Problem{" +
                 "prob_id=" + prob_id +
+                ", options_id=" + options_id +
                 ", prob_text='" + prob_text + '\'' +
                 ", prob_attr='" + prob_attr + '\'' +
                 ", prob_level='" + prob_level + '\'' +

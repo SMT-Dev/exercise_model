@@ -1,29 +1,33 @@
-package com.cisl.smt.web;
+package com.cisl.smt.web.Temp;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
+public class ProblemAnsTemp {
+    /**
+     * @description: 做题页面中某题的作答
+     * @author: Hopenx
+     * @date: 2020.10.19
+     */
 
-public class ProblemTemporal {
-    private Integer idx;
-    private Integer finish;
+    private Long idx;
+    private Long finish;
     private String choice;
     private String text;
 
-    public Integer getFinish() {
+    public Long getFinish() {
         return finish;
     }
 
-    public void setFinish(Integer finish) {
+    public void setFinish(Long finish) {
         this.finish = finish;
     }
 
-    public ProblemTemporal() {
+    public ProblemAnsTemp() {
     }
 
-    public Integer getIdx() {
+    public Long getIdx() {
         return idx;
     }
 
-    public void setIdx(Integer idx) {
+    public void setIdx(Long idx) {
         this.idx = idx;
     }
 
@@ -45,7 +49,7 @@ public class ProblemTemporal {
 
     @Override
     public String toString() {
-        return "ProblemTemporal{" +
+        return "ProblemAnsTemp{" +
                 "idx=" + idx +
                 ", finish=" + finish +
                 ", choice='" + choice + '\'' +

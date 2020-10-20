@@ -153,11 +153,11 @@
                     ans = this.answers_list[i];
                     document.getElementById('answer_'+ans["idx"].toString()).src = this.chose_img_src;
                 }
-            },
-
-            mounted: function() {
-                this.setSheet();
             }
+        },
+
+        mounted() {
+            this.setSheet();
         }
     })
 </script>
