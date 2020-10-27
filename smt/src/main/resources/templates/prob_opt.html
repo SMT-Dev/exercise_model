@@ -23,7 +23,7 @@
         <button type="button" class="white_button">答题卡</button>
     </div>
     <div id="u28">
-        <button type="button" class="white_button">交 卷</button>
+        <button type="button" class="white_button" @click="handIn">交 卷</button>
     </div>
     <div id="u29" class="q_box">
         <div id="u30">
@@ -83,6 +83,7 @@
         data: {
             num: 1,
             totalNum: 20,
+            remain: 20,
             prob_text: "更改前",
             options_id: 0,
             options: {A: "更改前a", B: "更改前b", C: "更改前c"},
@@ -133,11 +134,20 @@
             },
 
             nextProblem: function () {
-                this.num += 1;
-                this.refreshAnswer();
-                this.$nextTick(() => {
-                    this.fetchProblem();
-                });
+                if(this.num < this.totalNum){
+                    this.num += 1;
+                    this.remain -= 1;
+                    this.refreshAnswer();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
             },
 
             refreshAnswer: function () {
@@ -161,11 +171,11 @@
             //解决：配合使用 Promise、async、await 函数
 
             setSheet: async function () {
-                this.options_list = await this.getSheet();
-                for (var i = 0; i < this.options_list.length; i++) {
-                    ans = this.options_list[i];
-                    document.getElementById('answer_' + ans["idx"].toString()).src = this.chose_img_src;
-                }
+                // this.options_list = await this.getSheet();
+                // for (var i = 0; i < this.options_list.length; i++) {
+                //     ans = this.options_list[i];
+                //     document.getElementById('answer_' + ans["idx"].toString()).src = this.chose_img_src;
+                // }
             },
 
             fetchProblem: function () {
@@ -186,7 +196,26 @@
                         this.options.C = res.data.option_c;
                     });
                 });
-            }
+            },
+
+            handIn: function () {
+                if(this.remain > 1){
+                    this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '已交卷'
+                        });
+                        window.location.href = "/evaluate";
+                    })
+                }
+                else {
+                    window.location.href = "/evaluate";
+                }
+            },
         },
 
         watch: {},

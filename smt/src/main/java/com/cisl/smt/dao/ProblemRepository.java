@@ -9,4 +9,6 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {  //Lon
 
     @Query(value = "select * from t_problem where prob_id=:num", nativeQuery = true)
     Problem findByProb_id(@Param("num") Long num);
+
+
 }

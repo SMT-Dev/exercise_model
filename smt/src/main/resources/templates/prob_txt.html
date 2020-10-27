@@ -78,7 +78,20 @@
         },
         methods: {
             nextProblem: function () {
-                window.location.href = "/exercise/17";
+                if(this.num < this.totalNum){
+                    this.num += 1;
+                    this.remain -= 1;
+                    this.refreshAnswer();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
             },
 
             confirm: function() {
@@ -111,17 +124,22 @@
             },
 
             handIn: function () {
-                this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    this.$message({
-                        type: 'success',
-                        message: '已交卷'
-                    });
+                if(this.remain > 1){
+                    this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '已交卷'
+                        });
+                        window.location.href = "/home";
+                    })
+                }
+                else {
                     window.location.href = "/home";
-                })
+                }
             },
 
             nextProblem: function() {

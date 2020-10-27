@@ -19,18 +19,17 @@ public class ExerciseController {
     @Autowired
     private OptionsService optionsService;
 
-    @GetMapping("/exercise/{num}")
-    public ModelAndView exercise(@PathVariable Long num){
+    @GetMapping("/exercise")
+    public ModelAndView exercise(){
         ModelAndView mav;
-        if (num == 1){
-            mav = new ModelAndView("Q1");
-        }
-        else if (num == 2){
-            mav = new ModelAndView("Q2");
-        }
-        else {
-            mav = new ModelAndView("Q17");
-        }
+        mav = new ModelAndView("prob_opt");
+        return mav;
+    }
+
+    @GetMapping("/evaluate")
+    public ModelAndView evaluate(){
+        ModelAndView mav;
+        mav = new ModelAndView("Q1_detail");
         return mav;
     }
 

@@ -4,10 +4,11 @@
     <title>欢迎界面</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="/css/welcome.css" type="text/css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
 </head>
 <body>
+<div id="app">
     <div id="u0" class="heading">
         <div id="u0_text" class="text">
             <p><span>Welcome</span></p>
@@ -50,17 +51,34 @@
     </div>
     <div id="u7">
         <div id="u8" class="func_button">
-            <button id="u8_button" type="button">家长登录</button>
+            <button id="u8_button" type="button" @click="goLogin">家长登录</button>
         </div>
         <div id="u9" class="func_button">
-            <button id="u9_button" type="button">教师登录</button>
+            <button id="u9_button" type="button" @click="goLogin">教师登录</button>
         </div>
         <div id="u10" class="func_button">
-            <button id="u10_button" type="button">用户注册</button>
+            <button id="u10_button" type="button" @click="goRegister">用户注册</button>
         </div>
     </div>
     <div id="u11">
-        <button id="u11_button" type="button">学生登录</button>
+        <button id="u11_button" type="button" @click="goLogin">学生登录</button>
     </div>
+</div>
 </body>
+
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {},
+        methods: {
+            goLogin: function() {
+                window.location.href = "/login";
+            },
+
+            goRegister: function() {
+                window.location.href = "/register";
+            }
+        }
+    })
+</script>
 </html>
