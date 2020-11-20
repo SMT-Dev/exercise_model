@@ -13,7 +13,6 @@ public class Answer {
     @GeneratedValue
     private Long answer_id;
 
-    private Long prob_id;
     private String answer_text;
     private String analysis_text;
 
@@ -21,10 +20,6 @@ public class Answer {
 
     public Long getAnswer_id() {
         return answer_id;
-    }
-
-    public Long getProb_id() {
-        return prob_id;
     }
 
     public String getAnswer_text() {
@@ -39,10 +34,6 @@ public class Answer {
         this.answer_id = answer_id;
     }
 
-    public void setProb_id(Long prob_id) {
-        this.prob_id = prob_id;
-    }
-
     public void setAnswer_text(String answer_text) {
         this.answer_text = answer_text;
     }
@@ -55,7 +46,6 @@ public class Answer {
     public String toString() {
         return "Answer{" +
                 "answer_id=" + answer_id +
-                ", prob_id=" + prob_id +
                 ", answer_text='" + answer_text + '\'' +
                 ", analysis_text='" + analysis_text + '\'' +
                 '}';

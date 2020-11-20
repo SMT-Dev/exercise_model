@@ -4,65 +4,129 @@
     <title>双周测</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="/css/week_test.css" type="text/css" rel="stylesheet">
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
 <div th:replace="include::sidebar"></div>
-<div id="u3" class="module_name">
-    <p><span>双周测</span></p>
-</div>
-<div id="u4" class="level_info">
-    <p><span>当前等级</span><br><span>SMT Lev.3</span></p>
-</div>
-<div id="u5" class="">
-    <p><span>当前双周：No.7 - No.8 周</span></p>
-</div>
-<div id="u6" class="table">
-    <table id="u6_table" cellpadding="10">
-        <tr id="row1">
-            <td id="row1_col1">练习</td>
-            <td id="row1_col2">开放时间</td>
-            <td id="row1_col3">分数</td>
-        </tr>
-        <tr id="row2">
-            <td id="row2_col1">No.7 - No.8 周</td>
-            <td id="row2_col2">2020.8.12 08:00</td>
-            <td id="row2_col3">
-                <button type="button" class="button_close">未开放</button>
-            </td>
-        </tr>
-        <tr id="row3">
-            <td id="row3_col1">No.5 - No.6 周</td>
-            <td id="row3_col2">2020.7.29 08:00</td>
-            <td id="row3_col3">92&nbsp;<button type="button" class="button_open">详情</button>
-            </td>
-        </tr>
-        <tr id="row4">
-            <td id="row4_col1">No.3 - No.4 周</td>
-            <td id="row4_col2">2020.7.15 08:00</td>
-            <td id="row4_col3">75&nbsp;<button type="button" class="button_open">详情</button>
-            </td>
-        </tr>
-        <tr id="row5">
-            <td id="row5_col1">No.1 - No.2 周</td>
-            <td id="row5_col2">2020.7.1 08:00</td>
-            <td id="row5_col3">81&nbsp;<button type="button" class="button_open">详情</button>
-            </td>
-        </tr>
-    </table>
+<div id="app">
+    <div id="u3" class="module_name">
+        <p><span>双周测</span></p>
+    </div>
+    <div id="u4" class="level_info">
+        <p><span>当前等级</span><br><span>SMT Lev.{{ level }}</span></p>
+    </div>
+    <div id="u5" class="">
+        <p><span>当前双周：No.{{ week_start }} - No.{{ week_end }} 周</span></p>
+        <p id="tip"><span></span></p>
+        <el-button type="primary" :disabled="disable" @click="start_test">开始测试</el-button>
+    </div>
+    <div id="u6" class="table">
+        <template>
+            <el-table :data="tableData" height="300" stripe border style="width: 100%">
+                <el-table-column prop="name" label="练习" width="150"></el-table-column>
+                <el-table-column prop="date" label="开放时间" width="280"></el-table-column>
+                <el-table-column prop="score" label="分数"></el-table-column>
+                <el-table-column fixed="right" label="操作" width="100">
+                    <template slot-scope="scope">
+                        <el-button @click="Click(scope.row)" type="text" size="small">详情</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+        </template>
+    </div>
 </div>
 </body>
 <script>
+    Mock.mock('/getTest',{
+        "tableList|8": [{
+            "name":"test",
+            "date":"@datetime",
+            "score|60-100":100,
+        }]
+    })
+
+    Mock.mock('/testInitial',{
+        "level|1-6":1,
+        "week":"7-8",
+        "done|1":true,
+        "allow_test|1":true
+    })
+
     var app = new Vue({
-        el: "app",
+        el: "#app",
         data: {
-            massage: "666"
+            tableData: [],
+            level: 0,
+            week_start: "",
+            week_end: "",
+            done: true,
+            allow_test: true,
+            disable:true
+        },
+
+        methods: {
+            Click: function (row) {
+                window.location.href = '/test_detail_opt';
+            },
+
+            start_test: function () {
+                window.location.href = "/exercise_opt?src=test&week="+this.week_start+"-"+this.week_end;
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get('/getTest').then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            initial: function () {
+                return new Promise(resolve => {
+                    axios.get('/testInitial').then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setSheet: async function () {
+                var res1 = await this.initial();
+                var res2 = await this.getSheet();
+                this.tableData = res2.tableList;
+                this.level = res1.level;
+                this.done = res1.done;
+                this.allow_test = res1.allow_test;
+                this.week_start = res1.week.slice(0,res1.week.indexOf("-"));
+                this.$message({
+                    type: 'info',
+                    message: res1
+                });
+                this.week_end = res1.week.slice(res1.week.indexOf("-"));
+                if(this.done == false && this.allow_test == true) {
+                    this.disable = false;
+                }else if(this.done == true) {
+                    this.disable = true;
+                    document.getElementById("tip").innerHTML = "你已经完成了这次测试！";
+                }else {
+                    this.disable = true;
+                    document.getElementById("tip").innerHTML = "本次测试还未开放！";
+                }
+            }
+        },
+
+        created: function () {
+            ;
         },
 
         mounted: function () {
-            document.getElementById('week_test').style.backgroundColor = '#bebebe';
-            console.log("come");
+            this.$nextTick(() => {
+                this.setSheet();
+            });
         }
     })
 </script>

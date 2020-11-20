@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>推荐练习选择题答题结果</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/Q1_detail.css" type="text/css" rel="stylesheet">
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+    
+</head>
+<body>
+<div id="app">
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="u27">
+        <button type="button" class="white_button" @click="drawer">答题卡</button>
+    </div>
+    <div id="u29" class="q_box">
+        <div id="u30">
+            <div id="u31">
+                <p><span>题号： {{ num }} / {{ totalNum }}&nbsp;&nbsp;考点： {{ point_list[num - 1] }} </span></p>
+                <div id="u31_result">
+                    <p><span>{{ iscorrect }}</span></p>
+                </div>
+            </div>
+            <div id="u32">
+                <p><span>单选题</span></p>
+            </div>
+            <div id="u33">
+                <p><span>(&nbsp;&nbsp;&nbsp;&nbsp;) {{ prob_text }}</span></p>
+            </div>
+            <div id="u34" class="option">
+                <div id="choice-a">
+                    <img id="img-a" src="/image/u173.svg" class="option_img"/>
+                    <div id="u34_text" class="option_text">
+                        <p class="choice"><span>A</span></p>
+                    </div>
+                </div>
+                <div id="u34_option">
+                    <p class="choice"><span>{{ options.A }}</span></p>
+                </div>
+            </div>
+            <div id="u35" class="option">
+                <div id="choice-b">
+                    <img id="img-b" src="/image/u173.svg" class="option_img"/>
+                    <div id="u35_text" class="option_text">
+                        <p class="choice"><span>B</span></p>
+                    </div>
+                </div>
+                <div id="u35_option">
+                    <p class="choice"><span>{{ options.B }}</span></p>
+                </div>
+            </div>
+            <div id="u36" class="option">
+                <div id="choice-c">
+                    <img id="img-c" src="/image/u173.svg" class="option_img"/>
+                    <div id="u36_text" class="option_text">
+                        <p class="choice"><span>C</span></p>
+                    </div>
+                </div>
+                <div id="u36_option">
+                    <p class="choice"><span>{{ options.C }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="u37">
+            <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
+        </div>
+        <div id="u39">
+            <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
+        </div>
+    </div>
+    <div id="u38">
+        <p><span>时间：{{ time }}<br>已掌握{{ easy }}个知识点到简单程度/{{ medium }}个知识点到中等程度/{{ hard }}个知识点到困难程度<br>未掌握知识点比例：{{ unhandle }}%</span></p>
+    </div>
+    <div id="u42">
+        <el-page-header @back="goBack" content="双周测详情"></el-page-header>
+    </div>
+    <div id="u45">
+        <el-button type="primary" round @click="wrong">错题练习</el-button>
+    </div>
+</div>
+</body>
+<script>
+    Mock.mock('/getdetail',{
+        "problem":[
+            {'id':1,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':2,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':3,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':4,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':5,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':6,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':7,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':8,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':9,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':11,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':12,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':13,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':14,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':15,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':16,'ans|1':['a','b','c'],'choice|1':['a','b','c'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':17,'ans':'111\n111','choice':'','analysis|20':'*','point|4':'!','text':'111\n111'},
+            {'id':18,'ans':'222\n222','choice':'','analysis|20':'*','point|4':'!','text':'222\n333'},
+            {'id':19,'ans':'333\n333','choice':'','analysis|20':'*','point|4':'!','text':'333\n333'},
+            {'id':20,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'}
+        ]
+    });
+
+    Mock.mock('/getresult',{
+        "res":{
+        "time":'2020-10-30 15:10:11',
+        "unhandle|1-99.1":1,
+        "easy|1-100":1,
+        "medium|1-100":1,
+        "hard|1-100":1,
+        }
+    });
+
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            time: '',
+            unhandle: 0,
+            easy: 0,
+            medium: 0,
+            hard: 0,
+            num: 1,
+            totalNum: 0,
+            opt_num: 0,
+            is_show: 1,
+            iscorrect: '',
+            prob_text: "更改前",
+            options_id: 0,
+            options: {A: "更改前a", B: "更改前b", C: "更改前c"},
+            default_img_src: "/image/u173.svg",
+            correct_img_src: "/image/u173_mouseOver.svg",
+            wrong_img_src: "/image/u339.svg",
+            opt_box: [],
+            txt_box: [],
+            ans_list: [],
+            submit_list: [],
+            results_list: [],
+            analysis_list: [],
+            point_list: []
+        },
+        methods: {
+            goBack: function () {
+                window.location.href = "/home";
+            },
+            
+            wrong: function () {
+                window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            drawer: function () {
+                if(this.is_show == 1) {
+                    $("#u1").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#u1").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
+            getId: function (option) {
+                return "answer_" + option;
+            },
+
+            jumpProblem: function (option) {
+                if(option > this.opt_num){
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    window.location.href = "/recomnd_finish_txt";
+                }else if(option !== this.num) {
+                    this.num = option;
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                    });
+                }
+            },
+
+            nextProblem: function () {
+                if(this.num < this.totalNum){
+                    if(this.num == this.opt_num){
+                        sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
+                        sessionStorage.setItem('isShown',this.is_show.toString());
+                        window.location.href = "/recomnd_finish_txt";
+                    }
+                    this.num += 1;
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get("/getdetail"
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            getResult: function () {
+                return new Promise(resolve => {
+                    axios.get("/getresult"
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setini: async function () {
+                var res = await this.getSheet();
+                this.totalNum = res.problem.length;
+                for (var i = 0; i < res.problem.length; i++) {
+                    if(res.problem[i].choice == ''){
+                        ;
+                    }else {
+                        this.opt_num++;
+                    }
+                }
+                for(var j = 1;j <= this.totalNum;j++) {
+                    if(j > this.opt_num) {
+                        this.txt_box.push(j);
+                    }else {
+                        this.opt_box.push(j);
+                    }
+                }
+            },
+
+            setSheet: async function () {
+                this.$nextTick(() => {
+                    this.setini();
+                });
+                 var res = await this.getSheet();
+                 var result = await this.getResult();
+                 this.time = result.res.time;
+                 this.unhandle = result.res.unhandle;
+                 this.easy = result.res.easy;
+                 this.medium = result.res.medium;
+                 this.hard = result.res.hard;
+                 this.totalNum = res.problem.length;
+                 for (var i = 0; i < res.problem.length; i++) {
+                     this.ans_list.push(res.problem[i].ans);
+                     this.analysis_list.push(res.problem[i].analysis);
+                     this.point_list.push(res.problem[i].point);
+                     if(res.problem[i].choice == ''){
+                         this.submit_list.push(res.problem[i].text);
+                     }else {
+                         this.submit_list.push(res.problem[i].choice);
+                     }
+                     if((res.problem[i].choice == '' && res.problem[i].ans == res.problem[i].text)||(res.problem[i].text == '' && res.problem[i].choice == res.problem[i].ans)) {
+                        document.getElementById('answer_' + res.problem[i].id.toString()).src = this.correct_img_src;
+                        this.results_list.push(1);
+                     }else {
+                        document.getElementById('answer_' + res.problem[i].id.toString()).src = this.wrong_img_src;
+                        this.results_list.push(0);
+                     }
+                 }
+                 this.showResult();
+            },
+
+            fetchProblem: function () {
+                axios.get("/getProblem?num="+this.num,
+                ).then(response => {
+                    console.log("problem 执行");
+                    this.prob_text = response.data.prob_text;
+                    console.log(response);
+                    // console.log("response.data.prob_text", response.data.prob_text);
+                    // console.log("this.prob_text", this.prob_text);
+                    this.options_id = response.data.options_id;
+
+                    axios.get("/getOptions?id="+this.options_id
+                    ).then(res => {
+                        console.log("options 执行");
+                        this.options.A = res.data.option_a;
+                        this.options.B = res.data.option_b;
+                        this.options.C = res.data.option_c;
+                    });
+                });
+            },
+
+            showResult: function () {
+                if(this.results_list[this.num - 1] == 1) {
+                    this.iscorrect = '正确';
+                    if(this.num <= this.opt_num) {
+                        if (this.ans_list[this.num - 1] == 'a') {
+                            if(document.getElementById('img-a').src !== this.correct_img_src)
+                                document.getElementById('img-a').src = this.correct_img_src;
+                            if(document.getElementById('img-b').src !== this.default_img_src)
+                                document.getElementById('img-b').src = this.default_img_src;
+                            if(document.getElementById('img-c').src !== this.default_img_src)
+                                document.getElementById('img-c').src = this.default_img_src;
+                        } else if (this.ans_list[this.num - 1] == 'b') {
+                            if(document.getElementById('img-b').src !== this.correct_img_src)
+                                document.getElementById('img-b').src = this.correct_img_src;
+                            if(document.getElementById('img-a').src !== this.default_img_src)
+                                document.getElementById('img-a').src = this.default_img_src;
+                            if(document.getElementById('img-c').src !== this.default_img_src)
+                                document.getElementById('img-c').src = this.default_img_src;
+                        } else if (this.ans_list[this.num - 1] == 'c') {
+                            if(document.getElementById('img-c').src !== this.correct_img_src)
+                                document.getElementById('img-c').src = this.correct_img_src;
+                            if(document.getElementById('img-b').src !== this.default_img_src)
+                                document.getElementById('img-b').src = this.default_img_src;
+                            if(document.getElementById('img-a').src !== this.default_img_src)
+                                document.getElementById('img-a').src = this.default_img_src;
+                        }
+                    }
+                }
+                else {
+                    this.iscorrect = '错误';
+                    if(this.num <= this.opt_num) {
+                        if (this.ans_list[this.num - 1] == 'a') {
+                            if(document.getElementById('img-a').src !== this.correct_img_src)
+                                document.getElementById('img-a').src = this.correct_img_src;
+                            if(this.submit_list[this.num - 1] == 'b') {
+                                if(document.getElementById('img-b').src !== this.wrong_img_src)
+                                    document.getElementById('img-b').src = this.wrong_img_src;
+                                if(document.getElementById('img-c').src !== this.default_img_src)
+                                    document.getElementById('img-c').src = this.default_img_src;
+                            }else {
+                                if(document.getElementById('img-c').src !== this.wrong_img_src)
+                                    document.getElementById('img-c').src = this.wrong_img_src;
+                                if(document.getElementById('img-b').src !== this.default_img_src)
+                                    document.getElementById('img-b').src = this.default_img_src;
+                            }
+                        } else if (this.ans_list[this.num - 1] == 'b') {
+                            if(document.getElementById('img-b').src !== this.correct_img_src)
+                                document.getElementById('img-b').src = this.correct_img_src;
+                            if(this.submit_list[this.num - 1] == 'a') {
+                                if(document.getElementById('img-a').src !== this.wrong_img_src)
+                                    document.getElementById('img-a').src = this.wrong_img_src;
+                                if(document.getElementById('img-c').src !== this.default_img_src)
+                                    document.getElementById('img-c').src = this.default_img_src;
+                            }else {
+                                if(document.getElementById('img-c').src !== this.wrong_img_src)
+                                    document.getElementById('img-c').src = this.wrong_img_src;
+                                if(document.getElementById('img-a').src !== this.default_img_src)
+                                    document.getElementById('img-a').src = this.default_img_src;
+                            }
+                        } else if (this.ans_list[this.num - 1] == 'c') {
+                            if(document.getElementById('img-c').src !== this.correct_img_src)
+                                document.getElementById('img-c').src = this.correct_img_src;
+                            if(this.submit_list[this.num - 1] == 'a') {
+                                if(document.getElementById('img-a').src !== this.wrong_img_src)
+                                    document.getElementById('img-a').src = this.wrong_img_src;
+                                if(document.getElementById('img-b').src !== this.default_img_src)
+                                    document.getElementById('img-b').src = this.default_img_src;
+                            }else {
+                                if(document.getElementById('img-b').src !== this.wrong_img_src)
+                                    document.getElementById('img-b').src = this.wrong_img_src;
+                                if(document.getElementById('img-a').src !== this.default_img_src)
+                                    document.getElementById('img-a').src = this.default_img_src;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        created() {
+            if(sessionStorage.getItem('questionId') !== null) {
+                this.num = parseInt(sessionStorage.getItem('questionId'));
+                this.is_show = parseInt(sessionStorage.getItem('isShown'));
+                if(this.is_show == 0) {
+                    document.getElementById("u1").className = "drawer2";
+                }else {
+                    document.getElementById("u1").className = "drawer1";
+                }
+            }
+        },
+
+        mounted() {
+            this.$nextTick(() => {
+                this.setSheet();
+                this.fetchProblem();
+            });
+        },
+    })
+</script>
+</html>

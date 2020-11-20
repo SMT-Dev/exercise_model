@@ -19,6 +19,7 @@ public class Problem {
     private String prob_level;
     private String prob_diff;
 
+    private Long lesson_id;
     private Long grammar_id;
     private Long point_id;
 
@@ -52,6 +53,12 @@ public class Problem {
 
     public Long getPoint_id() {
         return point_id;
+    }
+
+    public Long getLesson_id() { return lesson_id; }
+
+    public void setLesson_id(Long lesson_id) {
+        this.lesson_id = lesson_id;
     }
 
     public void setProb_id(Long prob_id) {
@@ -93,6 +100,7 @@ public class Problem {
                 ", prob_attr='" + prob_attr + '\'' +
                 ", prob_level='" + prob_level + '\'' +
                 ", prob_diff='" + prob_diff + '\'' +
+                ", lesson_id=" + lesson_id +
                 ", grammar_id=" + grammar_id +
                 ", point_id=" + point_id +
                 '}';

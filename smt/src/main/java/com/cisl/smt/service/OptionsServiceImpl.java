@@ -18,8 +18,7 @@ public class OptionsServiceImpl implements OptionsService{
 
     @Override
     public Options getOptions(Long id){
-        Options options = optionsRepository.getOptions(id);
-        return options;
+        return optionsRepository.getOptions(id);
     }
 
 }

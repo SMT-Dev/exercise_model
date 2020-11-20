@@ -4,50 +4,112 @@
     <title>错题集</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="/css/wrong_problem.css" type="text/css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
 <div th:replace="include::sidebar"></div>
-<div id="u3" class="module_name">
-    <p><span>错题集</span></p>
-</div>
-<div id="u4" class="level_info">
-    <p><span>当前等级</span><br><span>SMT Lev.3</span></p>
-</div>
-<div id="u5" class="">
-    <div id="u6" class="question">
-        <p><span class="highlight">选择题</span></p>
-        <p>1.(&nbsp;&nbsp;&nbsp;&nbsp;) ______ is my grandmother.<br>A. He&nbsp;&nbsp;&nbsp;&nbsp;B. She&nbsp;&nbsp;&nbsp;&nbsp;C.
-            It<br></p>
-        <p><span class="highlight">随堂练习 SMT Lev.3 Lesson 2&nbsp;&nbsp;&nbsp;&nbsp;时间：2020.9.1 18:21&nbsp;&nbsp;&nbsp;&nbsp;知识点：代词-人称代词</span>
-        </p>
+<div id="app">
+    <div id="u3" class="module_name">
+        <p><span>错题集</span></p>
     </div>
-    <div id="u7" class="question">
-        <p><span class="highlight">选择题</span></p>
-        <p>2.(&nbsp;&nbsp;&nbsp;&nbsp;)Amy is a new student. _______ is funny.<br>A. It&nbsp;&nbsp;&nbsp;&nbsp;B. She&nbsp;&nbsp;&nbsp;&nbsp;C.
-            He<br></p>
-        <p><span class="highlight">随堂练习 SMT Lev.3 Lesson 2&nbsp;&nbsp;&nbsp;&nbsp;时间：2020.9.1 18:21&nbsp;&nbsp;&nbsp;&nbsp;知识点：代词-人称代词</span>
-        </p>
+    <div id="u4" class="level_info">
+        <p><span>当前等级</span><br><span>SMT Lev.{{ level }}</span></p>
     </div>
-    <div id="u8" class="question">
-        <p><span class="highlight">句子改写题</span></p>
-        <p>3.Grace and Helen are sisters.<br>(Yes/No Question; Positive Answer)<br></p>
-        <p><span class="highlight">随堂练习 SMT Lev.3 Lesson 2&nbsp;&nbsp;&nbsp;&nbsp;时间：2020.9.1 18:21&nbsp;&nbsp;&nbsp;&nbsp;知识点：代词-人称代词</span>
-        </p>
+    <div id="u5" class="">
+        <el-button type="primary" @click="start_wrong">进入错题练习</el-button>
+        <div v-for="prob in prob_list" class="question">
+            <p><span class="highlight">{{ prob.prob_type }}</span></p>
+            <p>{{ prob.prob_text }}<br>{{ prob.options }}</p>
+            <p>你的答案：{{ prob.user_ans }}</p>
+            <p>正确答案：{{ prob.correct_ans }}</p>
+            <p>解析：{{ prob.analysis }}</p>
+            <p><span class="highlight">知识点：{{ prob.point }}</span>
+            </p>
+        </div>
+        <div class="pagination">
+            <span><el-pagination background layout="total, prev, pager, next" :current-page="page" :total="totalNum" :page-size="10" @current-change="handleCurrentChange"></el-pagination></span>
+        </div>
     </div>
 </div>
 </body>
 <script>
+    Mock.mock('/getwrong',{
+        "wrong_prob|100":[{
+            "prob_text":"@string(10,20)",
+            "prob_type|1":["单选题","句子改写题"],
+            "options":"@string(0,5)",
+            "user_ans":"@string(5,10)",
+            "correct_ans":"@string(5,10)",
+            "analysis":"@string(10,20)",
+            "point":"@string(5,10)"
+        }]
+    })
+
+    Mock.mock('/wrongInitial',{
+        "level|1-6":1,
+    })
     var app = new Vue({
-        el: "app",
+        el: "#app",
         data: {
-            massage: "666"
+            level: 0,
+            totalNum: 0,
+            totalpage: 0,
+            prob_list: [],
+            page: 1,
+        },
+
+        methods: {
+            handleCurrentChange(val) {
+                this.page = val;
+                this.setSheet();
+            },
+
+            start_wrong: function () {
+                window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            initial: function () {
+                return new Promise(resolve => {
+                    axios.get('/wrongInitial').then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get('/getwrong').then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setSheet: async function () {
+                var res = await this.getSheet();
+                var rs = await this.initial();
+                this.level = rs.level;
+                this.totalNum = res.wrong_prob.length;
+                this.totalpage = Math.ceil(res.wrong_prob.length/10);
+                this.prob_list = [];
+                for(var i = 0;i < 10;i++) {
+                    this.prob_list.push(res.wrong_prob[(this.page - 1) * 10 + i]);
+                }
+            }
+        },
+
+        created: function () {
+
         },
 
         mounted: function () {
-            document.getElementById('wrong').style.backgroundColor = '#bebebe';
-            console.log("come");
+            this.$nextTick(() => {
+                this.setSheet();
+            })
         }
     })
 </script>

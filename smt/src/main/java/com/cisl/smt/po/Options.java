@@ -13,19 +13,15 @@ public class Options {
     @GeneratedValue
     private Long options_id;
 
-    private Long prob_id;
     private String option_a;
     private String option_b;
     private String option_c;
+    private String option_d;
 
     public Options() {};
 
     public Long getOptions_id() {
         return options_id;
-    }
-
-    public Long getProb_id() {
-        return prob_id;
     }
 
     public String getOption_a() {
@@ -44,10 +40,6 @@ public class Options {
         this.options_id = options_id;
     }
 
-    public void setProb_id(Long prob_id) {
-        this.prob_id = prob_id;
-    }
-
     public void setOption_a(String option_a) {
         this.option_a = option_a;
     }
@@ -60,14 +52,22 @@ public class Options {
         this.option_c = option_c;
     }
 
+    public String getOption_d() {
+        return option_d;
+    }
+
+    public void setOption_d(String option_d) {
+        this.option_d = option_d;
+    }
+
     @Override
     public String toString() {
         return "Options{" +
                 "options_id=" + options_id +
-                ", prob_id=" + prob_id +
                 ", option_a='" + option_a + '\'' +
                 ", option_b='" + option_b + '\'' +
                 ", option_c='" + option_c + '\'' +
+                ", option_d='" + option_d + '\'' +
                 '}';
     }
 }
