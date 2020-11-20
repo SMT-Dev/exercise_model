@@ -1,4 +1,4 @@
-# 前端调用API
+# 前端调用 API
 | 作用 | api-url | 请求参数 | 返回值 | 返回值示例 | 备注 |
 | :----: | :----: | :---- | :----: | :---- | :---- |
 | 得到课课练的所有历史刷题记录 | /getTable_lesson || 数组<br>数组元素:对象<br>对象属性：对应哪节课(string)、完成时间(string)、得分(number)、本条记录编号(number或string) | `"tableList":[{"name","date","score","id"},...]` | 得分范围：0-100 |
