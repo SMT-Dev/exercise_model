@@ -1,0 +1,141 @@
+body {
+    position: relative;
+}
+
+p {
+    margin: 0;
+}
+
+.text {
+    width: 700px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+#u0 {
+    margin-top: 80px;
+    font-weight: 650;
+    font-size: 3.5em;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#u1 {
+    margin-top: 30px;
+    font-weight: 600;
+    font-size: 2em;
+}
+
+#u2 {
+    position: relative;
+    width: 700px;
+    height: 150px;
+    margin: 20px auto;
+}
+
+#u3,#u4,#u5,#u6 {
+    border-width:0px;
+    position:absolute;
+    width:87px;
+    height:89px;
+    top: 30.5px;
+    display:flex;
+}
+
+#u3 {
+    left:70.4px;
+}
+
+#u4 {
+    left:227.8px;
+}
+
+#u5 {
+    left:385.2px;
+}
+
+#u6 {
+    left:542.6px;
+}
+
+#u3_text,#u4_text,#u5_text,#u6_text {
+    position:absolute;
+    align-self:center;
+    text-align: center;
+    padding:2px 2px 2px 2px;
+    box-sizing:border-box;
+    width:100%;
+}
+
+#u7 {
+    position: relative;
+    width: 700px;
+    height: 100px;
+    margin: 20px auto;
+}
+
+#u8_button,#u9_button,#u10_button {
+    height: 50px;
+    width: 110px;
+    top: 20px;
+    position:absolute;
+    background-color: transparent;
+    text-align: center;
+    border: 2px solid black;
+    cursor: pointer;
+    font-size: 20px;
+    border-radius: 8px;
+    -webkit-border-radius:8px;/*适配以webkit为核心的浏览器(chrome、safari等)*/
+    -moz-border-radius:8px;/*适配firefox浏览器*/
+    -ms-border-radius:8px;/*适配IE浏览器*/
+    -o-border-radius:8px;/*适配opera浏览器*/
+    outline: none;
+}
+
+#u8_button:hover,#u9_button:hover,#u10_button:hover {
+    background-color:rgb(229, 247, 253);
+}
+
+#u8_button:active,#u9_button:active,#u10_button:active {
+    background-color: rgb(218, 243, 252);
+}
+
+#u8_button {
+    left: 120px;
+}
+
+#u9_button {
+    left: 295px;
+}
+
+#u10_button {
+    left: 470px;
+}
+
+#u11 {
+    text-align: center;
+}
+
+#u11_button {
+    height: 70px;
+    width: 130px;
+    background-color: rgba(36, 151, 218, 0.774);
+    cursor: pointer;
+    font-size: 22px;
+    border: none;
+    border-radius: 8px;
+    -webkit-border-radius:8px;/*适配以webkit为核心的浏览器(chrome、safari等)*/
+    -moz-border-radius:8px;/*适配firefox浏览器*/
+    -ms-border-radius:8px;/*适配IE浏览器*/
+    -o-border-radius:8px;/*适配opera浏览器*/
+    outline: none;
+}
+
+#u11_button:hover {
+    background-color: rgba(36, 151, 218, 0.397);
+    border: 2px solid black;
+}
+
+#u11_button:active {
+    background-color: rgba(36, 151, 218, 0.486);
+    border: 2px solid black;
+}

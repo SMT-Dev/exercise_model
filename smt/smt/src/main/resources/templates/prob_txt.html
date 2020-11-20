@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>句子改写题答题界面</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/Q1.css" type="text/css" rel="stylesheet">
+    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+</head>
+<body>
+<div id="app">
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="u27">
+        <button type="button" class="white_button" @click="drawer">答题卡</button>
+    </div>
+    <div id="u28">
+        <button type="button" class="white_button" @click="handIn">交 卷</button>
+    </div>
+    <div id="u29" class="q_box">
+        <div id="u30">
+            <div id="u31">
+                <p><span>题号： {{ num }} / {{ totalNum }}</span></p>
+            </div>
+            <div id="u32">
+                <p><span>句子改写题</span></p>
+            </div>
+            <div id="u33">
+                <p><span>{{ prob_text }}</span><br><span>(Yes/No Question; Positive Answer)</span></p>
+            </div>
+            <div id="u34">
+                <div v-for="input in input_num">
+                    <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="">
+                    </el-input>
+                    <i :id="getIcon(input)" class=""></i>
+                </div>
+            </div>
+        </div>
+        <div id="u37">
+            <!--<el-button @click="modify">修改</el-button>
+            <el-button type="primary" @click="confirm" style="margin-left: 20px">确认</el-button>-->
+            <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    var app = new Vue({
+        el: "#app",
+        data: {
+            num: 1,
+            totalNum: 0,
+            opt_num: 0,
+            remain: -1,
+            prob_list: [],
+            done_list: [],
+            opt_box: [],
+            txt_box: [],
+            is_show: 1,
+            src: "",
+            prob_text: "更改前",
+            default_img_src: "/image/u173.svg",
+            chose_img_src: "/image/u173_mouseOver.svg",
+            formData: {
+                idx: this.num,
+                finish: 0,
+                choice: "",
+                choice_text: ""
+            },
+            answers_list: [],
+            txt: [],
+            input_num: []
+        },
+        methods: {
+            nextProblem: function () {
+                if(this.num < this.totalNum){
+                    for(var i = 0;i < this.txt.length;i++) {
+                        if(this.txt[i] !== "") {
+                            this.confirm();
+                            break;
+                        }
+                    }
+                    this.num += 1;
+                    this.store();
+                    //this.modify();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        //this.remember(this.num);
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
+            },
+
+            getIndex: function (option) {
+                return "text" + (option + 1);
+            },
+
+            getIcon: function (option) {
+                return "icon" + (option + 1);
+            },
+
+            getId: function (option) {
+                return "answer_" + option;
+            },
+
+            drawer: function () {
+                if(this.is_show == 1) {
+                    $("#u1").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#u1").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
+            jumpProblem: function (option) {
+                if(option <= this.opt_num){
+                    for(var i = 0;i < this.txt.length;i++) {
+                        if(this.txt[i] !== "") {
+                            this.confirm();
+                            //this.modify();
+                            break;
+                        }
+                    }
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    sessionStorage.setItem('remainNum',this.remain.toString());
+                    sessionStorage.setItem('total',this.totalNum.toString());
+                    sessionStorage.setItem('opt',this.opt_num.toString());
+                    sessionStorage.setItem('list',this.done_list.toString());
+                    sessionStorage.setItem('optlist',this.opt_box.toString());
+                    sessionStorage.setItem('txtlist',this.txt_box.toString());
+                    sessionStorage.setItem('problist',this.prob_list.toString());
+                    sessionStorage.setItem('src',this.src);
+                    window.location.href = "/exercise_opt";
+                }else {
+                    for(var i = 0;i < this.txt.length;i++) {
+                        if(this.txt[i] !== "") {
+                            this.confirm();
+                            break;
+                        }
+                    }
+                    this.num = option;
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    sessionStorage.setItem('remainNum',this.remain.toString());
+                    sessionStorage.setItem('total',this.totalNum.toString());
+                    sessionStorage.setItem('opt',this.opt_num.toString());
+                    sessionStorage.setItem('list',this.done_list.toString());
+                    sessionStorage.setItem('optlist',this.opt_box.toString());
+                    sessionStorage.setItem('txtlist',this.txt_box.toString());
+                    sessionStorage.setItem('problist',this.prob_list.toString());
+                    sessionStorage.setItem('src',this.src);
+                    //this.modify();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        //this.remember(option);
+                    });
+                }
+            },
+
+            confirm: function() {
+                //for(var i = 1;i <= this.input_num.length;i++) {
+                    //$("#text" + i + "").prop("disabled", true);
+                    //$("#icon" + i + "").prop("class", "el-icon-lock");
+                //}
+                this.formData.idx = this.prob_list[this.num - 1];
+                this.formData.choice = "none";
+                this.formData.finish = 1;
+                this.formData.choice_text = this.txt.join("$");
+                if(this.done_list.indexOf(this.num) == -1) {
+                    this.remain = this.totalNum-(this.done_list.push(this.num));
+                }
+                //console.log(this.formData);
+                axios.post("/postSheet", $.param(this.formData)
+                ).then((response) => {
+                    this.$nextTick(() => {
+                        this.setSheet();
+                    })
+                    resolve(response);
+                });
+            },
+
+            modify: function() {
+                for(var i = 1;i <= this.input_num.length;i++) {
+                    $("#text" + i + "").prop("disabled", false);
+                    $("#icon" + i + "").prop("class", "");
+                }
+            },
+
+            handIn: function () {
+                if(this.remain > 1){
+                    this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '已交卷'
+                        });
+                        sessionStorage.clear();
+                        if(this.src == "ai")
+                            window.location.href = "/practise_finish_opt";
+                        else if(this.src == "test")
+                            window.location.href = "/test_finish_opt";
+                        else if(this.src == "lesson")
+                            window.location.href = "/lesson_finish_opt";
+                        else if(this.src == "wrong")
+                            window.location.href = "/wrong_finish_opt";
+                        else if(this.src == "recomnd")
+                            window.location.href = "/recomnd_finish_opt";
+                    })
+                }
+                else {
+                    sessionStorage.clear();
+                    if(this.src == "ai")
+                        window.location.href = "/practise_finish_opt";
+                    else if(this.src == "test")
+                        window.location.href = "/test_finish_opt";
+                    else if(this.src == "lesson")
+                        window.location.href = "/lesson_finish_opt";
+                    else if(this.src == "wrong")
+                        window.location.href = "/wrong_finish_opt";
+                    else if(this.src == "recomnd")
+                        window.location.href = "/recomnd_finish_opt";
+                }
+            },
+
+            fetchProblem: function () {
+                this.txt = [];
+                axios.get("/getProblem?num="+this.prob_list[this.num - 1]
+                ).then(response => {
+                    console.log("problem 执行");
+                    this.prob_text = response.data.prob_text;
+                    for(var i = 0;i < 3;i++) {
+                        this.txt.push("");
+                    }
+                    this.input_num = [...Array(3).keys()];
+                    // console.log("response.data.prob_text", response.data.prob_text);
+                    // console.log("this.prob_text", this.prob_text);
+                    this.prob_text = response.data.prob_text;
+                });
+                this.$nextTick(() => {
+                    this.remember(this.num);
+                });
+            },
+
+            remember: function (option) {
+                axios.get("/getSheet").then((response) => {
+                    for (var i = 0; i < response.data.sheet_list.length; i++) {
+                        if((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) == option) {
+                            this.txt = response.data.sheet_list[i].choice_text.split("$");
+                            break;
+                        }
+                    }
+                });
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get("/getSheet"
+                    ).then((response) => {
+                        this.answers_list = response.data.sheet_list;
+                        resolve(response.data.sheet_list);
+                    });
+                })
+            },
+
+            setSheet: async function () {
+                this.answers_list = await this.getSheet();
+                for (var i = 0; i<this.answers_list.length; i++) {
+                    ans = this.answers_list[i];
+                    document.getElementById('answer_'+(this.prob_list.indexOf(ans["idx"]) + 1).toString()).src = this.chose_img_src;
+                }
+                this.store();
+            },
+
+            store: function () {
+                sessionStorage.setItem('questionId',this.num.toString());
+                sessionStorage.setItem('isShown',this.is_show.toString());
+                sessionStorage.setItem('remainNum',this.remain.toString());
+                sessionStorage.setItem('total',this.totalNum.toString());
+                sessionStorage.setItem('opt',this.opt_num.toString());
+                sessionStorage.setItem('list',this.done_list.toString());
+                sessionStorage.setItem('optlist',this.opt_box.toString());
+                sessionStorage.setItem('txtlist',this.txt_box.toString());
+                sessionStorage.setItem('problist',this.prob_list.toString());
+                sessionStorage.setItem('src',this.src);
+            }
+        },
+
+        created() {
+            this.num = parseInt(sessionStorage.getItem('questionId'));
+            this.is_show = parseInt(sessionStorage.getItem('isShown'));
+            this.remain = parseInt(sessionStorage.getItem('remainNum'));
+            this.totalNum = parseInt(sessionStorage.getItem('total'));
+            this.opt_num = parseInt(sessionStorage.getItem('opt'));
+            this.src = sessionStorage.getItem('src');
+            this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
+            this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
+            this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+            if(sessionStorage.getItem('list') != "") {
+                this.done_list = sessionStorage.getItem('list').split(',').map(Number);
+            }
+            if(this.is_show == 0) {
+                document.getElementById("u1").className = "drawer2";
+            }else {
+                document.getElementById("u1").className = "drawer1";
+            }
+            this.$nextTick(() => {
+                this.fetchProblem();
+            });
+        },
+
+        mounted() {
+            // 一加载就更新答题卡
+            this.$nextTick(() => {
+                //this.remember(this.num);
+                this.setSheet();
+            });
+        }
+    })
+</script>
+</html>
