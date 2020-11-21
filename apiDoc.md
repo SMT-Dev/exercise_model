@@ -52,5 +52,13 @@
 | wrong_problem | 错题集页面 | /wrong | /getwrong<br>/levelInitial |
 | wrong_opt_finish | 错题练习结算评价选择题页面 | /wrong_finish_opt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | wrong_txt_finish | 错题练习结算评价文本题页面 | /wrong_finish_txt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
+***
+# 11-21 更新说明
+将/historyInitial和/wrongInitial整合为/levelInitial  
+
+明确了所有获取历史刷题信息的接口中的id（记录的编号）均为number类型  
+
+增加了刷题时的接口/postSetting用于发送刷题信息和设置，使后端知道是哪种类型的刷题，决定如何组卷
+
 
 
