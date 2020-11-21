@@ -102,39 +102,53 @@
 </div>
 </body>
 <script>
-    document.onreadystatechange = function () {
-            if (document.readyState == "complete") {
-                document.body.style.display = "block";
-            } else {
-                document.body.style.display = "none";
-            };
-        };
-    Mock.mock('/getdetail',{
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    Mock.mock('/getdetail?id=11111',{
         "problem":[
-            {'id':1,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':2,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':3,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':4,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':5,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':6,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':7,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':8,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':9,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':10,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':11,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':12,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':13,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':14,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':15,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':16,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
-            {'id':17,'ans':'111\n111','choice':'','analysis|20':'*','point|4':'!','text':'111\n111'},
-            {'id':18,'ans':'222\n222','choice':'','analysis|20':'*','point|4':'!','text':'222\n333'},
-            {'id':19,'ans':'333\n333','choice':'','analysis|20':'*','point|4':'!','text':'333\n333'},
-            {'id':20,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'}
+            {'id':10001,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10002,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10003,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10004,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10005,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10006,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10007,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10008,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10009,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10010,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10011,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10012,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10013,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10014,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10015,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10016,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10017,'ans|1':['a','b','c','d'],'choice|1':['a','b','c','d'],'analysis|20':'*','point|4':'!','text':''},
+            {'id':10018,'ans':'111\n111','choice':'','analysis|20':'*','point|4':'!','text':'111\n111'},
+            {'id':10019,'ans':'222\n222','choice':'','analysis|20':'*','point|4':'!','text':'222\n333'},
+            {'id':10020,'ans':'333\n333','choice':'','analysis|20':'*','point|4':'!','text':'333\n333'},
+            {'id':10021,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'},
+            {'id':10022,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'},
+            {'id':10023,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'},
+            {'id':10024,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'},
+            {'id':10025,'ans':'444\n444','choice':'','analysis|20':'*','point|4':'!','text':'222\n444'}
         ]
     });
 
-    Mock.mock('/getresult',{
+    Mock.mock('/getresult_ai?id=11111',{
         "res":{
         "time":'2020-10-30 15:10:11',
         "score|60-100":100,
@@ -150,6 +164,7 @@
         el: "#app",
         data: {
             time: '',
+            id: 0,
             unhandle: 0,
             score: 0,
             easy: 0,
@@ -210,7 +225,8 @@
                 if(option > this.opt_num){
                     sessionStorage.setItem('questionId',option.toString());
                     sessionStorage.setItem('isShown',this.is_show.toString());
-                    window.location.href = "/test_finish_txt";
+                    sessionStorage.setItem('problist',this.prob_list.toString());
+                    window.location.href = "/test_finish_txt?id=" + this.id;
                 }else if(option !== this.num) {
                     this.num = option;
                     sessionStorage.setItem('questionId',option.toString());
@@ -227,7 +243,8 @@
                     if(this.num == this.opt_num){
                         sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
                         sessionStorage.setItem('isShown',this.is_show.toString());
-                        window.location.href = "/test_finish_txt";
+                        sessionStorage.setItem('problist',this.prob_list.toString());
+                        window.location.href = "/test_finish_txt?id=" + this.id;
                     }
                     this.num += 1;
                     sessionStorage.setItem('questionId',this.num.toString());
@@ -247,7 +264,7 @@
 
             getSheet: function () {
                 return new Promise(resolve => {
-                    axios.get("/getdetail"
+                    axios.get("/getdetail?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
                     });
@@ -256,7 +273,7 @@
 
             getResult: function () {
                 return new Promise(resolve => {
-                    axios.get("/getresult"
+                    axios.get("/getresult_ai?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
                     });
@@ -296,6 +313,7 @@
                  this.hard = result.res.hard;
                  this.totalNum = res.problem.length;
                  for (var i = 0; i < res.problem.length; i++) {
+                     this.prob_list.push(res.problem[i].id);
                      this.ans_list.push(res.problem[i].ans);
                      this.analysis_list.push(res.problem[i].analysis);
                      this.point_list.push(res.problem[i].point);
@@ -305,30 +323,20 @@
                          this.submit_list.push(res.problem[i].choice);
                      }
                      if((res.problem[i].choice == '' && res.problem[i].ans == res.problem[i].text)||(res.problem[i].text == '' && res.problem[i].choice == res.problem[i].ans)) {
-                        document.getElementById('answer_' + res.problem[i].id.toString()).src = this.correct_img_src;
+                        document.getElementById('answer_' + (i + 1) + '').src = this.correct_img_src;
                         this.results_list.push(1);
                      }else {
-                        document.getElementById('answer_' + res.problem[i].id.toString()).src = this.wrong_img_src;
+                        document.getElementById('answer_' + (i + 1) + '').src = this.wrong_img_src;
                         this.results_list.push(0);
                      }
                  }
+                 this.fetchProblem();
                  this.showResult();
                  sessionStorage.setItem('questionId',this.num.toString());
                  sessionStorage.setItem('isShown',this.is_show.toString());
             },
 
-            fetchPaper: function () {
-                return new Promise(resolve => {
-                    axios.get("/getPaper"
-                    ).then((response) => {
-                        this.prob_list = response.data;
-                        resolve(response.data);
-                    });
-                })
-            },
-
-            fetchProblem: async function () {
-                this.prob_list = await this.fetchPaper();
+            fetchProblem: function () {
                 axios.get("/getProblem?num="+this.prob_list[this.num-1].toString()
                 ).then(response => {
                     console.log("problem 执行");
@@ -510,6 +518,14 @@
         },
 
         created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
             if(sessionStorage.getItem('questionId') !== null) {
                 this.num = parseInt(sessionStorage.getItem('questionId'));
                 this.is_show = parseInt(sessionStorage.getItem('isShown'));
@@ -519,12 +535,12 @@
                     document.getElementById("u1").className = "drawer1";
                 }
             }
+            this.id = parseInt(window.location.search.substr(4));
         },
 
         mounted() {
             this.$nextTick(() => {
                 this.setSheet();
-                this.fetchProblem();
             });
         },
     })

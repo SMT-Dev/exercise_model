@@ -48,6 +48,22 @@
 </div>
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -55,6 +71,7 @@
             totalNum: 0,
             opt_num: 0,
             remain: -1,
+            id: 0,
             prob_list: [],
             done_list: [],
             opt_box: [],
@@ -140,6 +157,7 @@
                     sessionStorage.setItem('txtlist',this.txt_box.toString());
                     sessionStorage.setItem('problist',this.prob_list.toString());
                     sessionStorage.setItem('src',this.src);
+                    sessionStorage.setItem('id',this.id);
                     window.location.href = "/exercise_opt";
                 }else {
                     for(var i = 0;i < this.txt.length;i++) {
@@ -159,6 +177,7 @@
                     sessionStorage.setItem('txtlist',this.txt_box.toString());
                     sessionStorage.setItem('problist',this.prob_list.toString());
                     sessionStorage.setItem('src',this.src);
+                    sessionStorage.setItem('id',this.id);
                     //this.modify();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -209,29 +228,29 @@
                         });
                         sessionStorage.clear();
                         if(this.src == "ai")
-                            window.location.href = "/practise_finish_opt";
+                            window.location.href = "/practise_finish_opt?id=" + this.id.toString();
                         else if(this.src == "test")
-                            window.location.href = "/test_finish_opt";
+                            window.location.href = "/test_finish_opt?id=" + this.id.toString();
                         else if(this.src == "lesson")
-                            window.location.href = "/lesson_finish_opt";
+                            window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
                         else if(this.src == "wrong")
-                            window.location.href = "/wrong_finish_opt";
+                            window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
                         else if(this.src == "recomnd")
-                            window.location.href = "/recomnd_finish_opt";
+                            window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                     })
                 }
                 else {
                     sessionStorage.clear();
                     if(this.src == "ai")
-                        window.location.href = "/practise_finish_opt";
+                        window.location.href = "/practise_finish_opt?id=" + this.id.toString();
                     else if(this.src == "test")
-                        window.location.href = "/test_finish_opt";
+                        window.location.href = "/test_finish_opt?id=" + this.id.toString();
                     else if(this.src == "lesson")
-                        window.location.href = "/lesson_finish_opt";
+                        window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
                     else if(this.src == "wrong")
-                        window.location.href = "/wrong_finish_opt";
+                        window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
                     else if(this.src == "recomnd")
-                        window.location.href = "/recomnd_finish_opt";
+                        window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                 }
             },
 
@@ -295,10 +314,19 @@
                 sessionStorage.setItem('txtlist',this.txt_box.toString());
                 sessionStorage.setItem('problist',this.prob_list.toString());
                 sessionStorage.setItem('src',this.src);
+                sessionStorage.setItem('id',this.id);
             }
         },
 
         created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
             this.num = parseInt(sessionStorage.getItem('questionId'));
             this.is_show = parseInt(sessionStorage.getItem('isShown'));
             this.remain = parseInt(sessionStorage.getItem('remainNum'));
@@ -308,6 +336,7 @@
             this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
             this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
             this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+            this.id = parseInt(sessionStorage.getItem('id'));
             if(sessionStorage.getItem('list') != "") {
                 this.done_list = sessionStorage.getItem('list').split(',').map(Number);
             }

@@ -42,11 +42,28 @@
 </div>
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+    
     Mock.mock('/getTest',{
         "tableList|8": [{
             "name":"test",
             "date":"@datetime",
             "score|60-100":100,
+            "id":11111
         }]
     })
 
@@ -71,7 +88,7 @@
 
         methods: {
             Click: function (row) {
-                window.location.href = '/test_detail_opt';
+                window.location.href = '/test_detail_opt?id=' + row.id;
             },
 
             start_test: function () {
@@ -116,7 +133,14 @@
         },
 
         created: function () {
-            ;
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
         },
 
         mounted: function () {

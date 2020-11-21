@@ -84,9 +84,26 @@
 </div>
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+    
     Mock.mock("/ini",{
         "total":25,
-        "opt":17
+        "opt":17,
+        "id":11111
     })
     
     var app = new Vue({
@@ -96,6 +113,7 @@
             totalNum: 0,
             opt_num: 0,
             remain: -1,
+            id: 0,
             prob_list: [],
             done_list: [],
             opt_box: [],
@@ -112,6 +130,12 @@
                 finish: 0,
                 choice: "",
                 choice_text: ""
+            },
+            setting: {
+                src: "",
+                sys: "",
+                lev: 0,
+                probNum: 0
             },
             options_list: []
         },
@@ -187,6 +211,7 @@
                     sessionStorage.setItem('txtlist',this.txt_box.toString());
                     sessionStorage.setItem('problist',this.prob_list.toString());
                     sessionStorage.setItem('src',this.src);
+                    sessionStorage.setItem('id',this.id);
                     window.location.href = "/exercise_txt";
                 }else {
                     this.num = option;
@@ -200,6 +225,7 @@
                     sessionStorage.setItem('txtlist',this.txt_box.toString());
                     sessionStorage.setItem('problist',this.prob_list.toString());
                     sessionStorage.setItem('src',this.src);
+                    sessionStorage.setItem('id',this.id);
                     this.refreshAnswer();
                     this.remember(option);
                     this.$nextTick(() => {
@@ -221,6 +247,7 @@
                         sessionStorage.setItem('txtlist',this.txt_box.toString());
                         sessionStorage.setItem('problist',this.prob_list.toString());
                         sessionStorage.setItem('src',this.src);
+                        sessionStorage.setItem('id',this.id);
                         window.location.href = "/exercise_txt";
                     }else {
                         this.num += 1;
@@ -285,6 +312,7 @@
                     var res = await this.getini();
                     this.totalNum = res.total;
                     this.opt_num = res.opt;
+                    this.id = res.id;
                     this.remain = this.totalNum;
                     this.opt_box = [];
                     this.txt_box = [];
@@ -375,29 +403,29 @@
                         });
                         sessionStorage.clear();
                         if(this.src == "ai")
-                            window.location.href = "/practise_finish_opt";
+                            window.location.href = "/practise_finish_opt?id=" + this.id.toString();
                         else if(this.src == "test")
-                            window.location.href = "/test_finish_opt";
+                            window.location.href = "/test_finish_opt?id=" + this.id.toString();
                         else if(this.src == "lesson")
-                            window.location.href = "/lesson_finish_opt";
+                            window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
                         else if(this.src == "wrong")
-                            window.location.href = "/wrong_finish_opt";
+                            window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
                         else if(this.src == "recomnd")
-                            window.location.href = "/recomnd_finish_opt";
+                            window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                     })
                 }
                 else {
                     sessionStorage.clear();
                     if(this.src == "ai")
-                        window.location.href = "/practise_finish_opt";
+                        window.location.href = "/practise_finish_opt?id=" + this.id.toString();
                     else if(this.src == "test")
-                        window.location.href = "/test_finish_opt";
+                        window.location.href = "/test_finish_opt?id=" + this.id.toString();
                     else if(this.src == "lesson")
-                        window.location.href = "/lesson_finish_opt";
+                        window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
                     else if(this.src == "wrong")
-                        window.location.href = "/wrong_finish_opt";
+                        window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
                     else if(this.src == "recomnd")
-                        window.location.href = "/recomnd_finish_opt";
+                        window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                 }
             },
 
@@ -412,12 +440,21 @@
                 sessionStorage.setItem('txtlist',this.txt_box.toString());
                 sessionStorage.setItem('problist',this.prob_list.toString());
                 sessionStorage.setItem('src',this.src);
+                sessionStorage.setItem('id',this.id);
             }
         },
 
         watch: {},
 
         created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
             if(sessionStorage.getItem('questionId') !== null) {
                 this.num = parseInt(sessionStorage.getItem('questionId'));
                 this.is_show = parseInt(sessionStorage.getItem('isShown'));
@@ -428,6 +465,7 @@
                 this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
                 this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
                 this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+                this.id = parseInt(sessionStorage.getItem('id'));
                 if(sessionStorage.getItem('list') != "") {
                     this.done_list = sessionStorage.getItem('list').split(',').map(Number);
                 }
@@ -440,13 +478,33 @@
             if(window.location.search.indexOf("ai",window.location.search.indexOf("src")) > -1) {
                 this.src = "ai";
             }else if(window.location.search.indexOf("test",window.location.search.indexOf("src")) > -1) {
-                this.src = "test"
+                this.src = "test";
+                this.setting.src = "test";
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    resolve(response);
+                });
             }else if(window.location.search.indexOf("wrong",window.location.search.indexOf("src")) > -1) {
-                this.src = "wrong"
+                this.src = "wrong";
+                this.setting.src = "wrong";
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    resolve(response);
+                });
             }else if(window.location.search.indexOf("recomnd",window.location.search.indexOf("src")) > -1) {
-                this.src = "recomnd"
+                this.src = "recomnd";
+                this.setting.src = "recomnd";
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    resolve(response);
+                });
             }else {
-                this.src = "lesson"
+                this.src = "lesson";
+                this.setting.src = "lesson";
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    resolve(response);
+                });
             }
             this.$nextTick(() => {
                 this.setini();

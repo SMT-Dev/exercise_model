@@ -57,11 +57,28 @@
 </div>
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
     Mock.mock('/getTable_lesson',{
         "tableList|8": [{
             "name":"lesson",
             "date":"@datetime",
             "score|60-100":100,
+            "id":11111
         }]
     })
 
@@ -70,10 +87,11 @@
             "name|1":["test","practise"],
             "date":"@datetime",
             "score|60-100":100,
+            "id":11111
         }]
     })
 
-    Mock.mock('/historyInitial',{
+    Mock.mock('/levelInitial',{
         "level|1-6":1,
     })
 
@@ -88,11 +106,11 @@
         methods: {
             Click: function (row) {
                 if(row.name == 'lesson') {
-                    window.location.href = '/lesson_detail_opt';
+                    window.location.href = '/lesson_detail_opt?id=' + row.id;
                 }else if(row.name == 'test') {
-                    window.location.href = '/test_detail_opt';
+                    window.location.href = '/test_detail_opt?id=' + row.id;
                 }else {
-                    window.location.href = '/practise_detail_opt';
+                    window.location.href = '/practise_detail_opt?id=' + row.id;
                 }
             },
 
@@ -114,7 +132,7 @@
 
             initial: function () {
                 return new Promise(resolve => {
-                    axios.get('/historyInitial').then((response) => {
+                    axios.get('/levelInitial').then((response) => {
                         resolve(response.data);
                     });
                 })
@@ -131,7 +149,14 @@
         },
 
         created: function () {
-            ;
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
         },
 
         mounted: function () {

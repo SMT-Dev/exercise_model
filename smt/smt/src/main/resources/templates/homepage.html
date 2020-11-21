@@ -57,6 +57,22 @@
 
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
     Mock.mock('/homepageInitial',{
         "level|1-6":1,
         "num|1":[15,20,25]
@@ -70,10 +86,20 @@
             chosen_level: 0,
             marks: {0:'Lev.1',20:'Lev.2',40:'Lev.3',60:'Lev.4',80:'Lev.5',100:'Lev.6'},
             prob_num: 0,
+            setting: {
+                src: "ai",
+                sys: this.choice,
+                lev: this.level,
+                probNum: this.prob_num
+            }
         },
 
         methods: {
             beginExercise: function () {
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    resolve(response);
+                });
                 window.location.href = "/exercise_opt?src=ai&lev="+((this.chosen_level/20)+1)+"&num="+this.prob_num;
             },
 
@@ -106,6 +132,17 @@
                 this.chosen_level = (this.level - 1)*20;
                 this.prob_num = rs.num;
             },
+        },
+
+        created: function () {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
         },
 
         mounted: function () {

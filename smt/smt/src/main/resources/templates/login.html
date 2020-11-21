@@ -44,6 +44,23 @@
 </div>
 </body>
 <script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name)==0) 
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+
     new Vue({
         el: "#app",
         data: {
@@ -73,6 +90,9 @@
                             type: 'success',
                             message: '登录成功' + response.data
                         });
+                        localStorage.setItem('SMTusername',this.form.username);
+                        localStorage.setItem('SMTpassword',this.form.password);
+                        setCookie(this.form.username,this.form.password);
                         setTimeout("window.location.href = '/home'", 1000);
                     }
                     else {
@@ -84,6 +104,20 @@
 
 
                 });
+            }
+        },
+
+        created: function () {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                }else {
+                    this.$message({
+                        type: 'success',
+                        message: '您已经登录！'
+                    });
+                    setTimeout("window.location.href = '/home'", 1000);
+                }
             }
         }
     });
