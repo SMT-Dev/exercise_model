@@ -20,7 +20,7 @@
 | 获取双周测的所有历史记录 | /getTest || 数组<br>数组元素：对象<br>对象属性：对应哪个双周(string)、时间(string)、得分(number)、本次记录编号(number) | `"tableList":[{"name","date","score","id"}]` ||
 | 获取当前双周信息 | /testInitial || 等级(number)<br>当前双周(string)<br>是否已完成(boolean)<br>是否开放测试(boolean) | `"level","week","done","allow_test"` ||
 | 获取所有错题记录 | /getwrong || 数组<br>数组元素：对象<br>对象属性：题目文本(string)、题目类型(string)、题目选项(string)、用户提交答案(string)、正确答案(string)、题目解析(string)、考点(string) | `"wrong_prob":[{"prob_text","prob_type","options","user_ans","correct_ans","analysis","point"}]` ||
-| 发送温故知新刷题设置 | /postSetting | `formData {src,lev,probNum}` | 对象 | 略 ||
+| 发送刷题信息以供后端组卷 | /postSetting | `formData {src,sys,lev,probNum}` | 对象 | 略 | 温故知新模块发送时，会提供出题体系、所选等级、所选题量信息<br>其他模块发送时这三个信息都为0或者空字符串（因其他模块出题时无需这些信息） |
 ***
 # 页面汇总
 | 页面名称 | 页面描述 | URL | 调用API |
@@ -38,7 +38,7 @@
 | practise_opt_finish | 温故知新刷题结算评价选择题页面 | /practise_finish_opt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | practise_txt_detail | 温故知新刷题记录详情文本题页面 | /practise_detail_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | practise_txt_finish | 温故知新刷题结算评价文本题页面 | /practise_finish_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/getSheet<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
+| prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/postSetting<br>/getSheet<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | prob_txt | 刷题文本题页面 | /exercise_txt | /ini<br>/postSheet<br>/getSheet<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | recomnd_opt_finish | 推荐练习结算评价选择题页面 | /recomnd_finish_opt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | recomnd_txt_finish | 推荐练习结算评价文本题页面 | /recomnd_finish_txt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
