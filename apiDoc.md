@@ -1,11 +1,16 @@
-# 前端调用API
+# 目录
+1. [前端调用API](#api)
+2. [HTML 页面汇总](#html)
+3. [文档 & 代码更新记录](#log)
+
+## 1. 前端调用API <span id="api"></span>
 | 作用 | api-url | 请求参数 | 返回值 | 返回值示例 | 备注 |
 | :----: | :----: | :---- | :----: | :---- | :---- |
 | 得到课课练的所有历史刷题记录 | /getTable_lesson || 数组<br>数组元素:对象<br>对象属性：对应哪节课(string)、完成时间(string)、得分(number)、本条记录编号(number) | `"tableList":[{"name","date","score","id"},...]` | 得分范围：0-100 |
 | 得到温故知新和双周测的所有历史刷题记录 | /getTable_ai || 数组<br>数组元素:对象<br>对象属性：对应刷题名称(string)、完成时间(string)、得分(number)、本条记录编号(number) | `"tableList":[{"name","date","score","id"},...]` | 对应刷题名称中，若为双周测则表明“xx周-xx周双周测”，若为温故知新则表明“Level xx 温故知新练习”<br>得分单位：0-100 |
 | 获取用户当前等级 | /levelInitial || 等级(number) | `"level"` ||
 | 获取用户当前等级和上一次温故知新刷题时选择的题量 | /homepageInitial || 等级(number)<br>上次刷题题量(number) | `"level","num"` | 题量为15、20、25 |
-| 获取用户刷题结果 | /getdetail?id=xxxx(xxxx为记录编号) || 数组<br>数组元素：对象<br>对象属性：题号(num)、标准答案(string)、用户选择选项(string)、用户提交文本(string)、题目解析(string)、本题考点(string) | `"problem":[{'id','ans','choice','text','analysis','point'},...]` ||
+| 获取用户刷题结果 | /getdetail?id=xxxx(xxxx为记录编号) || 数组<br>数组元素：对象<br>对象属性：题号(num)、标准答案(string)、用户选择选项(string)、用户提交文本(string)、题目解析(string)、本题考点(string) | `"sheet_list": [{"idx": 10002, "choice": "b", "choice_text": "a", "prob_text": "I want ____ toy train.", "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B", "ans": "B", "point": "辅音音素开头"},` ||
 | 获取课课练用户刷题评价 | /getresult_lesson?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number)、对应哪节课(string) | `"res":{"time","score","unhandle","easy","medium","hard","lesson"}` | 得分范围：0-100<br>未掌握知识点比例为一位小数<br> |
 | 发送用户登录信息 | /postLogin | `form {username,password}` | 对象 | 略 ||
 | 获取一组题目的在数据库中的题号 | /getPaper || 数组<br>数组元素：题号(number) | 略 ||
@@ -22,7 +27,8 @@
 | 获取所有错题记录 | /getwrong || 数组<br>数组元素：对象<br>对象属性：题目文本(string)、题目类型(string)、题目选项(string)、用户提交答案(string)、正确答案(string)、题目解析(string)、考点(string) | `"wrong_prob":[{"prob_text","prob_type","options","user_ans","correct_ans","analysis","point"}]` ||
 | 发送刷题信息以供后端组卷 | /postSetting | `formData {src,sys,lev,probNum}` | 对象 | 略 | 温故知新模块发送时，会提供出题体系、所选等级、所选题量信息<br>其他模块发送时这三个信息都为0或者空字符串（因其他模块出题时无需这些信息） |
 ***
-# 页面汇总
+
+## 2. HTML 页面汇总 <span id="html"></span>
 | 页面名称 | 页面描述 | URL | 调用API |
 | :----: | :----: | :----: | :---- |
 | answer_sheet | 答题卡侧边栏 | / | / |
@@ -53,12 +59,16 @@
 | wrong_opt_finish | 错题练习结算评价选择题页面 | /wrong_finish_opt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | wrong_txt_finish | 错题练习结算评价文本题页面 | /wrong_finish_txt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 ***
-# 11-21 更新说明
-将/historyInitial和/wrongInitial整合为/levelInitial  
 
-明确了所有获取历史刷题信息的接口中的id（记录的编号）均为number类型  
+## 3. 文档 & 代码更新记录 <span id="log"></span>
+### 11-21 更新说明 @李
+1. 将/historyInitial和/wrongInitial整合为/levelInitial  
+2. 明确了所有获取历史刷题信息的接口中的id（记录的编号）均为number类型  
+3. 增加了刷题时的接口/postSetting用于发送刷题信息和设置，使后端知道是哪种类型的刷题，决定如何组卷
 
-增加了刷题时的接口/postSetting用于发送刷题信息和设置，使后端知道是哪种类型的刷题，决定如何组卷
 
-
-
+### 11-22 更新说明 @许
+| 编号 | 描述 | 改动位置 |
+| :----: | :----: | :----: |
+| 1 | 修改了 /getdetail 变量名，前后端统一变量名 | practise_opt_detail.html |
+| 2 | 修改了 setSheet() 判断题目正误的逻辑代码，取消 mock，转用真实接口数据 | practise_opt_detail.html |
