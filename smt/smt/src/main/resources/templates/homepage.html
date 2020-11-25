@@ -76,7 +76,7 @@
     Mock.mock('/homepageInitial',{
         "level|1-6":1,
         "num|1":[15,20,25]
-    })
+    });
 
     var app = new Vue({
         el: "#app",
@@ -98,23 +98,23 @@
             beginExercise: function () {
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    resolve(response);
+                    // resolve(response);
                 });
                 window.location.href = "/exercise_opt?src=ai&lev="+((this.chosen_level/20)+1)+"&num="+this.prob_num;
             },
 
             formatTooltip: function (chosen_level) {
-                if(chosen_level == 0)
+                if(chosen_level === 0)
                     return 'Lev.1';
-                if(chosen_level == 20)
+                if(chosen_level === 20)
                     return 'Lev.2';
-                if(chosen_level == 40)
+                if(chosen_level === 40)
                     return 'Lev.3';
-                if(chosen_level == 60)
+                if(chosen_level === 60)
                     return 'Lev.4';
-                if(chosen_level == 80)
+                if(chosen_level === 80)
                     return 'Lev.5';
-                if(chosen_level == 100)
+                if(chosen_level === 100)
                     return 'Lev.6';
             },
 

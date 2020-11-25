@@ -111,7 +111,7 @@
         ]
     });
 
-    Mock.mock('/getresult_ai?id=11111',{
+    Mock.mock('/getResultAi?id=11111',{
         "res":{
         "time":'2020-10-30 15:10:11',
         "score|60-100":100,
@@ -252,7 +252,7 @@
 
             getResult: function () {
                 return new Promise(resolve => {
-                    axios.get("/getresult_ai?id=" + this.id
+                    axios.get("/getResultAi?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
                     });

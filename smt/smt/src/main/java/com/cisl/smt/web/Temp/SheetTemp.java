@@ -9,7 +9,11 @@ public class SheetTemp {
      * @date: 2020.10.19
      */
 
+    private Long id;
     private ArrayList<ProblemAnsTemp> sheet_list;
+    private ArrayList<Long> num_list;
+    private Long opt_num;
+    private Long txt_num;
     private static SheetTemp instance = null;
 
     private SheetTemp(){}   // 单例模式，外部不能new
@@ -18,8 +22,17 @@ public class SheetTemp {
         if(instance == null) {
             instance = new SheetTemp();
             instance.setSheet_list(new ArrayList<>());
+            instance.setNum_list(new ArrayList<>());
         }
         return instance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public ArrayList<ProblemAnsTemp> getSheet_list() {
@@ -28,6 +41,30 @@ public class SheetTemp {
 
     public void setSheet_list(ArrayList<ProblemAnsTemp> sheet_list) {
         this.sheet_list = sheet_list;
+    }
+
+    public Long getOpt_num() {
+        return opt_num;
+    }
+
+    public void setOpt_num(Long opt_num) {
+        this.opt_num = opt_num;
+    }
+
+    public Long getTxt_num() {
+        return txt_num;
+    }
+
+    public void setTxt_num(Long txt_num) {
+        this.txt_num = txt_num;
+    }
+
+    public ArrayList<Long> getNum_list() {
+        return num_list;
+    }
+
+    public void setNum_list(ArrayList<Long> num_list) {
+        this.num_list = num_list;
     }
 
     public void addSheet_list(ProblemAnsTemp pt) {
@@ -39,12 +76,17 @@ public class SheetTemp {
 
     public void clearSheet_list() {
         this.sheet_list.clear();
+        this.num_list.clear();
     }
 
     @Override
     public String toString() {
         return "SheetTemp{" +
+                "id=" + id +
                 ", sheet_list=" + sheet_list +
+                ", num_list=" + num_list +
+                ", opt_num=" + opt_num +
+                ", txt_num=" + txt_num +
                 '}';
     }
 }

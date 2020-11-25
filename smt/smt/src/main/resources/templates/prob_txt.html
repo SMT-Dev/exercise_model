@@ -58,7 +58,7 @@
         for(var i=0; i<ca.length; i++) 
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0) 
+            if (c.indexOf(name) === 0)
                 return c.substring(name.length,c.length);
         }
         return "";
@@ -129,7 +129,7 @@
             },
 
             drawer: function () {
-                if(this.is_show == 1) {
+                if(this.is_show === 1) {
                     $("#u1").animate({right:"-260px"});
                     this.is_show = 0;
                 }else {
@@ -195,7 +195,7 @@
                 this.formData.choice = "none";
                 this.formData.finish = 1;
                 this.formData.choice_text = this.txt.join("$");
-                if(this.done_list.indexOf(this.num) == -1) {
+                if(this.done_list.indexOf(this.num) === -1) {
                     this.remain = this.totalNum-(this.done_list.push(this.num));
                 }
                 //console.log(this.formData);
@@ -203,8 +203,8 @@
                 ).then((response) => {
                     this.$nextTick(() => {
                         this.setSheet();
-                    })
-                    resolve(response);
+                    });
+                    // resolve(response);   没有 Promise 就不要写 resolve
                 });
             },
 
@@ -227,29 +227,29 @@
                             message: '已交卷'
                         });
                         sessionStorage.clear();
-                        if(this.src == "ai")
+                        if(this.src === "ai")
                             window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "test")
+                        else if(this.src === "test")
                             window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "lesson")
+                        else if(this.src === "lesson")
                             window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "wrong")
+                        else if(this.src === "wrong")
                             window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "recomnd")
+                        else if(this.src === "recomnd")
                             window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                     })
                 }
                 else {
                     sessionStorage.clear();
-                    if(this.src == "ai")
+                    if(this.src === "ai")
                         window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "test")
+                    else if(this.src === "test")
                         window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "lesson")
+                    else if(this.src === "lesson")
                         window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "wrong")
+                    else if(this.src === "wrong")
                         window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "recomnd")
+                    else if(this.src === "recomnd")
                         window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                 }
             },
@@ -275,10 +275,13 @@
 
             remember: function (option) {
                 axios.get("/getSheet").then((response) => {
-                    for (var i = 0; i < response.data.sheet_list.length; i++) {
-                        if((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) == option) {
-                            this.txt = response.data.sheet_list[i].choice_text.split("$");
-                            break;
+                    var sl = response.data.sheet_list;
+                    for (var i = 0; i < sl.length; i++) {
+                        if((this.prob_list.indexOf(sl[i].idx) + 1) === option) {
+                            if(sl[i].choice_text !== null){
+                                this.txt = sl[i].choice_text.split("$");
+                                break;
+                            }
                         }
                     }
                 });
@@ -337,10 +340,10 @@
             this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
             this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
             this.id = parseInt(sessionStorage.getItem('id'));
-            if(sessionStorage.getItem('list') != "") {
+            if(sessionStorage.getItem('list') !== "") {
                 this.done_list = sessionStorage.getItem('list').split(',').map(Number);
             }
-            if(this.is_show == 0) {
+            if(this.is_show === 0) {
                 document.getElementById("u1").className = "drawer2";
             }else {
                 document.getElementById("u1").className = "drawer1";

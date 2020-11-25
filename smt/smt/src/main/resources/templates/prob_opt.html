@@ -91,21 +91,21 @@
     function getCookie(cname) {
         var name = cname + "=";
         var ca = document.cookie.split(';');
-        for(var i=0; i<ca.length; i++) 
+        for(var i=0; i<ca.length; i++)
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0) 
+            if (c.indexOf(name)==0)
                 return c.substring(name.length,c.length);
         }
         return "";
     }
-    
-    Mock.mock("/ini",{
-        "total":25,
-        "opt":17,
-        "id":11111
-    })
-    
+
+    // Mock.mock("/initPaper",{
+    //     "total":25,
+    //     "opt":17,
+    //     "id":11111
+    // });
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -113,7 +113,7 @@
             totalNum: 0,
             opt_num: 0,
             remain: -1,
-            id: 0,
+            id: 0,    //全局的 this.id 指的是一份试卷 sheetTemp 的 id
             prob_list: [],
             done_list: [],
             opt_box: [],
@@ -170,7 +170,7 @@
                     this.formData.choice = 'd';
                     this.formData.choice_text = this.options.D;
                 }
-                if(this.done_list.indexOf(this.num) == -1) {
+                if(this.done_list.indexOf(this.num) === -1) {
                     this.remain = this.totalNum-(this.done_list.push(this.num));
                 }
                 this.formData.idx = this.prob_list[this.num - 1];
@@ -179,14 +179,14 @@
                 ).then((response) => {
                         this.$nextTick(() => {
                             this.setSheet();
-                        })
-                        resolve(response);
+                        });
+                        // resolve(response);
                     }
                 );
             },
 
             drawer: function () {
-                if(this.is_show == 1) {
+                if(this.is_show === 1) {
                     $("#u1").animate({right:"-260px"});
                     this.is_show = 0;
                 }else {
@@ -236,7 +236,7 @@
 
             nextProblem: function () {
                 if(this.num < this.totalNum){
-                    if(this.num == this.opt_num){
+                    if(this.num === this.opt_num){
                         sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
                         sessionStorage.setItem('isShown',this.is_show.toString());
                         sessionStorage.setItem('remainNum',this.remain.toString());
@@ -274,21 +274,11 @@
                 document.getElementById('img-d').src = this.default_img_src;
             },
 
-            getini: function () {
-                return new Promise(resolve => {
-                    axios.get("/ini"
-                    ).then((response) => {
-                        //console.log('response.data.sheet_list:', response.data.sheet_list);
-                        resolve(response.data);
-                    });
-                })
-            },
-
+            // 获取 sheet_list
             getSheet: function () {
                 return new Promise(resolve => {
                     axios.get("/getSheet"
                     ).then((response) => {
-                        //console.log('response.data.sheet_list:', response.data.sheet_list);
                         this.options_list = response.data.sheet_list;
                         resolve(response.data.sheet_list);
                     });
@@ -307,11 +297,22 @@
                 this.store();
             },
 
-            setini: async function () {
-                if(this.remain == -1) {
-                    var res = await this.getini();
-                    this.totalNum = res.total;
-                    this.opt_num = res.opt;
+            getInitPaper: function () {
+                return new Promise(resolve => {
+                    axios.get("/initPaper"
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setInitPaper: async function () {
+                if(this.remain === -1) {
+                    var res = await this.getInitPaper();   // res 是一个 sheetTemp 类
+                    console.log(res);
+                    this.totalNum = res.sheet_list.length;
+                    this.prob_list = res.num_list;   //直接获取题号序列
+                    this.opt_num = res.opt_num;
                     this.id = res.id;
                     this.remain = this.totalNum;
                     this.opt_box = [];
@@ -326,18 +327,8 @@
                 }
             },
 
-            fetchPaper: function () {
-                return new Promise(resolve => {
-                    axios.get("/getPaper"
-                    ).then((response) => {
-                        this.prob_list = response.data;
-                        resolve(response.data);
-                    });
-                })
-            },
 
             fetchProblem: async function () {
-                this.prob_list = await this.fetchPaper();
                 axios.get("/getProblem?num="+this.prob_list[this.num - 1]
                 ).then(response => {
                     this.prob_text = response.data.prob_text;
@@ -362,7 +353,7 @@
             remember: function (option) {
                 axios.get("/getSheet").then((response) => {
                     for (var i=0; i<response.data.sheet_list.length; i++) {
-                        if((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) == option) {
+                        if((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) === option) {
                             if (response.data.sheet_list[i].choice === 'a') {
                                 document.getElementById('img-a').src = this.chose_img_src;
                                 document.getElementById('img-b').src = this.default_img_src;
@@ -402,29 +393,29 @@
                             message: '已交卷'
                         });
                         sessionStorage.clear();
-                        if(this.src == "ai")
+                        if(this.src === "ai")
                             window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "test")
+                        else if(this.src === "test")
                             window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "lesson")
+                        else if(this.src === "lesson")
                             window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "wrong")
+                        else if(this.src === "wrong")
                             window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                        else if(this.src == "recomnd")
+                        else if(this.src === "recomnd")
                             window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                     })
                 }
                 else {
                     sessionStorage.clear();
-                    if(this.src == "ai")
+                    if(this.src === "ai")
                         window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "test")
+                    else if(this.src === "test")
                         window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "lesson")
+                    else if(this.src === "lesson")
                         window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "wrong")
+                    else if(this.src === "wrong")
                         window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                    else if(this.src == "recomnd")
+                    else if(this.src === "recomnd")
                         window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
                 }
             },
@@ -466,10 +457,10 @@
                 this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
                 this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
                 this.id = parseInt(sessionStorage.getItem('id'));
-                if(sessionStorage.getItem('list') != "") {
+                if(sessionStorage.getItem('list') !== "") {
                     this.done_list = sessionStorage.getItem('list').split(',').map(Number);
                 }
-                if(this.is_show == 0) {
+                if(this.is_show === 0) {
                     document.getElementById("u1").className = "drawer2";
                 }else {
                     document.getElementById("u1").className = "drawer1";
@@ -482,32 +473,32 @@
                 this.setting.src = "test";
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    resolve(response);
+                    // resolve(response);
                 });
             }else if(window.location.search.indexOf("wrong",window.location.search.indexOf("src")) > -1) {
                 this.src = "wrong";
                 this.setting.src = "wrong";
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    resolve(response);
+                    // resolve(response);
                 });
             }else if(window.location.search.indexOf("recomnd",window.location.search.indexOf("src")) > -1) {
                 this.src = "recomnd";
                 this.setting.src = "recomnd";
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    resolve(response);
+                    // resolve(response);
                 });
             }else {
                 this.src = "lesson";
                 this.setting.src = "lesson";
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    resolve(response);
+                    // resolve(response);
                 });
             }
             this.$nextTick(() => {
-                this.setini();
+                this.setInitPaper();
                 this.fetchProblem();
             });
         },
