@@ -78,9 +78,10 @@
             txt_box: [],
             is_show: 1,
             src: "",
-            prob_text: "更改前",
+            prob_text: "",
             default_img_src: "/image/u173.svg",
             chose_img_src: "/image/u173_mouseOver.svg",
+            img_src: [],
             formData: {
                 idx: this.num,
                 finish: 0,
@@ -147,17 +148,8 @@
                             break;
                         }
                     }
-                    sessionStorage.setItem('questionId',option.toString());
-                    sessionStorage.setItem('isShown',this.is_show.toString());
-                    sessionStorage.setItem('remainNum',this.remain.toString());
-                    sessionStorage.setItem('total',this.totalNum.toString());
-                    sessionStorage.setItem('opt',this.opt_num.toString());
-                    sessionStorage.setItem('list',this.done_list.toString());
-                    sessionStorage.setItem('optlist',this.opt_box.toString());
-                    sessionStorage.setItem('txtlist',this.txt_box.toString());
-                    sessionStorage.setItem('problist',this.prob_list.toString());
-                    sessionStorage.setItem('src',this.src);
-                    sessionStorage.setItem('id',this.id);
+                    this.num = option;
+                    this.store();
                     window.location.href = "/exercise_opt";
                 }else {
                     for(var i = 0;i < this.txt.length;i++) {
@@ -167,17 +159,7 @@
                         }
                     }
                     this.num = option;
-                    sessionStorage.setItem('questionId',option.toString());
-                    sessionStorage.setItem('isShown',this.is_show.toString());
-                    sessionStorage.setItem('remainNum',this.remain.toString());
-                    sessionStorage.setItem('total',this.totalNum.toString());
-                    sessionStorage.setItem('opt',this.opt_num.toString());
-                    sessionStorage.setItem('list',this.done_list.toString());
-                    sessionStorage.setItem('optlist',this.opt_box.toString());
-                    sessionStorage.setItem('txtlist',this.txt_box.toString());
-                    sessionStorage.setItem('problist',this.prob_list.toString());
-                    sessionStorage.setItem('src',this.src);
-                    sessionStorage.setItem('id',this.id);
+                    this.store();
                     //this.modify();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -208,13 +190,6 @@
                 });
             },
 
-            modify: function() {
-                for(var i = 1;i <= this.input_num.length;i++) {
-                    $("#text" + i + "").prop("disabled", false);
-                    $("#icon" + i + "").prop("class", "");
-                }
-            },
-
             handIn: function () {
                 if(this.remain > 1){
                     this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
@@ -242,10 +217,10 @@
                 ).then(response => {
                     console.log("problem 执行");
                     this.prob_text = response.data.prob_text;
-                    for(var i = 0;i < 3;i++) {
+                    for(var i = 0;i < response.data.blank_num;i++) {
                         this.txt.push("");
                     }
-                    this.input_num = [...Array(3).keys()];
+                    this.input_num = [...Array(response.data.blank_num).keys()];
                     // console.log("response.data.prob_text", response.data.prob_text);
                     // console.log("this.prob_text", this.prob_text);
                     this.prob_text = response.data.prob_text;
@@ -283,7 +258,10 @@
                 this.answers_list = await this.getSheet();
                 for (var i = 0; i<this.answers_list.length; i++) {
                     ans = this.answers_list[i];
-                    document.getElementById('answer_'+(this.prob_list.indexOf(ans["idx"]) + 1).toString()).src = this.chose_img_src;
+                    if(ans.finish === 1) {
+                        document.getElementById('answer_'+(this.prob_list.indexOf(ans["idx"]) + 1).toString()).src = this.chose_img_src;
+                        this.img_src[i] = this.chose_img_src;
+                    }
                 }
                 this.store();
             },
@@ -300,6 +278,7 @@
                 sessionStorage.setItem('problist',this.prob_list.toString());
                 sessionStorage.setItem('src',this.src);
                 sessionStorage.setItem('id',this.id);
+                sessionStorage.setItem('imgSrc',this.img_src);
             }
         },
 
@@ -322,6 +301,9 @@
             this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
             this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
             this.id = parseInt(sessionStorage.getItem('id'));
+            if(sessionStorage.getItem('imgSrc') !== "") {
+                this.img_src = sessionStorage.getItem('imgSrc').split(',');
+            }
             if(sessionStorage.getItem('list') !== "") {
                 this.done_list = sessionStorage.getItem('list').split(',').map(Number);
             }

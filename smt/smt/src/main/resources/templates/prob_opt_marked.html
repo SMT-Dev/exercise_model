@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <title>课课练选择题答题结果</title>
+    <title>选择题答题结果</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <link href="/css/Q1_detail.css" type="text/css" rel="stylesheet">
     <link href="/css/index.css" type="text/css" rel="stylesheet">
@@ -153,7 +153,7 @@
              },
              {
                  "idx": 10004,
-                 "choice": "b",
+                 "choice": "c",
                  "choice_text": "a",
                  "prob_text": "I want ____ toy train.",
                  "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
@@ -288,6 +288,24 @@
          ]
      });
 
+     Mock.mock('/getResultLesson?id=8888',{
+        "time":'2020-10-30 15:10:11',
+        "score|60-100":100,
+        "unhandle|1-99.1":1,
+        "easy|1-100":1,
+        "medium|1-100":1,
+        "hard|1-100":1,
+        "lesson":'LESSON'
+    });
+
+    Mock.mock('/getResultExtra?id=8888',{
+        "time":'2020-10-30 15:10:11',
+        "unhandle|1-99.1":1,
+        "easy|1-100":1,
+        "medium|1-100":1,
+        "hard|1-100":1,
+    });
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -312,6 +330,7 @@
             default_img_src: "/image/u173.svg",
             correct_img_src: "/image/u173_mouseOver.svg",
             wrong_img_src: "/image/u339.svg",
+            img_src: [],
             prob_list: [],
             opt_box: [],
             txt_box: [],
@@ -343,12 +362,15 @@
 
             again: function () {
                 sessionStorage.clear();
-                window.location.href = "/exercise_opt?src=lesson";
+                if(this.src === "ai" || this.src === "lesson")
+                    window.location.href = "/exercise_opt?src=" + this.src + "&refId=" + this.id;
+                else
+                    window.location.href = "/exercise_opt?src=wrong";
             },
 
             recommend: function () {
                 sessionStorage.clear();
-                window.location.href = "/exercise_opt?src=recomnd"
+                window.location.href = "/exercise_opt?src=recomnd?refId=" + this.id;
             },
 
             wrong: function () {
@@ -420,10 +442,13 @@
             },
 
             getSheet: function () {
-                return new Promise(resolve => {
+                return new Promise((resolve,reject) => {
                     axios.get("/getdetail?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
+                        console.log('getSheet--success');
+                    }).catch((error) => {
+                        console.log('getSheet--error');
                     });
                 })
             },
@@ -437,10 +462,13 @@
                 }else if(this.src === "lesson") {
                     mode = "Lesson";
                 }
-                return new Promise(resolve => {
+                return new Promise((resolve,reject) => {
                     axios.get("/getResult" + mode + "?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
+                        console.log('getResult--success');
+                    }).catch((error) => {
+                        console.log('getResult--error');
                     });
                 })
             },
@@ -479,11 +507,11 @@
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
                     if((cur_problem.ans.toLowerCase() === cur_problem.choice.toLowerCase()) || (cur_problem.choice_text === cur_problem.ans)) {
-                        document.getElementById('answer_' + (i + 1) + '').src = this.correct_img_src;
                         this.results_list.push(1);
+                        this.img_src.push(this.correct_img_src);
                     }else {
-                        document.getElementById('answer_' + (i + 1) + '').src = this.wrong_img_src;
                         this.results_list.push(0);
+                        this.img_src.push(this.wrong_img_src);
                     }
                     this.prob_list.push(cur_problem.idx);
                     this.ans_list.push(cur_problem.ans);
@@ -495,7 +523,6 @@
                         this.submit_list.push(cur_problem.choice);
                     }
                 }
-                console.log('1');
                 this.fetchProblem();
                 this.showResult();
                 sessionStorage.setItem('questionId',this.num.toString());
@@ -517,7 +544,6 @@
                     this.options.D = "";
                     document.getElementById('u46').style.display = "none";
                 }
-                console.log('2');
             },
 
             showResult: function () {
@@ -536,7 +562,6 @@
                     document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).src = this.correct_img_src;
                     document.getElementById('img-' + this.submit_list[this.num - 1].toLowerCase()).src = this.wrong_img_src;
                 }
-                console.log('3');
             }
         },
 

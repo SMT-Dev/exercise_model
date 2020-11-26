@@ -88,7 +88,7 @@
 
         methods: {
             Click: function (row) {
-                window.location.href = '/test_detail_opt?id=' + row.id;
+                window.location.href = '/prob_opt_marked?src=lesson&mode=detail&id=' + row.id;
             },
 
             start_test: function () {
@@ -118,8 +118,8 @@
                 this.level = res1.level;
                 this.done = res1.done;
                 this.allow_test = res1.allow_test;
-                this.week_start = res1.week.slice(0,res1.week.indexOf("-"));
-                this.week_end = res1.week.slice(res1.week.indexOf("-"));
+                this.week_start = res1.week.substr(0,1);
+                this.week_end = res1.week.substr(2);
                 if(this.done == false && this.allow_test == true) {
                     this.disable = false;
                 }else if(this.done == true) {

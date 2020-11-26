@@ -15,15 +15,15 @@
 | 获取用户当前等级 | /levelInitial || 等级(number) | `"level"` ||
 | 获取用户当前等级和上一次温故知新刷题时选择的题量 | /homepageInitial || 等级(number)<br>上次刷题题量(number) | `"level","num"` | 题量为15、20、25 |
 | 获取用户刷题结果 | /getdetail?id=xxxx(xxxx为记录编号) || 数组<br>数组元素：对象<br>对象属性：题号(num)、标准答案(string)、用户选择选项(string)、用户提交文本(string)、题目解析(string)、本题考点(string) | `"sheet_list": [{"idx": 10002, "choice": "b", "choice_text": "a", "prob_text": "I want ____ toy train.", "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B", "ans": "B", "point": "辅音音素开头"},` ||
-| 获取课课练用户刷题评价 | /getresult_lesson?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number)、对应哪节课(string) | `"res":{"time","score","unhandle","easy","medium","hard","lesson"}` | 得分范围：0-100<br>未掌握知识点比例为一位小数<br> |
+| 获取课课练用户刷题评价 | /getResultLesson?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number)、对应哪节课(string) | `"res":{"time","score","unhandle","easy","medium","hard","lesson"}` | 得分范围：0-100<br>未掌握知识点比例为一位小数<br> |
 | 发送用户登录信息 | /postLogin | `form {username,password}` | 对象 | 略 ||
 | 获取已知题号的题目 | /getProblem?num=xxxx(xxxx为题目题号) || 对象 | 略 | 返回结果包括了题目文本，选项编号等 |
 | 获取选择题的选项 | /getOptions?id=xxxx(xxxx为选项编号) || 对象 | 略 ||
-| 获取温故知新或双周测刷题用户刷题评价 | /getresult_ai?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、刷题等级(number)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number) | `"res":{"time","level","score","unhandle","easy","medium","hard"}` ||
+| 获取温故知新或双周测刷题用户刷题评价 | /getResultAi?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、刷题等级(number)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number) | `"res":{"time","level","score","unhandle","easy","medium","hard"}` ||
 | 组卷出题，获取本次刷题总题数、选择题数和本次刷题结果在数据库中的编号 | /initPaper || 总题数(number)<br>选择题题数(number)<br>本次刷题结果的编号(number) | `"total","opt","id"` ||
 | 获取已做过的题目的记录 | /getSheet || 对象 | 略 | 主要利用返回对象里的sheet_list,这包含了已经做过的题目的记录 |
 | 发送一条完成答题的记录 | /postSheet | `formData {idx,finish,choice,choice_text}` | 对象 | 略 ||
-| 获取推荐练习或错题练习用户刷题评价 | /getresult_extra?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number) | `"res":{"time","unhandle","easy","medium","hard"}` ||
+| 获取推荐练习或错题练习用户刷题评价 | /getResultExtra?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number) | `"res":{"time","unhandle","easy","medium","hard"}` ||
 | 发送用户注册申请 | /postRegister | `form: {username,password,re_password}` | 对象 | 略 ||
 | 获取双周测的所有历史记录 | /getTest || 数组<br>数组元素：对象<br>对象属性：对应哪个双周(string)、时间(string)、得分(number)、本次记录编号(number) | `"tableList":[{"name","date","score","id"}]` ||
 | 获取当前双周信息 | /testInitial || 等级(number)<br>当前双周(string)<br>是否已完成(boolean)<br>是否开放测试(boolean) | `"level","week","done","allow_test"` ||
@@ -38,29 +38,15 @@
 | history | 历史记录页面 | /history | /getTable_lesson<br>/getTable_ai<br>/levelInitial |
 | homepage | 温故知新页面(主界面) | /home | /homepageInitial<br>/postSetting |
 | include | 功能导航侧边栏 | / | / |
-| lesson_opt_detail | 课课练刷题记录详情选择题页面 | /lesson_detail_opt | /getdetail<br>/getresult_lesson?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| lesson_opt_finish | 课课练刷题结算评价选择题页面 | /lesson_finish_opt | /getdetail<br>/getresult_lesson?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| lesson_txt_detail | 课课练刷题记录详情文本题页面 | /lesson_detail_txt | /getdetail<br>/getresult_lesson?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| lesson_txt_finish | 课课练刷题结算评价文本题页面 | /lesson_finish_txt | /getdetail<br>/getresult_lesson?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
+| prob_opt_marked | 刷题记录详情选择题页面 | /prob_opt_marked | /getdetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
+| prob_txt_marked | 刷题记录详情文本题页面 | /prob_txt_marked | /getdetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | login | 用户登录页面 | /login | /postLogin |
-| practise_opt_detail | 温故知新刷题记录详情选择题页面 | /practise_detail_opt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| practise_opt_finish | 温故知新刷题结算评价选择题页面 | /practise_finish_opt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| practise_txt_detail | 温故知新刷题记录详情文本题页面 | /practise_detail_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| practise_txt_finish | 温故知新刷题结算评价文本题页面 | /practise_finish_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/postSetting<br>/getSheet<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| prob_txt | 刷题文本题页面 | /exercise_txt | /ini<br>/postSheet<br>/getSheet<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| recomnd_opt_finish | 推荐练习结算评价选择题页面 | /recomnd_finish_opt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| recomnd_txt_finish | 推荐练习结算评价文本题页面 | /recomnd_finish_txt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
+| prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/postSetting<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
+| prob_txt | 刷题文本题页面 | /exercise_txt | /ini<br>/postSheet<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | register | 用户注册页面 | /register | /postRegister |
-| test_opt_detail | 双周测刷题记录详情选择题页面 | /test_detail_opt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| test_opt_finish | 双周测刷题结算评价选择题页面 | /test_finish_opt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| test_txt_detail | 双周测刷题记录详情文本题页面 | /test_detail_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
-| test_txt_finish | 双周测刷题结算评价文本题页面 | /test_finish_txt | /getdetail<br>/getresult_ai?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | week_test | 双周测历史详情页面 | /week_test | /getTest<br>/testInitial |
 | welcome | 欢迎界面(首页) | /welcome | / |
 | wrong_problem | 错题集页面 | /wrong | /getwrong<br>/levelInitial |
-| wrong_opt_finish | 错题练习结算评价选择题页面 | /wrong_finish_opt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| wrong_txt_finish | 错题练习结算评价文本题页面 | /wrong_finish_txt | /getdetail<br>/getresult_extra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 ***
 
 ## 3. 文档 & 代码更新记录 <span id="log"></span>
@@ -77,6 +63,22 @@
 | 1 | 修改了 /getdetail 变量名，前后端统一变量名 | practise_opt_detail.html |
 | 2 | 修改了 setSheet() 判断题目正误的逻辑代码，取消 mock，转用真实接口数据 | practise_opt_detail.html |
 | 3 | 修改了 /ini 路径为 /initPaper, 将出题组卷初始化一份试卷、获取相关试卷信息的所有功能集中在 /initPaper | practise_opt_detail.html |
+
+
+### 11-26 更新说明 @李
+| 编号 | 描述 | 改动位置 |
+| :----: | :----: | :----: |
+| 1 | 合并了所有的刷题结算和刷题详情页面, | prob_opt_marked.html<br>prob_txt_marked.html |
+| 2 | 修改了一些函数的细节（后端无需关注），获取刷题评价的接口都替换为了/getResultAi、/getResultLesson、/getResultExtra | prob_opt_marked.html<br>prob_txt_marked.html |
+| 3 | 修改了“推荐练习”和“再来一轮”的实现函数<br>“再来一轮” ：如果是课课练或者温故知新需要再来一轮，则跳转url中将带有参数refId=xxxx（xxxx为本次刷题结果的id，<b>“本次”的意思是：xxxx不是推荐练习刷题结果将拥有的id</b>，而是这次课课练或者温故知新的id），根据此id找到这条刷题记录的组卷信息，从而再出一份相同组卷结构的题目/如果是错题练习，则直接再出一份错题即可（刷错题不需要参数传入）<br>“推荐练习”：推荐练习按钮点击后跳转url中也会带有参数refId=xxxx，作用与“再来一轮”中相同 | prob_opt_marked.html<br>prob_txt_marked.html |
+| 4 | 修改了刷题页面向/postSetting发送的参数<br>1.如果刷题页面url参数为src=ai&sys=smt&lev=5&probNum=20这种，就不用发送任何参数（因为在跳转到刷题页面之前已经在home页面发送过）<br>2.如果刷题页面url是src=ai&refId=xxxx，那么setting对象中src=ai，sys=xxxx<br>3.如果刷题页面url参数为src=test&week=7-8,那么setting中src=test,sys=7-8<br>4.如果刷题页面url参数为src=lesson&lev=4&lesson=8，那么sett中src=lesson，sys=8<br>5.如果刷题页面url参数为src=lesson&refId=xxxx，那么setting中src=lesson，sys=xxxx<br>6.如果刷题页面url参数为src=recomnd&refId=xxxx，那么setting中src=recomnd，sys=xxxx<br>错题练习只会让setting中src=wrong | prob_opt.html<br>prob_txt.html |
+| 5 | 修改了一些其他页面的细节（无需后端关注） | 略 |
+| 6 | 精简了很多代码 | 略 |
+| 7 | 修改了prob_txt里面显示填空输入框的细节（历史遗留问题，在获取文本题的时候，题目的对象中应当有一个number类型的属性告知本题要填几个空），在fetchProblem函数中已经暂定该属性名称为blank_num并使用 | 略 |
+遗留问题：  
+
+1.现在做题页面进入时需要刷新一次才能显示题目（下一个着手目标）  
+2.刷题时D选项如果没有，依然会显示，无法隐藏（下下个着手目标）
 
 ## 4. 代码重构计划 <span id="refactor"></span>
 （按重要性排序，伴随着解决旧问题、提出新问题而持续更新）

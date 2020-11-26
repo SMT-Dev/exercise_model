@@ -12,7 +12,7 @@
     </div>
     <div id="u3" class="num_box">
         <div v-for="index in opt_box" class="ellipse" @click="jumpProblem(index)">
-            <img :id="getId(index)" src="/image/u173.svg" class="image"/>
+            <img :id="getId(index)" :src="img_src[index-1]" class="image"/>
             <div class="ellipse_text">
                 <p><span>{{ index }}</span></p>
             </div>
@@ -23,7 +23,7 @@
     </div>
     <div id="u25" class="num_box">
         <div v-for="index in txt_box" class="ellipse" @click="jumpProblem(index)">
-            <img :id="getId(index)" src="/image/u173.svg" class="image"/>
+            <img :id="getId(index)" :src="img_src[index-1]" class="image"/>
             <div class="ellipse_text">
                 <p><span>{{ index }}</span></p>
             </div>
