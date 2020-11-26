@@ -45,115 +45,17 @@ public class ExerciseController {
         return mav;
     }
 
-    @GetMapping("/lesson_finish_opt")
-    public ModelAndView lesson_finish_opt() {
+    @GetMapping("/prob_opt_marked")
+    public ModelAndView prob_opt_marked() {
         ModelAndView mav;
-        mav = new ModelAndView("lesson_opt_finish");
+        mav = new ModelAndView("prob_opt_marked");
         return mav;
     }
 
-    @GetMapping("/lesson_finish_txt")
-    public ModelAndView lesson_finish_txt() {
+    @GetMapping("/prob_txt_marked")
+    public ModelAndView prob_txt_marked() {
         ModelAndView mav;
-        mav = new ModelAndView("lesson_txt_finish");
-        return mav;
-    }
-
-    @GetMapping("/lesson_detail_opt")
-    public ModelAndView lesson_detail_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("lesson_opt_detail");
-        return mav;
-    }
-
-    @GetMapping("/lesson_detail_txt")
-    public ModelAndView lesson_detail_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("lesson_txt_detail");
-        return mav;
-    }
-
-    @GetMapping("/test_finish_opt")
-    public ModelAndView test_finish_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("test_opt_finish");
-        return mav;
-    }
-
-    @GetMapping("/test_finish_txt")
-    public ModelAndView test_finish_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("test_txt_finish");
-        return mav;
-    }
-
-    @GetMapping("/test_detail_opt")
-    public ModelAndView test_detail_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("test_opt_detail");
-        return mav;
-    }
-
-    @GetMapping("/test_detail_txt")
-    public ModelAndView test_detail_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("test_txt_detail");
-        return mav;
-    }
-
-    @GetMapping("/practise_finish_opt")
-    public ModelAndView practise_finish_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("practise_opt_finish");
-        return mav;
-    }
-
-    @GetMapping("/practise_finish_txt")
-    public ModelAndView practise_finish_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("practise_txt_finish");
-        return mav;
-    }
-
-    @GetMapping("/practise_detail_opt")
-    public ModelAndView practise_detail_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("practise_opt_detail");
-        return mav;
-    }
-
-    @GetMapping("/practise_detail_txt")
-    public ModelAndView practise_detail_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("practise_txt_detail");
-        return mav;
-    }
-
-    @GetMapping("/wrong_finish_opt")
-    public ModelAndView wrong_finish_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("wrong_opt_finish");
-        return mav;
-    }
-
-    @GetMapping("/wrong_finish_txt")
-    public ModelAndView wrong_finish_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("wrong_txt_finish");
-        return mav;
-    }
-
-    @GetMapping("/recomnd_finish_opt")
-    public ModelAndView recomnd_finish_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("recomnd_opt_finish");
-        return mav;
-    }
-
-    @GetMapping("/recomnd_finish_txt")
-    public ModelAndView recomnd_finish_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("recomnd_txt_finish");
+        mav = new ModelAndView("prob_txt_marked");
         return mav;
     }
 

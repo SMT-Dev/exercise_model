@@ -78,7 +78,7 @@
             "name":"lesson",
             "date":"@datetime",
             "score|60-100":100,
-            "id":11111
+            "id":8888
         }]
     })
 
@@ -87,7 +87,7 @@
             "name|1":["test","practise"],
             "date":"@datetime",
             "score|60-100":100,
-            "id":11111
+            "id":8888
         }]
     })
 
@@ -106,11 +106,11 @@
         methods: {
             Click: function (row) {
                 if(row.name == 'lesson') {
-                    window.location.href = '/lesson_detail_opt?id=' + row.id;
+                    window.location.href = '/prob_opt_marked?src=lesson&mode=detail&id=' + row.id;
                 }else if(row.name == 'test') {
-                    window.location.href = '/test_detail_opt?id=' + row.id;
+                    window.location.href = '/prob_opt_marked?src=test&mode=detail&id=' + row.id;
                 }else {
-                    window.location.href = '/practise_detail_opt?id=' + row.id;
+                    window.location.href = '/prob_opt_marked?src=ai&mode=detail&id=' + row.id;
                 }
             },
 

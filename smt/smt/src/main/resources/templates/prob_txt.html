@@ -227,30 +227,12 @@
                             message: '已交卷'
                         });
                         sessionStorage.clear();
-                        if(this.src === "ai")
-                            window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                        else if(this.src === "test")
-                            window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                        else if(this.src === "lesson")
-                            window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                        else if(this.src === "wrong")
-                            window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                        else if(this.src === "recomnd")
-                            window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
+                        window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
                     })
                 }
                 else {
                     sessionStorage.clear();
-                    if(this.src === "ai")
-                        window.location.href = "/practise_finish_opt?id=" + this.id.toString();
-                    else if(this.src === "test")
-                        window.location.href = "/test_finish_opt?id=" + this.id.toString();
-                    else if(this.src === "lesson")
-                        window.location.href = "/lesson_finish_opt?id=" + this.id.toString();
-                    else if(this.src === "wrong")
-                        window.location.href = "/wrong_finish_opt?id=" + this.id.toString();
-                    else if(this.src === "recomnd")
-                        window.location.href = "/recomnd_finish_opt?id=" + this.id.toString();
+                    window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
                 }
             },
 
