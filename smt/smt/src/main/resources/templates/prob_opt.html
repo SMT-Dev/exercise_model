@@ -267,6 +267,7 @@
             setInitPaper: async function () {
                 if(this.remain === -1) {
                     var res = await this.getInitPaper();
+                    console.log(res);
                     this.totalNum = res.sheet_list.length;
                     this.prob_list = res.num_list;   //直接获取题号序列
                     this.opt_num = res.opt_num;
@@ -297,10 +298,10 @@
                 this.options.C = option.data.option_c;
                 if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
                     this.options.D = option.data.option_d;
-                    //document.getElementById('u46').style.display = "";
+                    document.getElementById('u43').style.display = "";
                 }else {
                     this.options.D = "";
-                    //document.getElementById('u46').style.display = "none";
+                    document.getElementById('u43').style.display = "none";
                 }
             },
 
@@ -349,43 +350,9 @@
                 sessionStorage.setItem('src',this.src);
                 sessionStorage.setItem('id',this.id);
                 sessionStorage.setItem('imgSrc',this.img_src);
-            }
-        },
+            },
 
-        watch: {},
-
-        created() {
-            if(localStorage.getItem('SMTusername') !== null) {
-                if(getCookie(localStorage.getItem('SMTusername')) === "") {
-                    localStorage.clear();
-                    window.location.href = '/login';
-                }
-            }else {
-                window.location.href = '/login';
-            }
-            if(sessionStorage.getItem('questionId') !== null) {
-                this.num = parseInt(sessionStorage.getItem('questionId'));
-                this.is_show = parseInt(sessionStorage.getItem('isShown'));
-                this.remain = parseInt(sessionStorage.getItem('remainNum'));
-                this.totalNum = parseInt(sessionStorage.getItem('total'));
-                this.opt_num = parseInt(sessionStorage.getItem('opt'));
-                this.src = sessionStorage.getItem('src');
-                this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
-                this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
-                this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
-                this.id = parseInt(sessionStorage.getItem('id'));
-                if(sessionStorage.getItem('imgSrc') !== "") {
-                    this.img_src = sessionStorage.getItem('imgSrc').split(',');
-                }
-                if(sessionStorage.getItem('list') !== "") {
-                    this.done_list = sessionStorage.getItem('list').split(',').map(Number);
-                }
-                if(this.is_show === 0) {
-                    document.getElementById("u1").className = "drawer2";
-                }else {
-                    document.getElementById("u1").className = "drawer1";
-                }
-            }else {
+            setParam: function () {
                 if(window.location.search.indexOf("ai",window.location.search.indexOf("src")) > -1) {
                     this.src = "ai";
                     if(window.location.search.indexOf("refId") !== -1) {
@@ -435,12 +402,53 @@
                     });
                 }
             }
-            this.setInitPaper();
+        },
+
+        watch: {},
+
+        created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
+            if(sessionStorage.getItem('questionId') !== null) {
+                this.num = parseInt(sessionStorage.getItem('questionId'));
+                this.is_show = parseInt(sessionStorage.getItem('isShown'));
+                this.remain = parseInt(sessionStorage.getItem('remainNum'));
+                this.totalNum = parseInt(sessionStorage.getItem('total'));
+                this.opt_num = parseInt(sessionStorage.getItem('opt'));
+                this.src = sessionStorage.getItem('src');
+                this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
+                this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
+                this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+                this.id = parseInt(sessionStorage.getItem('id'));
+                if(sessionStorage.getItem('imgSrc') !== "") {
+                    this.img_src = sessionStorage.getItem('imgSrc').split(',');
+                }
+                if(sessionStorage.getItem('list') !== "") {
+                    this.done_list = sessionStorage.getItem('list').split(',').map(Number);
+                }
+                if(this.is_show === 0) {
+                    document.getElementById("u1").className = "drawer2";
+                }else {
+                    document.getElementById("u1").className = "drawer1";
+                }
+            }else {
+                this.setParam();
+            }
+            this.$nextTick(() => {
+                this.setInitPaper();
+            });
+            
         },
 
         mounted() {
-                this.remember(this.num);
-                this.setSheet();
+            this.remember(this.num);
+            this.setSheet();
         },
     })
 </script>
