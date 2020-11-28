@@ -10,11 +10,11 @@
 ## 1. 前端调用API <span id="api"></span>
 | 作用 | api-url | 请求参数 | 返回值 | 返回值示例 | 备注 |
 | :----: | :----: | :---- | :----: | :---- | :---- |
-| 得到课课练的所有历史刷题记录 | /getTable_lesson || 数组<br>数组元素:对象<br>对象属性：对应哪节课(string)、完成时间(string)、得分(number)、本条记录编号(number) | `"tableList":[{"name","date","score","id"},...]` | 得分范围：0-100 |
+| 得到课课练的所有历史刷题记录 | /getHistory || 数组<br>数组元素:对象<br>对象属性：对应哪节课(string)、完成时间(string)、得分(number)、本条记录编号(number) | `"tableList":[{"name","date","score","id"},...]` | 得分范围：0-100 |
 | 得到温故知新和双周测的所有历史刷题记录 | /getTable_ai || 数组<br>数组元素:对象<br>对象属性：对应刷题名称(string)、完成时间(string)、得分(number)、本条记录编号(number) | `"tableList":[{"name","date","score","id"},...]` | 对应刷题名称中，若为双周测则表明“xx周-xx周双周测”，若为温故知新则表明“Level xx 温故知新练习”<br>得分单位：0-100 |
 | 获取用户当前等级 | /levelInitial || 等级(number) | `"level"` ||
 | 获取用户当前等级和上一次温故知新刷题时选择的题量 | /homepageInitial || 等级(number)<br>上次刷题题量(number) | `"level","num"` | 题量为15、20、25 |
-| 获取用户刷题结果 | /getdetail?id=xxxx(xxxx为记录编号) || 数组<br>数组元素：对象<br>对象属性：题号(num)、标准答案(string)、用户选择选项(string)、用户提交文本(string)、题目解析(string)、本题考点(string) | `"sheet_list": [{"idx": 10002, "choice": "b", "choice_text": "a", "prob_text": "I want ____ toy train.", "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B", "ans": "B", "point": "辅音音素开头"},` ||
+| 获取用户刷题结果 | /getJudgeDetail?id=xxxx(xxxx为记录编号) || 数组<br>数组元素：对象<br>对象属性：题号(num)、标准答案(string)、用户选择选项(string)、用户提交文本(string)、题目解析(string)、本题考点(string) | `"sheet_list": [{"idx": 10002, "choice": "b", "choice_text": "a", "prob_text": "I want ____ toy train.", "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B", "ans": "B", "point": "辅音音素开头"},` ||
 | 获取课课练用户刷题评价 | /getResultLesson?id=xxxx(xxxx为记录编号) || 对象<br>对象属性：时间(string)、得分(number)、未掌握知识点比例(number)、掌握到简单程度的知识点数量(number)、掌握到中等程度的知识点数量(number)、掌握到困难程度的知识点数量(number)、对应哪节课(string) | `"res":{"time","score","unhandle","easy","medium","hard","lesson"}` | 得分范围：0-100<br>未掌握知识点比例为一位小数<br> |
 | 发送用户登录信息 | /postLogin | `form {username,password}` | 对象 | 略 ||
 | 获取已知题号的题目 | /getProblem?num=xxxx(xxxx为题目题号) || 对象 | 略 | 返回结果包括了题目文本，选项编号等 |
@@ -27,7 +27,7 @@
 | 发送用户注册申请 | /postRegister | `form: {username,password,re_password}` | 对象 | 略 ||
 | 获取双周测的所有历史记录 | /getTest || 数组<br>数组元素：对象<br>对象属性：对应哪个双周(string)、时间(string)、得分(number)、本次记录编号(number) | `"tableList":[{"name","date","score","id"}]` ||
 | 获取当前双周信息 | /testInitial || 等级(number)<br>当前双周(string)<br>是否已完成(boolean)<br>是否开放测试(boolean) | `"level","week","done","allow_test"` ||
-| 获取所有错题记录 | /getwrong || 数组<br>数组元素：对象<br>对象属性：题目文本(string)、题目类型(string)、题目选项(string)、用户提交答案(string)、正确答案(string)、题目解析(string)、考点(string) | `"wrong_prob":[{"prob_text","prob_type","options","user_ans","correct_ans","analysis","point"}]` ||
+| 获取所有错题记录 | /getWrong || 数组<br>数组元素：对象<br>对象属性：题目文本(string)、题目类型(string)、题目选项(string)、用户提交答案(string)、正确答案(string)、题目解析(string)、考点(string) | `"wrong_prob":[{"prob_text","prob_type","options","user_ans","correct_ans","analysis","point"}]` ||
 | 发送刷题信息以供后端组卷 | /postSetting | `formData {src,sys,lev,probNum}` | 对象 | 略 | 温故知新模块发送时，会提供出题体系、所选等级、所选题量信息<br>其他模块发送时这三个信息都为0或者空字符串（因其他模块出题时无需这些信息） |
 ***
 
@@ -38,15 +38,15 @@
 | history | 历史记录页面 | /history | /getTable_lesson<br>/getTable_ai<br>/levelInitial |
 | homepage | 温故知新页面(主界面) | /home | /homepageInitial<br>/postSetting |
 | include | 功能导航侧边栏 | / | / |
-| prob_opt_marked | 刷题记录详情选择题页面 | /prob_opt_marked | /getdetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| prob_txt_marked | 刷题记录详情文本题页面 | /prob_txt_marked | /getdetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
+| prob_opt_marked | 刷题记录详情选择题页面 | /prob_opt_marked | /getJudgeDetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
+| prob_txt_marked | 刷题记录详情文本题页面 | /prob_txt_marked | /get<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | login | 用户登录页面 | /login | /postLogin |
 | prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/postSetting<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | prob_txt | 刷题文本题页面 | /exercise_txt | /ini<br>/postSheet<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | register | 用户注册页面 | /register | /postRegister |
 | week_test | 双周测历史详情页面 | /week_test | /getTest<br>/testInitial |
 | welcome | 欢迎界面(首页) | /welcome | / |
-| wrong_problem | 错题集页面 | /wrong | /getwrong<br>/levelInitial |
+| wrong | 错题集页面 | /wrong | /get<br>/levelInitial |
 ***
 
 ## 3. 文档 & 代码更新记录 <span id="log"></span>
@@ -60,7 +60,7 @@
 ### 11-22 ~ 11-25 更新说明 @许
 | 编号 | 描述 | 改动位置 |
 | :----: | :----: | :----: |
-| 1 | 修改了 /getdetail 变量名，前后端统一变量名 | practise_opt_detail.html |
+| 1 | 修改了 /getJudgeDetail 变量名，前后端统一变量名 | practise_opt_detail.html |
 | 2 | 修改了 setSheet() 判断题目正误的逻辑代码，取消 mock，转用真实接口数据 | practise_opt_detail.html |
 | 3 | 修改了 /ini 路径为 /initPaper, 将出题组卷初始化一份试卷、获取相关试卷信息的所有功能集中在 /initPaper | practise_opt_detail.html |
 
@@ -83,13 +83,8 @@
 ## 4. 代码重构计划 <span id="refactor"></span>
 （按重要性排序，伴随着解决旧问题、提出新问题而持续更新）
 ### 1. 页面结构大部分相同的 html 应该兼并为一个 html
-![](http://qkaz4czp3.hn-bkt.clouddn.com/Snip20201124_200205.png)
-1. 总体目标
+合并html ✅
 上图中标红线的 html，最后应合并为 2 个 html， 即选择题和文本题，命名为 `prob_opt_marked.html` 和 `prob_txt_marked.html`
-2. vue-data 重构
-通过 vue-data 参数化的方式，实现页面的 detail `or` finish，以及 lesson `or` practice `or` recommend `or` wrong 的细分功能
-3. ExerciseController 中 map 函数重构
-通过 map 函数传递的参数，能够清晰地映射到以上 2 个 html 及其对应的细分功能
 
 ### 2. js 代码 clean
 1. 命名规则
@@ -99,7 +94,7 @@
 - 动词开头，驼峰，最好和调用 api 的函数同名或相近命名，比如 `getresult_ai` -> `/getResultAi`，对应js 函数 `getResult: function () `。
 进一步贴近业务“获取刷题评价”，避免混淆，`/getResultAi` -> `/getCommentAi`
 进一步参数化解耦，`/getCommentAi` -> `/getComment?src=ai`
-- 因为 api 后面会很多，所以最好能够体现具体业务细节以免混淆, 名字长点没关系，比如 “获取用户刷题结果” `/getdetail?id=` -> `/getJudgeDetail?id=`
+- 因为 api 后面会很多，所以最好能够体现具体业务细节以免混淆, 名字长点没关系，比如 “获取用户刷题结果” `/getJudgeDetail?id=` -> `/getJudgeDetail?id=`
 - #### HTML-url:
 - 小写，下划线分开所有单词，比如 `prob_txt_marked.html`
 - html 文件名最好和 url 同名，比如 `prob_txt_marked.html` 就对应 `127.0.0.1/prob_txt_marked`
@@ -130,7 +125,7 @@
 - 目前的做题判题三大主要 API：
 `/initPaper` 出题组卷，得到题目编号数组 num_list 和对应的未作答的初始化 sheet_list （每次都会调用一次组卷算法，因此一次练习只能调用一次）,返回 java 中的 SheetTemp 全局变量
 `/getSheet` 任何情况下、无状态地、即时地 获取 java 中的 SheetTemp 全局变量
-`/getdetail`(将要改为`/getJudgeDetail`) 在结果页面调用一次，也是获取获取 java 中的 SheetTemp 全局变量
+`/getJudgeDetail` 在结果页面调用一次，也是获取获取 java 中的 SheetTemp 全局变量
 - 其它 API 可以用 postman 测试：
 
 以上 3 个 api 返回的 SheetTemp 数据格式如下：

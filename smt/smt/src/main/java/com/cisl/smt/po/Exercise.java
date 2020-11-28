@@ -1,7 +1,6 @@
 package com.cisl.smt.po;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "t_exercise")
@@ -13,10 +12,8 @@ public class Exercise {
 
     private String exercise_attr;
     private String prob_list;
-    private Long point_id;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date update_time;
+    private Long grammar_id;
+    private String update_time;
 
     public Exercise() {};
 
@@ -32,13 +29,14 @@ public class Exercise {
         return prob_list;
     }
 
-    public Long getPoint_id() {
-        return point_id;
+    public Long getGrammar_id() {
+        return grammar_id;
     }
 
-    public Date getUpdate_time() {
-        return update_time;
+    public void setGrammar_id(Long grammar_id) {
+        this.grammar_id = grammar_id;
     }
+
 
     public void setExercise_id(Long exercise_id) {
         this.exercise_id = exercise_id;
@@ -52,11 +50,11 @@ public class Exercise {
         this.prob_list = prob_list;
     }
 
-    public void setPoint_id(Long point_id) {
-        this.point_id = point_id;
+    public String getUpdate_time() {
+        return update_time;
     }
 
-    public void setUpdate_time(Date update_time) {
+    public void setUpdate_time(String update_time) {
         this.update_time = update_time;
     }
 
@@ -66,7 +64,7 @@ public class Exercise {
                 "exercise_id=" + exercise_id +
                 ", exercise_attr='" + exercise_attr + '\'' +
                 ", prob_list='" + prob_list + '\'' +
-                ", point_id=" + point_id +
+                ", grammar_id=" + grammar_id +
                 ", update_time=" + update_time +
                 '}';
     }
