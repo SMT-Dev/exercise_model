@@ -1,7 +1,6 @@
 package com.cisl.smt.po;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "t_rev_collec")
@@ -12,11 +11,7 @@ public class ReviewCollection {
     private Long rev_collec_id;
 
     private Long user_id;
-    private String prob_list;
     private String prob_eval_list;
-
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date update_time;
 
     public ReviewCollection() {};
 
@@ -36,14 +31,6 @@ public class ReviewCollection {
         this.user_id = user_id;
     }
 
-    public String getProb_list() {
-        return prob_list;
-    }
-
-    public void setProb_list(String prob_list) {
-        this.prob_list = prob_list;
-    }
-
     public String getProb_eval_list() {
         return prob_eval_list;
     }
@@ -52,22 +39,12 @@ public class ReviewCollection {
         this.prob_eval_list = prob_eval_list;
     }
 
-    public Date getUpdate_time() {
-        return update_time;
-    }
-
-    public void setUpdate_time(Date update_time) {
-        this.update_time = update_time;
-    }
-
     @Override
     public String toString() {
         return "ReviewCollection{" +
                 "rev_collec_id=" + rev_collec_id +
                 ", user_id=" + user_id +
-                ", prob_list='" + prob_list + '\'' +
                 ", prob_eval_list='" + prob_eval_list + '\'' +
-                ", update_time=" + update_time +
                 '}';
     }
 }

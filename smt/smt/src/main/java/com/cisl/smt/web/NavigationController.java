@@ -27,7 +27,7 @@ public class NavigationController {
 
     @GetMapping("/wrong")
     public ModelAndView wrong(){
-        ModelAndView modelAndView = new ModelAndView("wrong_problem");
+        ModelAndView modelAndView = new ModelAndView("wrong");
         return modelAndView;
     }
 

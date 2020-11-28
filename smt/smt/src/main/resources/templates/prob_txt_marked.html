@@ -84,7 +84,7 @@
         return "";
     }
 
-    Mock.mock('/getdetail?id=8888', {
+    Mock.mock('/getJudgeDetail?id=8888', {
         "opt_num":17,
          "sheet_list": [
              {
@@ -419,7 +419,7 @@
 
             getSheet: function () {
                 return new Promise(resolve => {
-                    axios.get("/getdetail?id=" + this.id
+                    axios.get("/getJudgeDetail?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
                     });
