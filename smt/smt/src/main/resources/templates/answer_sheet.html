@@ -2,15 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
-    <link href="/css/Q1.css" type="text/css" rel="stylesheet">
+    <link href="/css/exercise.css" type="text/css" rel="stylesheet">
     <title>sheet</title>
 </head>
 <body>
-<div id="u1" class="drawer1" th:fragment="sheet">
-    <div id="u2">
+<div id="drawer" class="drawer1" th:fragment="sheet">
+    <div id="drawer_opt_text">
         <p class="text"><span>单选题</span></p>
     </div>
-    <div id="u3" class="num_box">
+    <div id="drawer_opt_button" class="num_box">
         <div v-for="index in opt_box" class="ellipse" @click="jumpProblem(index)">
             <img :id="getId(index)" :src="img_src[index-1]" class="image"/>
             <div class="ellipse_text">
@@ -18,10 +18,10 @@
             </div>
         </div>
     </div>
-    <div id="u24">
-        <p class="text"><span>句子改写题</span></p>
+    <div id="drawer_txt_text">
+        <p class="text"><span>文本题</span></p>
     </div>
-    <div id="u25" class="num_box">
+    <div id="drawer_txt_button" class="num_box">
         <div v-for="index in txt_box" class="ellipse" @click="jumpProblem(index)">
             <img :id="getId(index)" :src="img_src[index-1]" class="image"/>
             <div class="ellipse_text">

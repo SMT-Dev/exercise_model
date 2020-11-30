@@ -3,7 +3,7 @@
 <head>
     <title>选择题答题界面</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link href="/css/Q1.css" type="text/css" rel="stylesheet">
+    <link href="/css/exercise.css" type="text/css" rel="stylesheet">
     <link href="/css/index.css" type="text/css" rel="stylesheet">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
@@ -14,70 +14,70 @@
 <body>
 <div id="app" v-cloak>
     <div th:replace="answer_sheet::sheet"></div>
-    <div id="u27">
-        <button type="button" class="white_button" @click="drawer">答题卡</button>
+    <div id="answer_sheet_button">
+        <button type="button" class="white_button" @click="controlDrawer">答题卡</button>
     </div>
-    <div id="u28">
+    <div id="finish_button">
         <button type="button" class="white_button" @click="handIn">交 卷</button>
     </div>
-    <div id="u29" class="q_box">
-        <div id="u30">
-            <div id="u31">
+    <div id="question_box" class="q_box">
+        <div id="question_card">
+            <div id="question_num">
                 <p><span>题号： {{ num }} / {{ totalNum }}</span></p>
             </div>
-            <div id="u32">
+            <div id="question_type">
                 <p><span>单选题</span></p>
             </div>
-            <div id="u33">
+            <div id="question_text">
                 <p><span>(&nbsp;&nbsp;&nbsp;&nbsp;) {{ prob_text }}</span></p>
             </div>
 
-            <div id="u34" class="option">
+            <div id="option_A" class="option">
                 <div id="choice-a" @click="chooseOption('a')">
                     <img id="img-a" src="/image/u173.svg" class="option_img"/>
-                    <div id="u34_text" class="option_text">
+                    <div id="a_text" class="option_text">
                         <p class="choice"><span>A</span></p>
                     </div>
                 </div>
-                <div id="u34_option">
+                <div id="question_a_text">
                     <p class="choice"><span>{{ options.A }}</span></p>
                 </div>
             </div>
-            <div id="u35" class="option">
+            <div id="option_B" class="option">
                 <div id="choice-b" @click="chooseOption('b')">
                     <img id="img-b" src="/image/u173.svg" class="option_img"/>
-                    <div id="u35_text" class="option_text">
+                    <div id="b_text" class="option_text">
                         <p class="choice"><span>B</span></p>
                     </div>
                 </div>
-                <div id="u35_option">
+                <div id="question_b_text">
                     <p class="choice"><span>{{ options.B }}</span></p>
                 </div>
             </div>
-            <div id="u36" class="option">
+            <div id="option_C" class="option">
                 <div id="choice-c" @click="chooseOption('c')">
                     <img id="img-c" src="/image/u173.svg" class="option_img"/>
-                    <div id="u36_text" class="option_text">
+                    <div id="c_text" class="option_text">
                         <p class="choice"><span>C</span></p>
                     </div>
                 </div>
-                <div id="u36_option">
+                <div id="question_c_text">
                     <p class="choice"><span>{{ options.C }}</span></p>
                 </div>
             </div>
-            <div id="u43" class="option">
+            <div id="option_D" class="option">
                 <div id="choice-d" @click="chooseOption('d')">
                     <img id="img-d" src="/image/u173.svg" class="option_img"/>
-                    <div id="u43_text" class="option_text">
+                    <div id="d_text" class="option_text">
                         <p class="choice"><span>D</span></p>
                     </div>
                 </div>
-                <div id="u43_option">
+                <div id="question_d_text">
                     <p class="choice"><span>{{ options.D }}</span></p>
                 </div>
             </div>
         </div>
-        <div id="u37">
+        <div id="next_button">
             <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
         </div>
     </div>
@@ -136,6 +136,7 @@
         },
         methods: {
             chooseOption: function (option) {
+                this.refreshAnswer();
                 document.getElementById('img-' + option).src = this.chose_img_src;
                 this.formData.choice = option;
                 if (option === 'a') {
@@ -162,12 +163,12 @@
                 );
             },
 
-            drawer: function () {
+            controlDrawer: function () {
                 if(this.is_show === 1) {
-                    $("#u1").animate({right:"-260px"});
+                    $("#drawer").animate({right:"-260px"});
                     this.is_show = 0;
                 }else {
-                    $("#u1").animate({right:"0px"});
+                    $("#drawer").animate({right:"0px"});
                     this.is_show = 1;
                 }
             },
@@ -292,10 +293,10 @@
                 this.options.C = option.data.option_c;
                 if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
                     this.options.D = option.data.option_d;
-                    document.getElementById('u43').style.display = "";
+                    document.getElementById('option_D').style.display = "";
                 }else {
                     this.options.D = "";
-                    document.getElementById('u43').style.display = "none";
+                    document.getElementById('option_D').style.display = "none";
                 }
             },
 
@@ -430,9 +431,9 @@
                     this.done_list = sessionStorage.getItem('list').split(',').map(Number);
                 }
                 if(this.is_show === 0) {
-                    document.getElementById("u1").className = "drawer2";
+                    document.getElementById("drawer").className = "drawer2";
                 }else {
-                    document.getElementById("u1").className = "drawer1";
+                    document.getElementById("drawer").className = "drawer1";
                 }
             }else {   // 未在刷题状态，设置新的 param
                 console.log("未在刷题状态，设置新的 param");

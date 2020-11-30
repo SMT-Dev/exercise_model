@@ -14,7 +14,7 @@ ul {
     padding: 15px;
 }
 
-#u2 a {
+#sidebar a {
     display: block;
     color: black;
     background-color: white;
@@ -25,7 +25,7 @@ ul {
     text-decoration: none;
 }
 
-#u3 {
+#mod_name {
     color: black;
     position: absolute;
     width: 160px;
@@ -37,7 +37,7 @@ ul {
     font-weight: bold;
 }
 
-#u4 {
+#lev_info {
     color: black;
     position: absolute;
     top: 76px;
@@ -46,7 +46,7 @@ ul {
     font-size: 18px;
 }
 
-#u5 {
+#information {
     color: black;
     position: absolute;
     top: 170px;
@@ -55,7 +55,7 @@ ul {
     font-size: 20px;
 }
 
-#u6 {
+#history {
     position: absolute;
     top: 350px;
     left: 240px;

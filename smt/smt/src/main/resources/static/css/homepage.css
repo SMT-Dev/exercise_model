@@ -14,7 +14,7 @@ ul {
     padding: 15px;
 }
 
-#u2 a {
+#sidebar a {
     display: block;
     color: black;
     background-color: white;
@@ -25,7 +25,7 @@ ul {
     text-decoration: none;
 }
 
-#u3 {
+#mod_name {
     color: black;
     position: absolute;
     width: 160px;
@@ -37,7 +37,7 @@ ul {
     font-weight: bold;
 }
 
-#u4 {
+#lev_info {
     color: black;
     position: absolute;
     top: 75px;
@@ -46,7 +46,7 @@ ul {
     font-size: 18px;
 }
 
-#u5 {
+#choose1 {
     color: black;
     position: absolute;
     top: 170px;
@@ -55,12 +55,12 @@ ul {
     font-size: 20px;
 }
 
-#u6 {
+#choose_sys {
     position: absolute;
     left: 240px;
     top: 240px;
 }
-#u9 {
+#choose2 {
     color: black;
     position: absolute;
     top: 280px;
@@ -69,7 +69,7 @@ ul {
     font-size: 20px;
 }
 
-#u10 {
+#choose_lev {
     position: absolute;
     top: 350px;
     left: 240px;
@@ -77,14 +77,14 @@ ul {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#u12 {
+#choose_num {
     position: absolute;
     left: 240px;
     top: 480px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#u25 {
+#choose3 {
     color: black;
     position: absolute;
     top: 410px;
@@ -92,14 +92,14 @@ ul {
     width: 80px;
     font-size: 20px;
 }
-#u29 {
+#start {
     position: absolute;
     top: 540px;
     width: 100%;
     text-align: center;
 }
 
-#u29_button {
+#start_button {
     height: 60px;
     width: 120px;
     background-color: rgba(36, 151, 218, 0.774);

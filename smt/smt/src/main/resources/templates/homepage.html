@@ -15,23 +15,23 @@
 </div>
 <el-container>
     <div id="app">
-        <div id="u3" class="module_name">
+        <div id="mod_name" class="module_name">
             <p><span>温故知新</span></p>
         </div>
-        <div id="u4" class="level_info">
+        <div id="lev_info" class="level_info">
             <p><span>当前等级</span><br><span>SMT Lev.{{ level }}</span></p>
         </div>
-        <div id="u5" class="">
+        <div id="choose1" class="">
             <p><span>选择知识体系</span></p>
         </div>
-        <div id="u6" class="option">
+        <div id="choose_sys" class="option">
             <el-radio v-model="choice" label="smt" border>SMT课程体系</el-radio>
             <el-radio v-model="choice" label="school" border>学校课程体系</el-radio>
         </div>
-        <div id="u9" class="">
+        <div id="choose2" class="">
             <p><span>选择级别</span></p>
         </div>
-        <div id="u10" class="">
+        <div id="choose_lev" class="">
             <el-slider
               v-model="chosen_level"
               :step="20"
@@ -40,16 +40,16 @@
               show-stops>
             </el-slider>
         </div>
-        <div id="u25" class="">
+        <div id="choose3" class="">
             <p><span>选择题量</span></p>
         </div>
-        <div id="u12" class="option">
+        <div id="choose_num" class="option">
             <el-radio v-model="prob_num" :label="15" border>15</el-radio>
             <el-radio v-model="prob_num" :label="20" border>20</el-radio>
             <el-radio v-model="prob_num" :label="25" border>25</el-radio>
         </div>
-        <div id="u29" class="start_button">
-            <button type="button" id="u29_button" @click="beginExercise">开始刷题</button>
+        <div id="start">
+            <button type="button" id="start_button" @click="beginExercise">开始刷题</button>
         </div>
     </div>
 </el-container>

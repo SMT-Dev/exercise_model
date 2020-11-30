@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <title>非选择题答题结果</title>
+    <title>文本题答题结果</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link href="/css/Q1_detail.css" type="text/css" rel="stylesheet">
+    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet">
     <link href="/css/index.css" type="text/css" rel="stylesheet">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
@@ -14,27 +14,27 @@
 <body>
 <div id="app">
     <div th:replace="answer_sheet::sheet"></div>
-    <div id="u27">
-        <button type="button" class="white_button" @click="drawer">答题卡</button>
+    <div id="answer_sheet_button">
+        <button type="button" class="white_button" @click="controlDrawer">答题卡</button>
     </div>
-    <div id="u28">
+    <div id="score_area">
         <p class="showScore"><span>分数：{{ score }}</span></p>
     </div>
-    <div id="u29" class="q_box">
-        <div id="u30">
-            <div id="u31">
+    <div id="question_box" class="q_box">
+        <div id="question_card">
+            <div id="question_num">
                 <p><span>题号： {{ num }} / {{ totalNum }}&nbsp;&nbsp;考点： {{ point_list[num - 1] }} </span></p>
-                <div id="u31_result">
+                <div id="question_result">
                     <p><span>{{ is_correct }}</span></p>
                 </div>
             </div>
-            <div id="u32">
-                <p><span>句子改写题</span></p>
+            <div id="question_type">
+                <p><span>文本题</span></p>
             </div>
-            <div id="u33">
+            <div id="question_text">
                 <p><span>{{ prob_text }}</span></p>
             </div>
-            <div id="u34">
+            <div id="input_box">
                 <div v-for="input in input_num">
                     <el-input v-model=txt[input] :id="getIndex(input)" :disabled="true" prefix-icon="">
                     </el-input>
@@ -43,26 +43,26 @@
                 </div>
             </div>
         </div>
-        <div id="u37">
+        <div id="next_button">
             <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
         </div>
-        <div id="u39">
+        <div id="analysis_area">
             <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
         </div>
     </div>
-    <div id="u38">
+    <div id="result_area">
         <p><span>时间：{{ time }}<br>已掌握{{ easy }}个知识点到简单程度/{{ medium }}个知识点到中等程度/{{ hard }}个知识点到困难程度<br>未掌握知识点比例：{{ unhandle }}%</span></p>
     </div>
-    <div id="u42">
+    <div id="back_button">
         <el-page-header @back="goBack" :content="getBackContent()"></el-page-header>
     </div>
-    <div id="u43">
+    <div id="again_button">
         <el-button type="primary" round @click="again">再来一轮</el-button>
     </div>
-    <div id="u44">
+    <div id="recomnd_button">
         <el-button type="primary" round @click="recommend">推荐练习</el-button>
     </div>
-    <div id="u45">
+    <div id="wrong_button">
         <el-button type="primary" round @click="wrong">错题练习</el-button>
     </div>
 </div>
@@ -165,6 +165,16 @@
                 window.location.href = "/exercise_opt?src=wrong";
             },
 
+            controlDrawer: function () {
+                if(this.is_show == 1) {
+                    $("#drawer").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#drawer").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
             nextProblem: function () {
                 if(this.num < this.totalNum){
                     this.num += 1;
@@ -180,16 +190,6 @@
                         type: 'info',
                         message: '已经是最后一题了'
                     });
-                }
-            },
-
-            drawer: function () {
-                if(this.is_show === 1) {
-                    $("#u1").animate({right:"-260px"});
-                    this.is_show = 0;
-                }else {
-                    $("#u1").animate({right:"0px"});
-                    this.is_show = 1;
                 }
             },
 
@@ -216,14 +216,13 @@
                 });
             },
 
-            fetchProblem: async function () {
-                var sheet = await this.getSheet();
-                this.prob_list = sheet.num_list;
+            fetchProblem: function () {
                 // console.log("正在 fetch 题目", this.prob_list[this.num-1]);
                 this.txt = [];
                 axios.get("/getProblem?num="+this.prob_list[this.num-1].toString()
                 ).then(response => {
                     this.prob_text = response.data.prob_text;
+                    //2应该替换成response.data.blank_num
                     for(var i = 0;i < 2;i++) {
                         this.txt.push("");
                     }
@@ -291,7 +290,6 @@
                 this.easy = result.easy;
                 this.medium = result.medium;
                 this.hard = result.hard;
-                this.prob_list = sheet.num_list;
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
                     if(cur_problem.eval_res === 1) {   // 正确
@@ -324,19 +322,19 @@
 
                 if(subText === null){
                     this.is_correct = '未做';
-                    document.getElementById('u31_result').style.backgroundColor = "crimson";
+                    document.getElementById('question_result').style.backgroundColor = "crimson";
                 } else {
                     this.txt = subText.split("\n");
                     if(this.results_list[this.num - 1] === 1) {
                         this.is_correct = '正确';
-                        document.getElementById('u31_result').style.backgroundColor = "lightskyblue";
+                        document.getElementById('question_result').style.backgroundColor = "lightskyblue";
                         for(var i = 1;i <= this.input_num.length;i++) {
                             $("#icon" + i + "").prop("class", "el-icon-success");
                         }
                     }
                     else {
                         this.is_correct = '错误';
-                        document.getElementById('u31_result').style.backgroundColor = "crimson";
+                        document.getElementById('question_result').style.backgroundColor = "crimson";
                         for(var i = 1;i <= this.input_num.length;i++) {
                             if(this.txt[i - 1] === this.correct_txt[i - 1]) {
                                 $("#icon" + i + "").prop("class", "el-icon-success");
@@ -359,27 +357,30 @@
                 window.location.href = '/login';
             }
             if(window.location.search.indexOf('detail') > -1) {
-                document.getElementById('u43').style.display = "none";
-                document.getElementById('u44').style.display = "none";
-                document.getElementById('u45').style.display = "none";
+                document.getElementById('again_button').style.display = "none";
+                document.getElementById('recomnd_button').style.display = "none";
+                document.getElementById('wrong_button').style.display = "none";
             }else if(window.location.search.indexOf('finish') > -1) {
                 if(window.location.search.indexOf('test') > -1) {
-                    document.getElementById('u43').style.display = "none";
+                    document.getElementById('again_button').style.display = "none";
                 }else if(window.location.search.indexOf('recomnd') > -1) {
-                    document.getElementById('u43').style.display = "none";
-                    document.getElementById('u44').style.display = "none";
+                    document.getElementById('again_button').style.display = "none";
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
                 }else if(window.location.search.indexOf('wrong') > -1) {
-                    document.getElementById('u44').style.display = "none";
-                    document.getElementById('u45').style.display = "none";
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('wrong_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
                 }
             }
             this.num = parseInt(sessionStorage.getItem('questionId'));
             this.is_show = parseInt(sessionStorage.getItem('isShown'));
-            // this.prob_list = sessionStorage.getItem('problist').split(',').map(Number); 取消不用
+            //这里不要试图让txt页面请求getSheet来获取prob_list，会导致用户提交答案无法显示
+            this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
             if(this.is_show === 0) {
-                document.getElementById("u1").className = "drawer2";
+                document.getElementById("drawer").className = "drawer2";
             }else {
-                document.getElementById("u1").className = "drawer1";
+                document.getElementById("drawer").className = "drawer1";
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
             this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));
@@ -388,8 +389,8 @@
         mounted() {
             // 一加载就更新答题卡
             this.$nextTick(() => {
-                this.setSheet();
                 this.fetchProblem();
+                this.setSheet();
             });
         }
     })

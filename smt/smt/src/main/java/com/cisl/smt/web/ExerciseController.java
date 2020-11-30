@@ -443,12 +443,12 @@ public class ExerciseController {
         return settingTemp;
     }
 
-    @GetMapping(path = "getResultAi")
+    @GetMapping(path = "/getResultAi")
     public ResultTemp getResultAi(@RequestParam() Long id) {
         return resultTemp;
     }
 
-    @GetMapping(path = "homepageInitial")
+    @GetMapping(path = "/homepageInitial")
     public HashMap<String, Integer> homepageInitial(){
         // 主页初始化操作
         HashMap<String, Integer> map = new HashMap<String, Integer>();
@@ -457,7 +457,7 @@ public class ExerciseController {
         return map;
     }
 
-    @GetMapping(path = "getHistory")
+    @GetMapping(path = "/getHistory")
     public List<ExerciseEvaluation> getHistory() {
         // TODO 加上参数用户 id
         return exerciseEvalService.getExerciseEval(USER_ID);
@@ -476,7 +476,7 @@ public class ExerciseController {
         return ret;
     }
 
-    @GetMapping(path = "getWrong")
+    @GetMapping(path = "/getWrong")
     public ArrayList<ProblemEvaluation> getWrong() {
         // TODO String 转 List 专门做一个函数
         ArrayList<ProblemEvaluation> wrongList = new ArrayList<>();

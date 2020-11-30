@@ -14,18 +14,18 @@
 <body>
 <div th:replace="include::sidebar"></div>
 <div id="app">
-    <div id="u3" class="module_name">
+    <div id="mod_name" class="module_name">
         <p><span>双周测</span></p>
     </div>
-    <div id="u4" class="level_info">
+    <div id="lev_info" class="level_info">
         <p><span>当前等级</span><br><span>SMT Lev.{{ level }}</span></p>
     </div>
-    <div id="u5" class="">
+    <div id="information" class="">
         <p><span>当前双周：No.{{ week_start }} - No.{{ week_end }} 周</span></p>
         <p id="tip"><span></span></p>
         <el-button type="primary" :disabled="disable" @click="start_test">开始测试</el-button>
     </div>
-    <div id="u6" class="table">
+    <div id="history" class="table">
         <template>
             <el-table :data="tableData" height="300" stripe border style="width: 100%">
                 <el-table-column prop="name" label="练习" width="150"></el-table-column>

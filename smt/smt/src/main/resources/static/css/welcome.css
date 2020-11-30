@@ -12,27 +12,27 @@ p {
     text-align: center;
 }
 
-#u0 {
+#head {
     margin-top: 80px;
     font-weight: 650;
     font-size: 3.5em;
     font-family: 'Times New Roman', Times, serif;
 }
 
-#u1 {
+#slogan {
     margin-top: 30px;
     font-weight: 600;
     font-size: 2em;
 }
 
-#u2 {
+#ellipse_box {
     position: relative;
     width: 700px;
     height: 150px;
     margin: 20px auto;
 }
 
-#u3,#u4,#u5,#u6 {
+#ellipse1,#ellipse2,#ellipse3,#ellipse4 {
     border-width:0px;
     position:absolute;
     width:87px;
@@ -41,23 +41,23 @@ p {
     display:flex;
 }
 
-#u3 {
+#ellipse1 {
     left:70.4px;
 }
 
-#u4 {
+#ellipse2 {
     left:227.8px;
 }
 
-#u5 {
+#ellipse3 {
     left:385.2px;
 }
 
-#u6 {
+#ellipse4 {
     left:542.6px;
 }
 
-#u3_text,#u4_text,#u5_text,#u6_text {
+#ellipse_text1,#ellipse_text2,#ellipse_text3,#ellipse_text4 {
     position:absolute;
     align-self:center;
     text-align: center;
@@ -66,14 +66,14 @@ p {
     width:100%;
 }
 
-#u7 {
+#function_box {
     position: relative;
     width: 700px;
     height: 100px;
     margin: 20px auto;
 }
 
-#u8_button,#u9_button,#u10_button {
+#func_button1,#func_button2,#func_button3 {
     height: 50px;
     width: 110px;
     top: 20px;
@@ -91,31 +91,31 @@ p {
     outline: none;
 }
 
-#u8_button:hover,#u9_button:hover,#u10_button:hover {
+#func_button1:hover,#func_button2:hover,#func_button3:hover {
     background-color:rgb(229, 247, 253);
 }
 
-#u8_button:active,#u9_button:active,#u10_button:active {
+#func_button1:active,#func_button2:active,#func_button3:active {
     background-color: rgb(218, 243, 252);
 }
 
-#u8_button {
+#func_button1 {
     left: 120px;
 }
 
-#u9_button {
+#func_button2 {
     left: 295px;
 }
 
-#u10_button {
+#func_button3 {
     left: 470px;
 }
 
-#u11 {
+#stu_login {
     text-align: center;
 }
 
-#u11_button {
+#stu_login_button {
     height: 70px;
     width: 130px;
     background-color: rgba(36, 151, 218, 0.774);
@@ -130,12 +130,12 @@ p {
     outline: none;
 }
 
-#u11_button:hover {
+#stu_login_button:hover {
     background-color: rgba(36, 151, 218, 0.397);
     border: 2px solid black;
 }
 
-#u11_button:active {
+#stu_login_button:active {
     background-color: rgba(36, 151, 218, 0.486);
     border: 2px solid black;
 }

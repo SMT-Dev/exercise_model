@@ -14,13 +14,13 @@
 <body>
 <div th:replace="include::sidebar"></div>
 <div id="app">
-    <div id="u3" class="module_name">
+    <div id="mod_name" class="module_name">
         <p><span>错题集</span></p>
     </div>
-    <div id="u4" class="level_info">
+    <div id="lev_info" class="level_info">
         <p><span>当前等级</span><br><span>SMT Lev.{{ level }}</span></p>
     </div>
-    <div id="u5" class="">
+    <div id="wrong_probs" class="">
         <el-button type="primary" @click="start_wrong">进入错题练习</el-button>
         <div v-for="prob in prob_list" class="question">
             <p><span class="highlight">{{ prob.type }}</span></p>

@@ -14,7 +14,7 @@ ul {
     padding: 15px;
 }
 
-#u2 a {
+#sidebar a {
     display: block;
     color: black;
     background-color: white;
@@ -25,7 +25,7 @@ ul {
     text-decoration: none;
 }
 
-#u3 {
+#mod_name {
     color: black;
     position: absolute;
     width: 160px;
@@ -37,7 +37,7 @@ ul {
     font-weight: bold;
 }
 
-#u4 {
+#lev_info {
     color: black;
     position: absolute;
     top: 76px;
@@ -46,7 +46,7 @@ ul {
     font-size: 18px;
 }
 
-#u5, #u7 {
+#part_name1, #part_name2 {
     color: black;
     position: absolute;
     top: 170px;
@@ -54,25 +54,25 @@ ul {
     font-size: 20px;
 }
 
-#u5 {
+#part_name1 {
     left: 240px;
 }
 
-#u7 {
+#part_name2 {
     left: 800px;
 }
 
-#u6, #u8 {
+#part1, #part2 {
     position: absolute;
     top: 260px;
     text-align: center;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-#u6 {
+#part1 {
     left: 240px;
 }
 
-#u8 {
+#part2 {
     left: 800px;
 }
