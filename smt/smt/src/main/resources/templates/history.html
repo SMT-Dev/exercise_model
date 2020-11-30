@@ -73,27 +73,10 @@
         return "";
     }
 
-    // Mock.mock('/getHistory',{
-    //     "tableList|8": [{
-    //         "name":"lesson",
-    //         "date":"@datetime",
-    //         "score|60-100":100,
-    //         "id":8888
-    //     }]
-    // })
-
-    Mock.mock('/getTable_ai',{
-        "tableList|10": [{
-            "name|1":["test","practise"],
-            "date":"@datetime",
-            "score|60-100":100,
-            "id":8888
-        }]
-    })
 
     Mock.mock('/levelInitial',{
         "level|1-6":1,
-    })
+    });
 
     var app = new Vue({
         el: "#app",
@@ -105,9 +88,9 @@
 
         methods: {
             Click: function (row) {
-                if(row.name == 'lesson') {
+                if(row.name === 'lesson') {
                     window.location.href = '/prob_opt_marked?src=lesson&mode=detail&id=' + row.id;
-                }else if(row.name == 'test') {
+                }else if(row.name === 'test') {
                     window.location.href = '/prob_opt_marked?src=test&mode=detail&id=' + row.id;
                 }else {
                     window.location.href = '/prob_opt_marked?src=ai&mode=detail&id=' + row.id;
@@ -124,7 +107,7 @@
 
             getSheet2: function () {
                 return new Promise(resolve => {
-                    axios.get('/getTable_ai').then((response) => {
+                    axios.get('/getHistory').then((response) => {
                         resolve(response.data);
                     });
                 })
@@ -143,7 +126,7 @@
                 var res2 = await this.getSheet2();
                 var res3 = await this.initial();
                 this.tableData1 = res1;
-                this.tableData2 = res2.tableList;
+                this.tableData2 = res2;
                 this.level = res3.level;
             }
         },

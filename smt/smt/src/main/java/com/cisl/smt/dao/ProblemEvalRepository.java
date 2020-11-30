@@ -28,5 +28,8 @@ public interface ProblemEvalRepository extends JpaRepository<ProblemEvaluation, 
                                   @Param("consume_time") Long consume_time);
 
     @Query(value = "select * from t_prob_eval where user_id=?1", nativeQuery = true)
-    ArrayList<ProblemEvaluation> getProblemEval(@Param("user_id") Long user_id);
+    ArrayList<ProblemEvaluation> getProblemEvalByUser(@Param("user_id") Long user_id);
+
+    @Query(value = "select * from t_prob_eval where prob_eval_id=?1", nativeQuery = true)
+    ArrayList<ProblemEvaluation> getProblemEvalById(@Param("prob_eval_id") Long prob_eval_id);
 }

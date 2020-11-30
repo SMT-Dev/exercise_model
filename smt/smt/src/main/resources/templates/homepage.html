@@ -9,7 +9,6 @@
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/jquery.min.js"></script>
-    <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
 <div th:replace="include::sidebar">
@@ -67,16 +66,12 @@
         for(var i=0; i<ca.length; i++) 
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0) 
+            if (c.indexOf(name) === 0)
                 return c.substring(name.length,c.length);
         }
         return "";
     }
 
-    Mock.mock('/homepageInitial',{
-        "level|1-6":1,
-        "num|1":[15,20,25]
-    });
 
     var app = new Vue({
         el: "#app",
@@ -88,17 +83,20 @@
             prob_num: 0,
             setting: {
                 src: "ai",
-                sys: this.choice,
-                lev: this.level,
-                probNum: this.prob_num
+                sys: 'smt',
+                lev: 0,
+                probNum: 25
             }
         },
 
         methods: {
             beginExercise: function () {
+                this.setting.lev = (this.chosen_level/20)+1;
+                this.setting.sys = this.choice;
+                this.setting.probNum = this.prob_num;
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
-                    // resolve(response);
+                    console.log("已设置参数: ", response.data);
                 });
                 window.location.href = "/exercise_opt?src=ai&lev="+((this.chosen_level/20)+1)+"&num="+this.prob_num;
             },

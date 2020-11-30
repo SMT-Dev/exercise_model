@@ -54,13 +54,13 @@
         return "";
     }
 
-    Mock.mock('/wrongInitial',{
-        "level|1-6":1,
-    })
+    // Mock.mock('/wrongInitial',{
+    //     "level|1-6":1,
+    // })
     var app = new Vue({
         el: "#app",
         data: {
-            level: 0,
+            level: 1,
             totalNum: 0,
             totalpage: 0,
             prob_list: [],  //prob_list 中的内容就是 ProblemEvaluation 的列表
@@ -95,13 +95,14 @@
 
             setSheet: async function () {
                 var wrong_list = await this.getWrongList();
-                var rs = await this.initial();
-                this.level = rs.level;
+                // var rs = await this.initial();
+                // this.level = rs.level;
                 this.totalNum = wrong_list.length;
                 this.totalpage = Math.ceil(wrong_list.length/10);
                 this.prob_list = [];
                 for(var i = 0;i < 10;i++) {
-                    this.prob_list.push(wrong_list[(this.page - 1) * 10 + i]);
+                    if(wrong_list[(this.page - 1) * 10 + i] !== undefined)
+                        this.prob_list.push(wrong_list[(this.page - 1) * 10 + i]);
                 }
             }
         },

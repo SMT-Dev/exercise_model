@@ -12,6 +12,7 @@ public class ReviewCollection {
 
     private Long user_id;
     private String prob_eval_list;
+    private String prob_list;
 
     public ReviewCollection() {};
 
@@ -39,12 +40,21 @@ public class ReviewCollection {
         this.prob_eval_list = prob_eval_list;
     }
 
+    public String getProb_list() {
+        return prob_list;
+    }
+
+    public void setProb_list(String prob_list) {
+        this.prob_list = prob_list;
+    }
+
     @Override
     public String toString() {
         return "ReviewCollection{" +
                 "rev_collec_id=" + rev_collec_id +
                 ", user_id=" + user_id +
                 ", prob_eval_list='" + prob_eval_list + '\'' +
+                ", prob_list='" + prob_list + '\'' +
                 '}';
     }
 }

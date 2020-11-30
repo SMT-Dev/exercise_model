@@ -94,17 +94,11 @@
         for(var i=0; i<ca.length; i++)
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0)
+            if (c.indexOf(name) === 0)
                 return c.substring(name.length,c.length);
         }
         return "";
     }
-
-    // Mock.mock("/initPaper",{
-    //     "total":25,
-    //     "opt":17,
-    //     "id":11111
-    // });
 
     var app = new Vue({
         el: "#app",
@@ -306,6 +300,7 @@
             },
 
             remember: function (option) {
+                //答题卡渲染函数
                 axios.get("/getSheet").then((response) => {
                     for (var i=0; i<response.data.sheet_list.length; i++) {
                         if(((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) === option) && (response.data.sheet_list[i].finish === 1)) {
@@ -317,6 +312,7 @@
             },
 
             handIn: function () {
+                //交卷则结束刷题状态，清除 session
                 if(this.remain > 1){
                     this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
                         confirmButtonText: '确定',
@@ -360,7 +356,7 @@
                         this.setting.src = this.src;
                         axios.post("/postSetting",$.param(this.setting)
                         ).then((response) => {
-                            // resolve(response);
+                            console.log("已设置参数: ", response.data);
                         });
                     }
                 }else if(window.location.search.indexOf("test",window.location.search.indexOf("src")) > -1) {
@@ -369,14 +365,14 @@
                     this.setting.sys = window.location.search.substr((window.location.search.indexOf("week") + 5));
                     axios.post("/postSetting",$.param(this.setting)
                     ).then((response) => {
-                        // resolve(response);
+                        console.log("已设置参数: ", response.data);
                     });
                 }else if(window.location.search.indexOf("wrong",window.location.search.indexOf("src")) > -1) {
                     this.src = "wrong";
                     this.setting.src = "wrong";
                     axios.post("/postSetting",$.param(this.setting)
                     ).then((response) => {
-                        // resolve(response);
+                        console.log("已设置参数: ", response.data);
                     });
                 }else if(window.location.search.indexOf("recomnd",window.location.search.indexOf("src")) > -1) {
                     this.src = "recomnd";
@@ -384,7 +380,7 @@
                     this.setting.sys = window.location.search.substr((window.location.search.indexOf("refId") + 6));
                     axios.post("/postSetting",$.param(this.setting)
                     ).then((response) => {
-                        // resolve(response);
+                        console.log("已设置参数: ", response.data);
                     });
                 }else {
                     this.src = "lesson";
@@ -398,7 +394,7 @@
                     }
                     axios.post("/postSetting",$.param(this.setting)
                     ).then((response) => {
-                        // resolve(response);
+                        console.log("已设置参数: ", response.data);
                     });
                 }
             }
@@ -415,7 +411,8 @@
             }else {
                 window.location.href = '/login';
             }
-            if(sessionStorage.getItem('questionId') !== null) {
+            if(sessionStorage.getItem('questionId') !== null) {  // 如果已经进入刷题状态了，就读取 session
+                console.log("已有 sessionStorage", sessionStorage.getItem('questionId'));
                 this.num = parseInt(sessionStorage.getItem('questionId'));
                 this.is_show = parseInt(sessionStorage.getItem('isShown'));
                 this.remain = parseInt(sessionStorage.getItem('remainNum'));
@@ -437,7 +434,8 @@
                 }else {
                     document.getElementById("u1").className = "drawer1";
                 }
-            }else {
+            }else {   // 未在刷题状态，设置新的 param
+                console.log("未在刷题状态，设置新的 param");
                 this.setParam();
             }
             this.$nextTick(() => {

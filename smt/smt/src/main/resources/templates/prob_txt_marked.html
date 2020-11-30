@@ -78,196 +78,11 @@
         for(var i=0; i<ca.length; i++) 
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0) 
+            if (c.indexOf(name) === 0)
                 return c.substring(name.length,c.length);
         }
         return "";
     }
-
-    Mock.mock('/getJudgeDetail?id=8888', {
-        "opt_num":17,
-         "sheet_list": [
-             {
-                 "idx": 10001,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10003,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10004,
-                 "choice": "c",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10005,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10006,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10007,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10008,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10009,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {
-                 "idx": 10002,
-                 "choice": "b",
-                 "choice_text": "a",
-                 "prob_text": "I want ____ toy train.",
-                 "analysis": "a 用于修饰辅音音素开头的单词；an 用于修饰元音音素开头的单词toy 是以辅音音素/t/开头的单词，所以选B",
-                 "ans": "B",
-                 "point": "辅音音素开头"
-             },
-             {'id': 10018, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10019, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10020, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10021, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10022, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10023, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10024, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'},
-             {'id': 10025, 'ans': '111\n111', 'choice': '', 'analysis|20': '*', 'point|4': '!', 'choice_text': '111\n111'}
-         ]
-     });
-
-     Mock.mock('/getResultLesson?id=8888',{
-        "time":'2020-10-30 15:10:11',
-        "score|60-100":100,
-        "unhandle|1-99.1":1,
-        "easy|1-100":1,
-        "medium|1-100":1,
-        "hard|1-100":1,
-        "lesson":'LESSON'
-    });
-
-    Mock.mock('/getResultExtra?id=8888',{
-        "time":'2020-10-30 15:10:11',
-        "unhandle|1-99.1":1,
-        "easy|1-100":1,
-        "medium|1-100":1,
-        "hard|1-100":1,
-    });
 
     var app = new Vue({
         el: "#app",
@@ -342,7 +157,7 @@
 
             recommend: function () {
                 sessionStorage.clear();
-                window.location.href = "/exercise_opt?src=recomnd?refId=" + this.id;
+                window.location.href = "/exercise_opt?src=recomnd&refId=" + this.id;
             },
 
             wrong: function () {
@@ -369,7 +184,7 @@
             },
 
             drawer: function () {
-                if(this.is_show == 1) {
+                if(this.is_show === 1) {
                     $("#u1").animate({right:"-260px"});
                     this.is_show = 0;
                 }else {
@@ -401,18 +216,18 @@
                 });
             },
 
-            fetchProblem: function () {
+            fetchProblem: async function () {
+                var sheet = await this.getSheet();
+                this.prob_list = sheet.num_list;
+                // console.log("正在 fetch 题目", this.prob_list[this.num-1]);
                 this.txt = [];
                 axios.get("/getProblem?num="+this.prob_list[this.num-1].toString()
                 ).then(response => {
-                    console.log("problem 执行");
                     this.prob_text = response.data.prob_text;
                     for(var i = 0;i < 2;i++) {
                         this.txt.push("");
                     }
                     this.input_num = [...Array(2).keys()];
-                    // console.log("response.data.prob_text", response.data.prob_text);
-                    // console.log("this.prob_text", this.prob_text);
                     this.prob_text = response.data.prob_text;
                 });
             },
@@ -460,8 +275,8 @@
                 this.$nextTick(() => {
                     this.setini();
                 });
-                var sheet = await this.getSheet();
-                var result = await this.getResult();
+                var sheet = await this.getSheet();  //获得 judgeDetail
+                var result = await this.getResult(); //获得总评 result
                 this.time = result.time;
                 if(result.hasOwnProperty('level')) {
                     this.level = result.level;
@@ -476,16 +291,19 @@
                 this.easy = result.easy;
                 this.medium = result.medium;
                 this.hard = result.hard;
+                this.prob_list = sheet.num_list;
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
-                    if((cur_problem.ans.toLowerCase() === cur_problem.choice.toLowerCase()) || (cur_problem.choice_text === cur_problem.ans)) {
+                    if(cur_problem.eval_res === 1) {   // 正确
                         this.results_list.push(1);
                         this.img_src.push(this.correct_img_src);
-                    }else {
+                    } else if(cur_problem.finish === 1){  //做错
                         this.results_list.push(0);
                         this.img_src.push(this.wrong_img_src);
+                    } else {                              //未做
+                        this.results_list.push(0);
+                        this.img_src.push(this.default_img_src);
                     }
-                    this.prob_list.push(cur_problem.idx);
                     this.ans_list.push(cur_problem.ans);
                     this.analysis_list.push(cur_problem.analysis);
                     this.point_list.push(cur_problem.point);
@@ -501,23 +319,30 @@
             },
 
             showResult: function () {
-                this.txt = this.submit_list[this.num - 1].split("\n");
+                var subText = this.submit_list[this.num - 1];
                 this.correct_txt = this.ans_list[this.num - 1].split("\n");
-                if(this.results_list[this.num - 1] == 1) {
-                    this.is_correct = '正确';
-                    document.getElementById('u31_result').style.backgroundColor = "lightskyblue";
-                    for(var i = 1;i <= this.input_num.length;i++) {
-                        $("#icon" + i + "").prop("class", "el-icon-success");
-                    }
-                }
-                else {
-                    this.is_correct = '错误';
+
+                if(subText === null){
+                    this.is_correct = '未做';
                     document.getElementById('u31_result').style.backgroundColor = "crimson";
-                    for(var i = 1;i <= this.input_num.length;i++) {
-                        if(this.txt[i - 1] === this.correct_txt[i - 1]) {
+                } else {
+                    this.txt = subText.split("\n");
+                    if(this.results_list[this.num - 1] === 1) {
+                        this.is_correct = '正确';
+                        document.getElementById('u31_result').style.backgroundColor = "lightskyblue";
+                        for(var i = 1;i <= this.input_num.length;i++) {
                             $("#icon" + i + "").prop("class", "el-icon-success");
-                        }else {
-                            $("#icon" + i + "").prop("class", "el-icon-error");
+                        }
+                    }
+                    else {
+                        this.is_correct = '错误';
+                        document.getElementById('u31_result').style.backgroundColor = "crimson";
+                        for(var i = 1;i <= this.input_num.length;i++) {
+                            if(this.txt[i - 1] === this.correct_txt[i - 1]) {
+                                $("#icon" + i + "").prop("class", "el-icon-success");
+                            }else {
+                                $("#icon" + i + "").prop("class", "el-icon-error");
+                            }
                         }
                     }
                 }
@@ -550,21 +375,21 @@
             }
             this.num = parseInt(sessionStorage.getItem('questionId'));
             this.is_show = parseInt(sessionStorage.getItem('isShown'));
-            this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
-            if(this.is_show == 0) {
+            // this.prob_list = sessionStorage.getItem('problist').split(',').map(Number); 取消不用
+            if(this.is_show === 0) {
                 document.getElementById("u1").className = "drawer2";
             }else {
                 document.getElementById("u1").className = "drawer1";
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
-            this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));            
+            this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));
         },
 
         mounted() {
             // 一加载就更新答题卡
             this.$nextTick(() => {
-                this.fetchProblem();
                 this.setSheet();
+                this.fetchProblem();
             });
         }
     })

@@ -28,8 +28,14 @@ public class ProblemEvalServiceImpl implements ProblemEvalService {
     }
 
     @Override
-    public ArrayList<ProblemEvaluation> getProblemEval(Long user_id) {
-        return problemEvalRepository.getProblemEval(user_id);
+    public ArrayList<ProblemEvaluation> getProblemEvalByUser(Long user_id) {
+        return problemEvalRepository.getProblemEvalByUser(user_id);
     }
+
+    @Override
+    public ArrayList<ProblemEvaluation> getProblemEvalById(Long prob_eval_id) {
+        return problemEvalRepository.getProblemEvalById(prob_eval_id);
+    }
+
 
 }

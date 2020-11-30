@@ -22,7 +22,12 @@ public class ReviewCollecServiceImpl implements ReviewCollecService{
     }
 
     @Override
-    public void setCollec(Long user_id, String prob_eval_list){
-        reviewCollecRepository.setCollec(user_id, prob_eval_list);
+    public void insertCollec(Long user_id, String prob_eval_list, String prob_list){
+        reviewCollecRepository.insertCollec(user_id, prob_eval_list, prob_list);
+    }
+
+    @Override
+    public void updateCollec(Long user_id, String prob_eval_list, String prob_list){
+        reviewCollecRepository.updateCollec(user_id, prob_eval_list, prob_list);
     }
 }

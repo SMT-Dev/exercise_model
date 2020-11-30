@@ -114,7 +114,7 @@
         for(var i=0; i<ca.length; i++) 
         {
             var c = ca[i].trim();
-            if (c.indexOf(name)==0) 
+            if (c.indexOf(name) === 0)
                 return c.substring(name.length,c.length);
         }
         return "";
@@ -228,7 +228,7 @@
                 if(option > this.opt_num){
                     sessionStorage.setItem('questionId',option.toString());
                     sessionStorage.setItem('isShown',this.is_show.toString());
-                    sessionStorage.setItem('problist',this.prob_list.toString());
+                    // sessionStorage.setItem('problist',this.prob_list.toString()); 取消不用
                     if(window.location.search.indexOf('detail') > -1) {
                         window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id;
                     }else {
@@ -250,7 +250,7 @@
                     if(this.num === this.opt_num){
                         sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
                         sessionStorage.setItem('isShown',this.is_show.toString());
-                        sessionStorage.setItem('problist',this.prob_list.toString());
+                        // sessionStorage.setItem('problist',this.prob_list.toString());
                         if(window.location.search.indexOf('detail') > -1) {
                             window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id;
                         }else {
@@ -336,16 +336,19 @@
                 this.easy = result.easy;
                 this.medium = result.medium;
                 this.hard = result.hard;
+                this.prob_list = sheet.num_list;
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
-                    if((cur_problem.ans.toLowerCase() === cur_problem.choice.toLowerCase()) || (cur_problem.choice_text === cur_problem.ans)) {
+                    if(cur_problem.eval_res === 1) {   // 正确
                         this.results_list.push(1);
                         this.img_src.push(this.correct_img_src);
-                    }else {
+                    } else if(cur_problem.finish === 1){  //做错
                         this.results_list.push(0);
                         this.img_src.push(this.wrong_img_src);
+                    } else {                              //未做
+                        this.results_list.push(0);
+                        this.img_src.push(this.default_img_src);
                     }
-                    this.prob_list.push(cur_problem.idx);
                     this.ans_list.push(cur_problem.ans);
                     this.analysis_list.push(cur_problem.analysis);
                     this.point_list.push(cur_problem.point);
@@ -389,10 +392,15 @@
                     document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).src = this.correct_img_src;
                 }
                 else {
-                    this.is_correct = '错误';
+                    var subChoice = this.submit_list[this.num - 1];
+                    if(subChoice !== null){
+                        this.is_correct = '错误';
+                        document.getElementById('img-' + subChoice.toLowerCase()).src = this.wrong_img_src;
+                    }
+                    else this.is_correct = '未做';
                     document.getElementById('u31_result').style.backgroundColor = "crimson";
                     document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).src = this.correct_img_src;
-                    document.getElementById('img-' + this.submit_list[this.num - 1].toLowerCase()).src = this.wrong_img_src;
+
                 }
             }
         },

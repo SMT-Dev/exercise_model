@@ -1,6 +1,6 @@
 package com.cisl.smt.web.Temp;
 
-public class Result {
+public class ResultTemp {
     /**
      * @description: 评卷结果综述
      * @author: Hopenx
@@ -73,7 +73,7 @@ public class Result {
 
     @Override
     public String toString() {
-        return "Result{" +
+        return "ResultTemp{" +
                 "time='" + time + '\'' +
                 ", level=" + level +
                 ", score=" + score +

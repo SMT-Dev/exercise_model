@@ -35,14 +35,14 @@
 | 页面名称 | 页面描述 | URL | 调用API |
 | :----: | :----: | :----: | :---- |
 | answer_sheet | 答题卡侧边栏 | / | / |
-| history | 历史记录页面 | /history | /getTable_lesson<br>/getTable_ai<br>/levelInitial |
+| history | 历史记录页面 | /history | /getHistory<br>/getTable_ai<br>/levelInitial |
 | homepage | 温故知新页面(主界面) | /home | /homepageInitial<br>/postSetting |
 | include | 功能导航侧边栏 | / | / |
 | prob_opt_marked | 刷题记录详情选择题页面 | /prob_opt_marked | /getJudgeDetail<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
 | prob_txt_marked | 刷题记录详情文本题页面 | /prob_txt_marked | /get<br>/getResultLesson?id=xxxx(xxxx为记录编号)<br>/getResultAi?id=xxxx(xxxx为记录编号)<br>/getResultExtra?id=xxxx(xxxx为记录编号)<br>/getPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | login | 用户登录页面 | /login | /postLogin |
-| prob_opt | 刷题选择题页面 | /exercise_opt | /ini<br>/postSheet<br>/postSetting<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
-| prob_txt | 刷题文本题页面 | /exercise_txt | /ini<br>/postSheet<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
+| prob_opt | 刷题选择题页面<br>包含参数：src: lesson ai test recomnd wrong, lev: 当前等级，num: 题目总量, refId: 需要参考的组卷 ID，<br> sys: 1. 温故知新中：sys=smt 代表出题的体系 2. 课课练中 sys=8 代表课程 lesson8 3. 双周测试中，sys=7-8 表示7-8周 4. 如果有需要参考的 redId=8888，那么 sys 代表 refId， | /exercise_opt | /initPaper<br>/postSheet<br>/postSetting<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号)<br>/getOptions?id=xxxx(xxxx为选项编号) |
+| prob_txt | 刷题文本题页面 | /exercise_txt | /initPaper<br>/postSheet<br>/getSheet<br>/initPaper<br>/getProblem?num=xxxx(xxxx为题目题号) |
 | register | 用户注册页面 | /register | /postRegister |
 | week_test | 双周测历史详情页面 | /week_test | /getTest<br>/testInitial |
 | welcome | 欢迎界面(首页) | /welcome | / |
@@ -56,29 +56,31 @@
 2. 明确了所有获取历史刷题信息的接口中的 id（记录的编号）均为 number 类型  
 3. 增加了刷题时的接口 /postSetting 用于发送刷题信息和设置，使后端知道是哪种类型的刷题，决定如何组卷
 
-
-### 11-22 ~ 11-25 更新说明 @许
-| 编号 | 描述 | 改动位置 |
-| :----: | :----: | :----: |
-| 1 | 修改了 /getJudgeDetail 变量名，前后端统一变量名 | practise_opt_detail.html |
-| 2 | 修改了 setSheet() 判断题目正误的逻辑代码，取消 mock，转用真实接口数据 | practise_opt_detail.html |
-| 3 | 修改了 /ini 路径为 /initPaper, 将出题组卷初始化一份试卷、获取相关试卷信息的所有功能集中在 /initPaper | practise_opt_detail.html |
-
-
 ### 11-26 更新说明 @李
 | 编号 | 描述 | 改动位置 |
 | :----: | :----: | :----: |
-| 1 | 合并了所有的刷题结算和刷题详情页面, | prob_opt_marked.html<br>prob_txt_marked.html |
-| 2 | 修改了一些函数的细节（后端无需关注），获取刷题评价的接口都替换为了/getResultAi、/getResultLesson、/getResultExtra | prob_opt_marked.html<br>prob_txt_marked.html |
 | 3 | 修改了“推荐练习”和“再来一轮”的实现函数<br>“再来一轮” ：如果是课课练或者温故知新需要再来一轮，则跳转url中将带有参数refId=xxxx（xxxx为本次刷题结果的id，<b>“本次”的意思是：xxxx不是推荐练习刷题结果将拥有的id</b>，而是这次课课练或者温故知新的id），根据此id找到这条刷题记录的组卷信息，从而再出一份相同组卷结构的题目/如果是错题练习，则直接再出一份错题即可（刷错题不需要参数传入）<br>“推荐练习”：推荐练习按钮点击后跳转url中也会带有参数refId=xxxx，作用与“再来一轮”中相同 | prob_opt_marked.html<br>prob_txt_marked.html |
 | 4 | 修改了刷题页面向/postSetting发送的参数<br>1.如果刷题页面url参数为src=ai&sys=smt&lev=5&probNum=20这种，就不用发送任何参数（因为在跳转到刷题页面之前已经在home页面发送过）<br>2.如果刷题页面url是src=ai&refId=xxxx，那么setting对象中src=ai，sys=xxxx<br>3.如果刷题页面url参数为src=test&week=7-8,那么setting中src=test,sys=7-8<br>4.如果刷题页面url参数为src=lesson&lev=4&lesson=8，那么sett中src=lesson，sys=8<br>5.如果刷题页面url参数为src=lesson&refId=xxxx，那么setting中src=lesson，sys=xxxx<br>6.如果刷题页面url参数为src=recomnd&refId=xxxx，那么setting中src=recomnd，sys=xxxx<br>错题练习只会让setting中src=wrong | prob_opt.html<br>prob_txt.html |
-| 5 | 修改了一些其他页面的细节（无需后端关注） | 略 |
-| 6 | 精简了很多代码 | 略 |
-| 7 | 修改了prob_txt里面显示填空输入框的细节（历史遗留问题，在获取文本题的时候，题目的对象中应当有一个number类型的属性告知本题要填几个空），在fetchProblem函数中已经暂定该属性名称为blank_num并使用 | 略 |
-遗留问题：  
+| 5 | 修改了prob_txt里面显示填空输入框的细节（历史遗留问题，在获取文本题的时候，题目的对象中应当有一个number类型的属性告知本题要填几个空），在fetchProblem函数中已经暂定该属性名称为blank_num并使用 | 略 |
 
-1.现在做题页面进入时需要刷新一次才能显示题目（下一个着手目标）  
-2.刷题时D选项如果没有，依然会显示，无法隐藏（下下个着手目标）
+### 11-27 更新说明 @许
+1. 在刷题结果 getJudgeDetail 中，新增了 eval_res 参数，刷题结果的判断放在后端，前端无需判断
+前端可以结合 finish 和 eval_res 两个参数直接判断正误，示例如下
+eval_res 为 1 表示正确
+```json
+{
+    "idx": 10013,
+    "finish": 1,
+    "choice": "b",
+    "choice_text": "/",
+    "prob_text": "I like playing ____ guitar.",
+    "analysis": "play the piano 是固定搭配，所以选B",
+    "ans": "B",
+    "point": "乐器前面不加the",
+    "type": "opt",
+    "eval_res": 1
+},
+2. 各种出题算法，还有一些 bug 会导致页面异常。为了不影响上线测试，目前均使用随机出题
 
 ## 4. 代码重构计划 <span id="refactor"></span>
 （按重要性排序，伴随着解决旧问题、提出新问题而持续更新）

@@ -12,10 +12,18 @@ import java.util.List;
 public interface ReviewCollecRepository extends JpaRepository<ReviewCollection, Long> {
     @Transactional
     @Modifying
-    @Query(value = "insert into t_rev_collec(user_id, prob_eval_list) values(?1, ?2)", nativeQuery = true)
-    void setCollec(@Param("user_id") Long user_id,
-                          @Param("prob_eval_list") String prob_eval_list);
+    @Query(value = "insert into t_rev_collec(user_id, prob_eval_list, prob_list) values(?1, ?2, ?3)", nativeQuery = true)
+    void insertCollec(@Param("user_id") Long user_id,
+                      @Param("prob_eval_list") String prob_eval_list,
+                      @Param("prob_list") String prob_list);
 
     @Query(value = "select * from t_rev_collec where user_id=?1 limit 1", nativeQuery = true)
     ReviewCollection getCollec(@Param("user_id") Long user_id);
+
+    @Transactional
+    @Modifying
+    @Query(value = "update t_rev_collec t set t.prob_eval_list=?2, t.prob_list=?3 where t.user_id=?1", nativeQuery = true)
+    void updateCollec(@Param("user_id") Long user_id,
+                      @Param("prob_eval_list") String prob_eval_list,
+                      @Param("prob_list") String prob_list);
 }
