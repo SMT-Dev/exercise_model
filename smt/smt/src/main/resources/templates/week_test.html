@@ -3,8 +3,8 @@
 <head>
     <title>双周测</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link href="/css/week_test.css" type="text/css" rel="stylesheet">
-    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <link href="/css/week_test.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
@@ -25,7 +25,7 @@
         <p id="tip"><span></span></p>
         <el-button type="primary" :disabled="disable" @click="start_test">开始测试</el-button>
     </div>
-    <div id="history" class="table">
+    <div id="test_history" class="table">
         <template>
             <el-table :data="tableData" height="300" stripe border style="width: 100%">
                 <el-table-column prop="name" label="练习" width="150"></el-table-column>

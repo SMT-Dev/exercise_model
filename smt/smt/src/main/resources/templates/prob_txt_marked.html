@@ -3,8 +3,8 @@
 <head>
     <title>文本题答题结果</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet">
-    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
@@ -205,9 +205,9 @@
                     sessionStorage.setItem('questionId',option.toString());
                     sessionStorage.setItem('isShown',this.is_show.toString());
                     if(window.location.search.indexOf('detail') > -1) {
-                        window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=detail&id=" + this.id;
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
                     }else {
-                        window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                     }
                 }
                 this.num = option;
@@ -303,7 +303,7 @@
                         this.img_src.push(this.wrong_img_src);
                     } else {                              //未做
                         this.results_list.push(0);
-                        this.img_src.push(this.default_img_src);
+                        this.img_src.push(this.wrong_img_src);
                     }
                     this.ans_list.push(cur_problem.ans);
                     this.analysis_list.push(cur_problem.analysis);
@@ -395,6 +395,8 @@
                 this.fetchProblem();
                 this.setSheet();
             });
+            var url = sessionStorage.getItem('lastUrl');
+            history.replaceState(null,null,url);
         }
     })
 </script>

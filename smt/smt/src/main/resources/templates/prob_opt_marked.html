@@ -3,8 +3,8 @@
 <head>
     <title>选择题答题结果</title>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet">
-    <link href="/css/index.css" type="text/css" rel="stylesheet">
+    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
@@ -232,10 +232,11 @@
                     sessionStorage.setItem('questionId',option.toString());
                     sessionStorage.setItem('isShown',this.is_show.toString());
                     sessionStorage.setItem('problist',this.prob_list.toString());
+                    sessionStorage.setItem('lastUrl',window.location.href);
                     if(window.location.search.indexOf('detail') > -1) {
-                        window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id;
+                        window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
                     }else {
-                        window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                        window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                     }
                 }else if(option !== this.num) {
                     this.num = option;
@@ -254,10 +255,11 @@
                         sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
                         sessionStorage.setItem('isShown',this.is_show.toString());
                         sessionStorage.setItem('problist',this.prob_list.toString());
+                        sessionStorage.setItem('lastUrl',window.location.href);
                         if(window.location.search.indexOf('detail') > -1) {
-                            window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id;
+                            window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
                         }else {
-                            window.location.href = "/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                            window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                         }
                     }
                     this.num += 1;
