@@ -74,6 +74,7 @@
             },
 
             start_wrong: function () {
+                sessionStorage.setItem('lastUrl',window.location.href);
                 window.location.href = "/exercise_opt?src=wrong";
             },
 
@@ -122,6 +123,7 @@
             this.$nextTick(() => {
                 this.setSheet();
             })
+            sessionStorage.clear();
         }
     })
 </script>

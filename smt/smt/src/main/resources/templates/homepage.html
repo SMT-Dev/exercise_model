@@ -98,6 +98,7 @@
                 ).then((response) => {
                     console.log("已设置参数: ", response.data);
                 });
+                sessionStorage.setItem('lastUrl',window.location.href);
                 window.location.href = "/exercise_opt?src=ai&lev="+((this.chosen_level/20)+1)+"&num="+this.prob_num;
             },
 
@@ -141,6 +142,7 @@
             }else {
                 window.location.href = '/login';
             }
+            sessionStorage.clear();
         },
 
         mounted: function () {

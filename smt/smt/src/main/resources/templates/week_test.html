@@ -92,6 +92,7 @@
             },
 
             start_test: function () {
+                sessionStorage.setItem('lastUrl',window.location.href);
                 window.location.href = "/exercise_opt?src=test&week="+this.week_start+"-"+this.week_end;
             },
 
@@ -147,6 +148,7 @@
             this.$nextTick(() => {
                 this.setSheet();
             });
+            sessionStorage.clear();
         }
     })
 </script>

@@ -194,6 +194,7 @@
 
             again: function () {
                 sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
                 if(this.src === "ai" || this.src === "lesson")
                     window.location.href = "/exercise_opt?src=" + this.src + "&refId=" + this.id;
                 else
@@ -202,11 +203,13 @@
 
             recommend: function () {
                 sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
                 window.location.href = "/exercise_opt?src=recomnd?refId=" + this.id;
             },
 
             wrong: function () {
                 sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
                 window.location.href = "/exercise_opt?src=wrong";
             },
 

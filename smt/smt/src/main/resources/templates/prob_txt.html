@@ -150,7 +150,7 @@
                     }
                     this.num = option;
                     this.store();
-                    window.location.href = "/exercise_opt";
+                    window.location.replace("/exercise_opt");
                 }else {
                     for(var i = 0;i < this.txt.length;i++) {
                         if(this.txt[i] !== "") {
@@ -203,12 +203,12 @@
                             message: '已交卷'
                         });
                         sessionStorage.clear();
-                        window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                     })
                 }
                 else {
                     sessionStorage.clear();
-                    window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                    window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                 }
             },
 
@@ -287,10 +287,10 @@
             if(localStorage.getItem('SMTusername') !== null) {
                 if(getCookie(localStorage.getItem('SMTusername')) === "") {
                     localStorage.clear();
-                    window.location.href = '/login';
+                    window.location.replace('/login');
                 }
             }else {
-                window.location.href = '/login';
+                window.location.replace('/login');
             }
             this.num = parseInt(sessionStorage.getItem('questionId'));
             this.is_show = parseInt(sessionStorage.getItem('isShown'));
@@ -324,6 +324,8 @@
                 //this.remember(this.num);
                 this.setSheet();
             });
+            var url = sessionStorage.getItem('lastUrl');
+            history.replaceState(null,null,url);
         }
     })
 </script>

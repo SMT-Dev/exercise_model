@@ -100,6 +100,8 @@
         return "";
     }
 
+    
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -181,7 +183,7 @@
                 if(option > this.opt_num){
                     this.num = option;
                     this.store();
-                    window.location.href = "/exercise_txt";
+                    window.location.replace("/exercise_txt");
                 }else {
                     this.num = option;
                     this.store();
@@ -198,7 +200,7 @@
                     if(this.num === this.opt_num){
                         this.num += 1;
                         this.store();
-                        window.location.href = "/exercise_txt";
+                        window.location.replace("/exercise_txt");
                     }else {
                         this.num += 1;
                         this.store();
@@ -325,12 +327,12 @@
                             message: '已交卷'
                         });
                         sessionStorage.clear();
-                        window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                     })
                 }
                 else {
                     sessionStorage.clear();
-                    window.location.href = "/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id;
+                    window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                 }
             },
 
@@ -407,10 +409,10 @@
             if(localStorage.getItem('SMTusername') !== null) {
                 if(getCookie(localStorage.getItem('SMTusername')) === "") {
                     localStorage.clear();
-                    window.location.href = '/login';
+                    window.location.replace('/login');
                 }
             }else {
-                window.location.href = '/login';
+                window.location.replace('/login');
             }
             if(sessionStorage.getItem('questionId') !== null) {  // 如果已经进入刷题状态了，就读取 session
                 console.log("已有 sessionStorage", sessionStorage.getItem('questionId'));
@@ -448,6 +450,8 @@
         mounted() {
             this.remember(this.num);
             this.setSheet();
+            var url = sessionStorage.getItem('lastUrl');
+            history.replaceState(null,null,url);
         },
     })
 </script>
