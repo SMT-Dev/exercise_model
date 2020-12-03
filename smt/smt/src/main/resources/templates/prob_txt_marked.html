@@ -387,6 +387,10 @@
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
             this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));
+            window.onbeforeunload = function (event) {
+                var url = sessionStorage.getItem('lastUrl');
+                history.replaceState('change',null,url);
+            }
         },
 
         mounted() {
@@ -395,8 +399,6 @@
                 this.fetchProblem();
                 this.setSheet();
             });
-            var url = sessionStorage.getItem('lastUrl');
-            history.replaceState(null,null,url);
         }
     })
 </script>

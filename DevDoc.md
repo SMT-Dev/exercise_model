@@ -190,3 +190,6 @@ eval_res 为 1 表示正确
     对prob_opt_marked和prob_txt_marked页面进行修改，修复一个在刷题结算页面，后退时触发的bug。  
     修改了prob_txt页面的交卷函数，现在假设用户在做某道文本题时交卷，如果用户在文本框里输入了内容，则这道题也会被提交；如果用户的输入框中为空，则这道题会视为没做。  
     对所有页面的head部分进行修改，使得对于任何浏览器在读css表时都采用utf-8编码。
+
+### 12-03 更新说明 @李
+    对prob_opt、prob_txt、prob_opt_marked、prob_txt_marked页面进行了修改，修复了一个刷新会导致页面跳转错误的bug。

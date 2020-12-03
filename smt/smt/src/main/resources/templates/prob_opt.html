@@ -100,7 +100,6 @@
         return "";
     }
 
-    
 
     var app = new Vue({
         el: "#app",
@@ -326,11 +325,15 @@
                             type: 'success',
                             message: '已交卷'
                         });
+                        //var url = sessionStorage.getItem('lastUrl');
+                        //history.replaceState(null,null,url);
                         sessionStorage.clear();
                         window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                     })
                 }
                 else {
+                    //var url = sessionStorage.getItem('lastUrl');
+                    //history.replaceState(null,null,url);
                     sessionStorage.clear();
                     window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                 }
@@ -444,14 +447,15 @@
             this.$nextTick(() => {
                 this.setInitPaper();
             });
-            
+            window.onbeforeunload = function (event) {
+                var url = sessionStorage.getItem('lastUrl');
+                history.replaceState('change',null,url);
+            }
         },
 
         mounted() {
             this.remember(this.num);
             this.setSheet();
-            var url = sessionStorage.getItem('lastUrl');
-            history.replaceState(null,null,url);
         },
     })
 </script>
