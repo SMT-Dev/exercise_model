@@ -204,7 +204,7 @@
             recommend: function () {
                 sessionStorage.clear();
                 sessionStorage.setItem('lastUrl',window.location.href);
-                window.location.href = "/exercise_opt?src=recomnd?refId=" + this.id;
+                window.location.href = "/exercise_opt?src=recomnd&refId=" + this.id;
             },
 
             wrong: function () {

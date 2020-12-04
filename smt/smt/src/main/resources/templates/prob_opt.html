@@ -388,7 +388,7 @@
                     ).then((response) => {
                         console.log("已设置参数: ", response.data);
                     });
-                }else {
+                }else if(window.location.search.indexOf("lesson",window.location.search.indexOf("src")) > -1){
                     this.src = "lesson";
                     if(window.location.search.indexOf("refId") !== -1) {
                         this.setting.src = "lesson";
@@ -396,7 +396,8 @@
                     }else {
                         this.setting.src = "lesson";
                         this.setting.sys = window.location.search.substr((window.location.search.lastIndexOf("lesson") + 7));
-                        this.setting.lev = window.location.search.substring((window.location.search.indexOf("lev") + 4),1);
+                        this.setting.lev = parseInt(window.location.search.substr((window.location.search.indexOf("lev") + 4),1));
+                        console.log(this.setting.src);
                     }
                     axios.post("/postSetting",$.param(this.setting)
                     ).then((response) => {
