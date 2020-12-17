@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>文本题答题结果</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+</head>
+<body>
+<div id="app">
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="answer_sheet_button">
+        <button type="button" class="white_button" @click="controlDrawer">答题卡</button>
+    </div>
+    <div id="score_area">
+        <p class="showScore"><span>分数：{{ score }}</span></p>
+    </div>
+    <div id="question_box" class="q_box">
+        <div id="question_card">
+            <div id="question_num">
+                <p><span>题号： {{ num }} / {{ totalNum }}&nbsp;&nbsp;考点： {{ point_list[num - 1] }} </span></p>
+                <div id="question_result">
+                    <p><span>{{ is_correct }}</span></p>
+                </div>
+            </div>
+            <div id="question_type">
+                <p><span>文本题</span></p>
+            </div>
+            <div id="question_text">
+                <p><span>{{ prob_text }}</span></p>
+            </div>
+            <div id="input_box">
+                <div v-for="input in input_num">
+                    <el-input v-model=txt[input] :id="getIndex(input)" :disabled="true" prefix-icon="">
+                    </el-input>
+                    <i :id="getIcon(input)" class=""></i>
+                    <p class="correct_ans"><span>正确答案： {{ correct_txt[input] }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="next_button">
+            <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
+        </div>
+        <div id="analysis_area">
+            <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
+        </div>
+    </div>
+    <div id="result_area">
+        <p><span>时间：{{ time }}<br>已掌握{{ easy }}个知识点到简单程度/{{ medium }}个知识点到中等程度/{{ hard }}个知识点到困难程度<br>未掌握知识点比例：{{ unhandle }}%</span></p>
+    </div>
+    <div id="back_button">
+        <el-page-header @back="goBack" :content="getBackContent()"></el-page-header>
+    </div>
+    <div id="again_button">
+        <el-button type="primary" round @click="again">再来一轮</el-button>
+    </div>
+    <div id="recomnd_button">
+        <el-button type="primary" round @click="recommend">推荐练习</el-button>
+    </div>
+    <div id="wrong_button">
+        <el-button type="primary" round @click="wrong">错题练习</el-button>
+    </div>
+</div>
+</body>
+<script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name) === 0)
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            time: '',
+            id: 0,
+            unhandle: 0,
+            score: 0,
+            easy: 0,
+            medium: 0,
+            hard: 0,
+            num: 1,
+            totalNum: 0,
+            opt_num: 0,
+            level: 0,
+            is_show: 1,
+            src: '',
+            lesson: '',
+            is_correct: '',
+            prob_text: "更改前",
+            default_img_src: "/image/u173.svg",
+            correct_img_src: "/image/u173_mouseOver.svg",
+            wrong_img_src: "/image/u339.svg",
+            img_src: [],
+            prob_list: [],
+            opt_box: [],
+            txt_box: [],
+            ans_list: [],
+            submit_list: [],
+            results_list: [],
+            analysis_list: [],
+            point_list: [],
+            txt: [],
+            input_num: [],
+            correct_txt: []
+        },
+        methods: {
+            goBack: function () {
+                sessionStorage.clear();
+                window.location.href = "/home";
+            },
+
+            getBackContent: function () {
+                if(this.src === "lesson") {
+                    return "课课练刷题详情";
+                }else if(this.src === "ai") {
+                    return "温故知新刷题详情";
+                }else if(this.src === "test") {
+                    return "双周测刷题详情";
+                }else if(this.src === "recomnd") {
+                    return "推荐练习详情";
+                }else if(this.src === "wrong") {
+                    return "错题练习详情";
+                }
+            },
+
+            getIndex: function (option) {
+                return "text" + (option + 1);
+            },
+
+            getIcon: function (option) {
+                return "icon" + (option + 1);
+            },
+
+            again: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                if(this.src === "ai" || this.src === "lesson")
+                    window.location.href = "/exercise_opt?src=" + this.src + "&refId=" + this.id;
+                else
+                    window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            recommend: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                window.location.href = "/exercise_opt?src=recomnd&refId=" + this.id;
+            },
+
+            wrong: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            controlDrawer: function () {
+                if(this.is_show == 1) {
+                    $("#drawer").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#drawer").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
+            nextProblem: function () {
+                if(this.num < this.totalNum){
+                    this.num += 1;
+                    sessionStorage.setItem('questionId',this.num.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
+            },
+
+            getId: function (option) {
+                return "answer_" + option;
+            },
+
+            jumpProblem: function (option) {
+                if(option <= this.opt_num){
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    if(window.location.search.indexOf('detail') > -1) {
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
+                    }else {
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+                    }
+                }
+                this.num = option;
+                sessionStorage.setItem('questionId',this.num.toString());
+                sessionStorage.setItem('isShown',this.is_show.toString());
+                this.$nextTick(() => {
+                    this.fetchProblem();
+                    this.showResult();
+                });
+            },
+
+            fetchProblem: function () {
+                // console.log("正在 fetch 题目", this.prob_list[this.num-1]);
+                this.txt = [];
+                axios.get("/getProblem?num="+this.prob_list[this.num-1].toString()
+                ).then(response => {
+                    this.prob_text = response.data.prob_text;
+                    //2应该替换成response.data.blank_num
+                    for(var i = 0;i < 2;i++) {
+                        this.txt.push("");
+                    }
+                    this.input_num = [...Array(2).keys()];
+                    this.prob_text = response.data.prob_text;
+                });
+            },
+
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get("/getJudgeDetail?id=" + this.id
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            getResult: function () {
+                var mode = "";
+                if(this.src === "test" || this.src === "ai") {
+                    mode = "Ai";
+                }else if(this.src === "recomnd" || this.src === "wrong") {
+                    mode = "Extra";
+                }else if(this.src === "lesson") {
+                    mode = "Lesson";
+                }
+                return new Promise(resolve => {
+                    axios.get("/getResult" + mode + "?id=" + this.id
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setini: async function () {
+                var res = await this.getSheet();
+                this.totalNum = res.sheet_list.length;
+                this.opt_num = res.opt_num;
+                for (var i = 1; i <= this.totalNum; i++) {
+                    if(i > this.opt_num){
+                        this.txt_box.push(i);
+                    }else {
+                        this.opt_box.push(i);
+                    }
+                }
+            },
+
+            setSheet: async function () {
+                this.$nextTick(() => {
+                    this.setini();
+                });
+                var sheet = await this.getSheet();  //获得 judgeDetail
+                var result = await this.getResult(); //获得总评 result
+                this.time = result.time;
+                if(result.hasOwnProperty('level')) {
+                    this.level = result.level;
+                }
+                if(result.hasOwnProperty('lesson')) {
+                    this.lesson = result.lesson;
+                }
+                if(result.hasOwnProperty('score')) {
+                    this.score = result.score;
+                }
+                this.unhandle = result.unhandle;
+                this.easy = result.easy;
+                this.medium = result.medium;
+                this.hard = result.hard;
+                for (var i = 0; i < sheet.sheet_list.length; i++) {
+                    var cur_problem = sheet.sheet_list[i];
+                    if(cur_problem.eval_res === 1) {   // 正确
+                        this.results_list.push(1);
+                        this.img_src.push(this.correct_img_src);
+                    } else if(cur_problem.finish === 1){  //做错
+                        this.results_list.push(0);
+                        this.img_src.push(this.wrong_img_src);
+                    } else {                              //未做
+                        this.results_list.push(0);
+                        this.img_src.push(this.wrong_img_src);
+                    }
+                    this.ans_list.push(cur_problem.ans);
+                    this.analysis_list.push(cur_problem.analysis);
+                    this.point_list.push(cur_problem.point);
+                    if(cur_problem.choice === 'none'){
+                        this.submit_list.push(cur_problem.choice_text);
+                    }else {
+                        this.submit_list.push(cur_problem.choice);
+                    }
+                }
+                this.showResult();
+                sessionStorage.setItem('questionId',this.num.toString());
+                sessionStorage.setItem('isShown',this.is_show.toString());
+            },
+
+            showResult: function () {
+                var subText = this.submit_list[this.num - 1];
+                this.correct_txt = this.ans_list[this.num - 1].split("\n");
+
+                if(subText === null){
+                    this.is_correct = '未做';
+                    document.getElementById('question_result').style.backgroundColor = "crimson";
+                } else {
+                    this.txt = subText.split("\n");
+                    if(this.results_list[this.num - 1] === 1) {
+                        this.is_correct = '正确';
+                        document.getElementById('question_result').style.backgroundColor = "lightskyblue";
+                        for(var i = 1;i <= this.input_num.length;i++) {
+                            $("#icon" + i + "").prop("class", "el-icon-success");
+                        }
+                    }
+                    else {
+                        this.is_correct = '错误';
+                        document.getElementById('question_result').style.backgroundColor = "crimson";
+                        for(var i = 1;i <= this.input_num.length;i++) {
+                            if(this.txt[i - 1] === this.correct_txt[i - 1]) {
+                                $("#icon" + i + "").prop("class", "el-icon-success");
+                            }else {
+                                $("#icon" + i + "").prop("class", "el-icon-error");
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
+            if(window.location.search.indexOf('detail') > -1) {
+                document.getElementById('again_button').style.display = "none";
+                document.getElementById('recomnd_button').style.display = "none";
+                document.getElementById('wrong_button').style.display = "none";
+            }else if(window.location.search.indexOf('finish') > -1) {
+                if(window.location.search.indexOf('test') > -1) {
+                    document.getElementById('again_button').style.display = "none";
+                }else if(window.location.search.indexOf('recomnd') > -1) {
+                    document.getElementById('again_button').style.display = "none";
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
+                }else if(window.location.search.indexOf('wrong') > -1) {
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('wrong_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
+                }
+            }
+            this.num = parseInt(sessionStorage.getItem('questionId'));
+            this.is_show = parseInt(sessionStorage.getItem('isShown'));
+            //这里不要试图让txt页面请求getSheet来获取prob_list，会导致用户提交答案无法显示
+            this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+            if(this.is_show === 0) {
+                document.getElementById("drawer").className = "drawer2";
+            }else {
+                document.getElementById("drawer").className = "drawer1";
+            }
+            this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
+            this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));
+            window.onbeforeunload = function (event) {
+                var url = sessionStorage.getItem('lastUrl');
+                history.replaceState('change',null,url);
+            }
+        },
+
+        mounted() {
+            // 一加载就更新答题卡
+            this.$nextTick(() => {
+                this.fetchProblem();
+                this.setSheet();
+            });
+        }
+    })
+</script>
+</html>

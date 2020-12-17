@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>初始界面</title>
+    <meta http-equiv="content-type" content="text/html charset=utf-8"/>
+    <link href="/css/start.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div id="choose_lev" class="">
+            <el-slider
+              v-model="chosen_level"
+              :step="20"
+              :marks="marks1"
+              :format-tooltip="formatTooltip1"
+              show-stops>
+            </el-slider>
+        </div>
+        <div id="choose_lesson" class="">
+            <el-slider
+              v-model="chosen_lesson"
+              :step="11"
+              :marks="marks2"
+              :format-tooltip="formatTooltip2"
+              show-stops>
+            </el-slider>
+        </div>
+        <el-button id="start_button" type="primary" @click="start">课课练入口</el-button>
+    </div>
+</body>
+<script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name) === 0)
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            chosen_level: 0,
+            chosen_lesson: 0,
+            marks1: {0:'Lev.1',20:'Lev.2',40:'Lev.3',60:'Lev.4',80:'Lev.5',100:'Lev.6'},
+            marks2: {0:'Lesson.1',11:'Lesson.2',22:'Lesson.3',33:'Lesson.4',44:'Lesson.5',55:'Lesson.6',66:'Lesson.7',77:'Lesson.8',88:'Lesson.9',99:'Lesson.10'},
+            setting: {
+                src: "lesson",
+                sys: '1',
+                lev: 1,
+                probNum: 20
+            }
+        },
+
+        methods: {
+            formatTooltip1: function () {
+                if(this.chosen_level === 0)
+                    return 'Lev.1';
+                if(this.chosen_level === 20)
+                    return 'Lev.2';
+                if(this.chosen_level === 40)
+                    return 'Lev.3';
+                if(this.chosen_level === 60)
+                    return 'Lev.4';
+                if(this.chosen_level === 80)
+                    return 'Lev.5';
+                if(this.chosen_level === 100)
+                    return 'Lev.6';
+            },
+
+            formatTooltip2: function () {
+                if(this.chosen_lesson === 0)
+                    return 'Lesson.1';
+                if(this.chosen_lesson === 11)
+                    return 'Lesson.2';
+                if(this.chosen_lesson === 22)
+                    return 'Lesson.3';
+                if(this.chosen_lesson === 33)
+                    return 'Lesson.4';
+                if(this.chosen_lesson === 44)
+                    return 'Lesson.5';
+                if(this.chosen_lesson === 55)
+                    return 'Lesson.6';
+                if(this.chosen_lesson === 66)
+                    return 'Lesson.7';
+                if(this.chosen_lesson === 77)
+                    return 'Lesson.8';
+                if(this.chosen_lesson === 88)
+                    return 'Lesson.9';
+                if(this.chosen_lesson === 99)
+                    return 'Lesson.10';
+            },
+
+            start: function () {
+                this.setting.sys = (this.chosen_lesson / 11 + 1).toString();
+                this.setting.lev = (this.chosen_level / 20) + 1;
+                axios.post("/postSetting",$.param(this.setting)
+                ).then((response) => {
+                    console.log("已设置参数: ", response.data);
+                });
+                sessionStorage.setItem("level",this.setting.lev.toString());
+                sessionStorage.setItem("lesson",this.setting.sys);
+                sessionStorage.setItem('lastUrl',window.location.href);
+                window.location.href = "/demo?src=lesson";
+            }
+        },
+
+        created: function () {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
+            sessionStorage.clear();
+        }
+    })
+</script>

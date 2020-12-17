@@ -1,0 +1,12 @@
+#app {
+    position: relative;
+    top: 200px;
+}
+#choose_lev,#choose_lesson {
+    width: 600px;
+    margin: 50px auto;
+}
+#start_button {
+    display: block;
+    margin: 50px auto;
+}

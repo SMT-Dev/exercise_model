@@ -1,0 +1,158 @@
+html,body {
+    height: 100%;
+    width: 100%;
+}
+
+p {
+    margin: 0;
+    padding: 4px;
+}
+
+body {
+    margin: 0;
+}
+
+#drawer {
+    position: relative;
+    background-color:rgba(138, 136, 136, 0.123);
+    height: 70%;
+    width: 100%;
+    top: 10%;
+    border-radius: 8px;
+}
+
+#drawer_opt_button,#drawer_txt_button {
+    display: flex;
+    flex-wrap: wrap;
+    border: none;
+}
+.round_button {
+    position: absolute;
+    left: 70%;
+    top: 75%;
+}
+.drawer_button {
+    position: relative;
+    left: 25px;
+    margin: 7px;
+}
+.circle_button {
+    border: none;
+    width: 50px;
+    height: 50px;
+}
+.ellipse {
+    position: relative;
+    width:55px;
+    height:55px;
+    display:flex;
+    cursor: pointer;
+}
+.image {
+    width: 100%;
+    margin: 8px;
+}
+.ellipse_text {
+    position:absolute;
+    text-align: center;
+    width:100%;
+}
+
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    background-color: darkmagenta;
+}
+
+#main {
+    width: 80%;
+    height: 100%;
+    margin: 0;
+}
+
+#side {
+    width: 20%;
+    height: 100%;
+    margin: 0;
+    background-color: #E9EEF3;
+    color: #333;
+    text-align: center;
+}
+
+#header, #footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    height: 15%;
+    font-size: 32px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#question_card {
+    background-color: #E9EEF3;
+    color: #333;
+    height: 70%;
+}
+
+#question_info,#question_text {
+    display: flex;
+    align-items: center;
+    padding: 0px 35px;
+    height: 15%;
+    font-size: 26px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+#opt_part,#txt_part {
+    height: 70%;
+}
+
+.option {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    left: 30px;
+    width: 400px;
+    padding: 10px;
+}
+
+.choice {
+    font-size: 20px;
+    padding: 5px 20px;
+}
+
+#input_box {
+    position: relative;
+    top: 30px;
+    font-size: 24px;
+    font-weight: 400;
+    padding: 0 30px;
+    width: 400px;
+}
+
+.input_bar {
+    margin: 10px 0px;
+}
+
+#answer_card {
+    position: relative;
+    display: block;
+    height: 5%;
+    top: 5%;
+    margin: 0;
+    padding: 0;
+    font-size: 26px;
+}
+
+#finish_button {
+    position: relative;
+    top: 13%;
+    height: 60px;
+    width: 150px;
+    font-size: 24px;
+}

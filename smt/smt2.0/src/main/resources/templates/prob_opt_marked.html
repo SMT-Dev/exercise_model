@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>选择题答题结果</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/exercise_marked.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+</head>
+<body>
+<div id="app">
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="answer_sheet_button">
+        <button type="button" class="white_button" @click="controlDrawer">答题卡</button>
+    </div>
+    <div id="score_area">
+        <p class="showScore"><span>分数：{{ score }}</span></p>
+    </div>
+    <div id="question_box" class="q_box">
+        <div id="question_card">
+            <div id="question_num">
+                <p><span>题号： {{ num }} / {{ totalNum }}&nbsp;&nbsp;考点： {{ point_list[num - 1] }} </span></p>
+                <div id="question_result">
+                    <p><span>{{ is_correct }}</span></p>
+                </div>
+            </div>
+            <div id="question_type">
+                <p><span>单选题</span></p>
+            </div>
+            <div id="question_text">
+                <p><span>(&nbsp;&nbsp;&nbsp;&nbsp;) {{ prob_text }}</span></p>
+            </div>
+            <div id="option_A" class="option">
+                <div id="choice-a">
+                    <img id="img-a" src="/image/u173.svg" class="option_img"/>
+                    <div id="a_text" class="option_text">
+                        <p class="choice"><span>A</span></p>
+                    </div>
+                </div>
+                <div id="question_a_text">
+                    <p class="choice"><span>{{ options.A }}</span></p>
+                </div>
+            </div>
+            <div id="option_B" class="option">
+                <div id="choice-b">
+                    <img id="img-b" src="/image/u173.svg" class="option_img"/>
+                    <div id="b_text" class="option_text">
+                        <p class="choice"><span>B</span></p>
+                    </div>
+                </div>
+                <div id="question_b_text">
+                    <p class="choice"><span>{{ options.B }}</span></p>
+                </div>
+            </div>
+            <div id="option_C" class="option">
+                <div id="choice-c">
+                    <img id="img-c" src="/image/u173.svg" class="option_img"/>
+                    <div id="c_text" class="option_text">
+                        <p class="choice"><span>C</span></p>
+                    </div>
+                </div>
+                <div id="question_c_text">
+                    <p class="choice"><span>{{ options.C }}</span></p>
+                </div>
+            </div>
+            <div id="option_D" class="option">
+                <div id="choice-d">
+                    <img id="img-d" src="/image/u173.svg" class="option_img"/>
+                    <div id="d_text" class="option_text">
+                        <p class="choice"><span>D</span></p>
+                    </div>
+                </div>
+                <div id="question_d_text">
+                    <p class="choice"><span>{{ options.D }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="next_button">
+            <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
+        </div>
+        <div id="analysis_area">
+            <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
+        </div>
+    </div>
+    <div id="result_area">
+        <p><span>时间：{{ time }}<br>已掌握{{ easy }}个知识点到简单程度/{{ medium }}个知识点到中等程度/{{ hard }}个知识点到困难程度<br>未掌握知识点比例：{{ unhandle }}%</span></p>
+    </div>
+    <div id="back_button">
+        <el-page-header @back="goBack" :content="getBackContent()"></el-page-header>
+    </div>
+    <div id="again_button">
+        <el-button type="primary" round @click="again">再来一轮</el-button>
+    </div>
+    <div id="recomnd_button">
+        <el-button type="primary" round @click="recommend">推荐练习</el-button>
+    </div>
+    <div id="wrong_button">
+        <el-button type="primary" round @click="wrong">错题练习</el-button>
+    </div>
+</div>
+</body>
+<script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++) 
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name) === 0)
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+     Mock.mock('/getResultLesson?id=8888',{
+        "time":'2020-10-30 15:10:11',
+        "score|60-100":100,
+        "unhandle|1-99.1":1,
+        "easy|1-100":1,
+        "medium|1-100":1,
+        "hard|1-100":1,
+        "lesson":'LESSON'
+    });
+
+    Mock.mock('/getResultExtra?id=8888',{
+        "time":'2020-10-30 15:10:11',
+        "unhandle|1-99.1":1,
+        "easy|1-100":1,
+        "medium|1-100":1,
+        "hard|1-100":1,
+    });
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            time: '',
+            id: 0,
+            unhandle: 0,
+            score: 0,
+            easy: 0,
+            medium: 0,
+            hard: 0,
+            num: 1,
+            totalNum: 0,
+            opt_num: 0,
+            level: 0,
+            is_show: 1,
+            src: '',
+            lesson: '',
+            is_correct: '',
+            prob_text: "",
+            options_id: 0,
+            options: {A: "", B: "", C: "", D: ""},
+            default_img_src: "/image/u173.svg",
+            correct_img_src: "/image/u173_mouseOver.svg",
+            wrong_img_src: "/image/u339.svg",
+            img_src: [],
+            prob_list: [],
+            opt_box: [],
+            txt_box: [],
+            ans_list: [],
+            submit_list: [],
+            results_list: [],
+            analysis_list: [],
+            point_list: []
+        },
+        methods: {
+            goBack: function () {
+                sessionStorage.clear();
+                window.location.href = "/home";
+            },
+
+            getBackContent: function () {
+                if(this.src === "lesson") {
+                    return "课课练刷题详情";
+                }else if(this.src === "ai") {
+                    return "温故知新刷题详情";
+                }else if(this.src === "test") {
+                    return "双周测刷题详情";
+                }else if(this.src === "recomnd") {
+                    return "推荐练习详情";
+                }else if(this.src === "wrong") {
+                    return "错题练习详情";
+                }
+            },
+
+            again: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                if(this.src === "ai" || this.src === "lesson")
+                    window.location.href = "/exercise_opt?src=" + this.src + "&refId=" + this.id;
+                else
+                    window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            recommend: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                window.location.href = "/exercise_opt?src=recomnd?refId=" + this.id;
+            },
+
+            wrong: function () {
+                sessionStorage.clear();
+                sessionStorage.setItem('lastUrl',window.location.href);
+                window.location.href = "/exercise_opt?src=wrong";
+            },
+
+            controlDrawer: function () {
+                if(this.is_show == 1) {
+                    $("#drawer").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#drawer").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
+            getId: function (option) {
+                return "answer_" + option;
+            },
+
+            jumpProblem: function (option) {
+                if(option > this.opt_num){
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    sessionStorage.setItem('problist',this.prob_list.toString());
+                    sessionStorage.setItem('lastUrl',window.location.href);
+                    if(window.location.search.indexOf('detail') > -1) {
+                        window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
+                    }else {
+                        window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+                    }
+                }else if(option !== this.num) {
+                    this.num = option;
+                    sessionStorage.setItem('questionId',option.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                    });
+                }
+            },
+
+            nextProblem: function () {
+                if(this.num < this.totalNum){
+                    if(this.num === this.opt_num){
+                        sessionStorage.setItem('questionId',(this.opt_num + 1).toString());
+                        sessionStorage.setItem('isShown',this.is_show.toString());
+                        sessionStorage.setItem('problist',this.prob_list.toString());
+                        sessionStorage.setItem('lastUrl',window.location.href);
+                        if(window.location.search.indexOf('detail') > -1) {
+                            window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=detail&id=" + this.id);
+                        }else {
+                            window.location.replace("/prob_txt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+                        }
+                    }
+                    this.num += 1;
+                    sessionStorage.setItem('questionId',this.num.toString());
+                    sessionStorage.setItem('isShown',this.is_show.toString());
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
+            },
+
+            getSheet: function () {
+                return new Promise((resolve,reject) => {
+                    axios.get("/getJudgeDetail?id=" + this.id
+                    ).then((response) => {
+                        resolve(response.data);
+                        console.log('getSheet--success');
+                    }).catch((error) => {
+                        console.log('getSheet--error');
+                    });
+                })
+            },
+
+            getResult: function () {
+                var mode = "";
+                if(this.src === "test" || this.src === "ai") {
+                    mode = "Ai";
+                }else if(this.src === "recomnd" || this.src === "wrong") {
+                    mode = "Extra";
+                }else if(this.src === "lesson") {
+                    mode = "Lesson";
+                }
+                return new Promise((resolve,reject) => {
+                    axios.get("/getResult" + mode + "?id=" + this.id
+                    ).then((response) => {
+                        resolve(response.data);
+                        console.log('getResult--success');
+                    }).catch((error) => {
+                        console.log('getResult--error');
+                    });
+                })
+            },
+
+            setini: async function () {
+                var res = await this.getSheet();
+                this.totalNum = res.sheet_list.length;
+                this.opt_num = res.opt_num;
+                for (var i = 1; i <= this.totalNum; i++) {
+                    if(i > this.opt_num){
+                        this.txt_box.push(i);
+                    }else {
+                        this.opt_box.push(i);
+                    }
+                }
+            },
+
+            setSheet: async function () {
+                this.setini();
+                var sheet = await this.getSheet();
+                var result = await this.getResult();
+                this.time = result.time;
+                if(result.hasOwnProperty('level')) {
+                    this.level = result.level;
+                }
+                if(result.hasOwnProperty('lesson')) {
+                    this.lesson = result.lesson;
+                }
+                if(result.hasOwnProperty('score')) {
+                    this.score = result.score;
+                }
+                this.unhandle = result.unhandle;
+                this.easy = result.easy;
+                this.medium = result.medium;
+                this.hard = result.hard;
+                this.prob_list = sheet.num_list;
+                for (var i = 0; i < sheet.sheet_list.length; i++) {
+                    var cur_problem = sheet.sheet_list[i];
+                    if(cur_problem.eval_res === 1) {   // 正确
+                        this.results_list.push(1);
+                        this.img_src.push(this.correct_img_src);
+                    } else if(cur_problem.finish === 1){  //做错
+                        this.results_list.push(0);
+                        this.img_src.push(this.wrong_img_src);
+                    } else {                              //未做
+                        this.results_list.push(0);
+                        //“没做”体现在答题结果上也应属于错误的一种
+                        this.img_src.push(this.wrong_img_src);
+                    }
+                    this.ans_list.push(cur_problem.ans);
+                    this.analysis_list.push(cur_problem.analysis);
+                    this.point_list.push(cur_problem.point);
+                    if(cur_problem.choice === 'none'){
+                        this.submit_list.push(cur_problem.choice_text);
+                    }else {
+                        this.submit_list.push(cur_problem.choice);
+                    }
+                }
+                this.fetchProblem();
+                this.showResult();
+                sessionStorage.setItem('questionId',this.num.toString());
+                sessionStorage.setItem('isShown',this.is_show.toString());
+            },
+
+            fetchProblem: async function () {
+                var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
+                this.prob_text = prob.data.prob_text;
+                this.options_id = prob.data.options_id;
+                var option = await axios.get("/getOptions?id="+this.options_id);
+                this.options.A = option.data.option_a;
+                this.options.B = option.data.option_b;
+                this.options.C = option.data.option_c;
+                if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
+                    this.options.D = option.data.option_d;
+                    document.getElementById('option_D').style.display = "";
+                }else {
+                    this.options.D = "";
+                    document.getElementById('option_D').style.display = "none";
+                }
+            },
+
+            showResult: function () {
+                document.getElementById('img-a').src = this.default_img_src;
+                document.getElementById('img-b').src = this.default_img_src;
+                document.getElementById('img-c').src = this.default_img_src;
+                document.getElementById('img-d').src = this.default_img_src;
+                if(this.results_list[this.num - 1] === 1) {
+                    this.is_correct = '正确';
+                    document.getElementById('question_result').style.backgroundColor = "lightskyblue";
+                    document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).src = this.correct_img_src;
+                }
+                else {
+                    var subChoice = this.submit_list[this.num - 1];
+                    if(subChoice !== null){
+                        this.is_correct = '错误';
+                        document.getElementById('img-' + subChoice.toLowerCase()).src = this.wrong_img_src;
+                    }
+                    else this.is_correct = '未做';
+                    document.getElementById('question_result').style.backgroundColor = "crimson";
+                    document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).src = this.correct_img_src;
+
+                }
+            }
+        },
+
+        created() {
+            console.log(sessionStorage);
+        },
+
+        mounted() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            }else {
+                window.location.href = '/login';
+            }
+            if(window.location.search.indexOf('detail') > -1) {
+                document.getElementById('again_button').style.display = "none";
+                document.getElementById('recomnd_button').style.display = "none";
+                document.getElementById('wrong_button').style.display = "none";
+            }else if(window.location.search.indexOf('finish') > -1) {
+                if(window.location.search.indexOf('test') > -1) {
+                    document.getElementById('again_button').style.display = "none";
+                }else if(window.location.search.indexOf('recomnd') > -1) {
+                    document.getElementById('again_button').style.display = "none";
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
+                }else if(window.location.search.indexOf('wrong') > -1) {
+                    document.getElementById('recomnd_button').style.display = "none";
+                    document.getElementById('wrong_button').style.display = "none";
+                    document.getElementById('score_area').style.display = "none";
+                }
+            }
+            if(sessionStorage.getItem('questionId') !== null) {
+                this.num = parseInt(sessionStorage.getItem('questionId'));
+                this.is_show = parseInt(sessionStorage.getItem('isShown'));
+                if(this.is_show === 0) {
+                    document.getElementById("drawer").className = "drawer2";
+                }else {
+                    document.getElementById("drawer").className = "drawer1";
+                }
+            }
+            this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
+            this.id = parseInt(window.location.search.substr(window.location.search.indexOf('id')+3));
+            this.setSheet();
+        },
+    })
+</script>
+</html>

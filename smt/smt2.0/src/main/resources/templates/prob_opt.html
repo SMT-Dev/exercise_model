@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>选择题答题界面</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <link href="/css/exercise.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+</head>
+<body>
+<div id="app" v-cloak>
+    <div th:replace="answer_sheet::sheet"></div>
+    <div id="answer_sheet_button">
+        <button type="button" class="white_button" @click="controlDrawer">答题卡</button>
+    </div>
+    <div id="finish_button">
+        <button type="button" class="white_button" @click="handIn">交 卷</button>
+    </div>
+    <div id="question_box" class="q_box">
+        <div id="question_card">
+            <div id="question_num">
+                <p><span>题号： {{ num }} / {{ totalNum }}</span></p>
+            </div>
+            <div id="question_type">
+                <p><span>单选题</span></p>
+            </div>
+            <div id="question_text">
+                <p><span>(&nbsp;&nbsp;&nbsp;&nbsp;) {{ prob_text }}</span></p>
+            </div>
+
+            <div id="option_A" class="option">
+                <div id="choice-a" @click="chooseOption('a')">
+                    <img id="img-a" src="/image/u173.svg" class="option_img"/>
+                    <div id="a_text" class="option_text">
+                        <p class="choice"><span>A</span></p>
+                    </div>
+                </div>
+                <div id="question_a_text">
+                    <p class="choice"><span>{{ options.A }}</span></p>
+                </div>
+            </div>
+            <div id="option_B" class="option">
+                <div id="choice-b" @click="chooseOption('b')">
+                    <img id="img-b" src="/image/u173.svg" class="option_img"/>
+                    <div id="b_text" class="option_text">
+                        <p class="choice"><span>B</span></p>
+                    </div>
+                </div>
+                <div id="question_b_text">
+                    <p class="choice"><span>{{ options.B }}</span></p>
+                </div>
+            </div>
+            <div id="option_C" class="option">
+                <div id="choice-c" @click="chooseOption('c')">
+                    <img id="img-c" src="/image/u173.svg" class="option_img"/>
+                    <div id="c_text" class="option_text">
+                        <p class="choice"><span>C</span></p>
+                    </div>
+                </div>
+                <div id="question_c_text">
+                    <p class="choice"><span>{{ options.C }}</span></p>
+                </div>
+            </div>
+            <div id="option_D" class="option">
+                <div id="choice-d" @click="chooseOption('d')">
+                    <img id="img-d" src="/image/u173.svg" class="option_img"/>
+                    <div id="d_text" class="option_text">
+                        <p class="choice"><span>D</span></p>
+                    </div>
+                </div>
+                <div id="question_d_text">
+                    <p class="choice"><span>{{ options.D }}</span></p>
+                </div>
+            </div>
+        </div>
+        <div id="next_button">
+            <el-button type="primary" size="medium" @click="nextProblem">下一题</el-button>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    function setCookie(cname,cvalue) {
+        document.cookie = cname + "=" + cvalue + "; ";
+    }
+
+    function getCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i=0; i<ca.length; i++)
+        {
+            var c = ca[i].trim();
+            if (c.indexOf(name) === 0)
+                return c.substring(name.length,c.length);
+        }
+        return "";
+    }
+
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            num: 1,
+            totalNum: 0,
+            opt_num: 0,
+            remain: -1,
+            id: 0,    //全局的 this.id 指的是一份试卷 sheetTemp 的 id
+            prob_list: [],
+            done_list: [],
+            opt_box: [],
+            txt_box: [],
+            is_show: 1,
+            src: "",
+            prob_text: "",
+            options_id: 0,
+            options: {A: "", B: "", C: "", D: ""},
+            default_img_src: "/image/u173.svg",
+            chose_img_src: "/image/u173_mouseOver.svg",
+            img_src: [],
+            formData: {
+                idx: this.num,
+                finish: 0,
+                choice: "",
+                choice_text: ""
+            },
+            setting: {
+                src: "",
+                sys: "",
+                lev: 0,
+                probNum: 0
+            },
+            options_list: []
+        },
+        methods: {
+            chooseOption: function (option) {
+                this.refreshAnswer();
+                document.getElementById('img-' + option).src = this.chose_img_src;
+                this.formData.choice = option;
+                if (option === 'a') {
+                    this.formData.choice_text = this.options.A;
+                } else if (option === 'b') {
+                    this.formData.choice_text = this.options.B;
+                } else if (option === 'c') {
+                    this.formData.choice_text = this.options.C;
+                } else if (option === 'd') {
+                    this.formData.choice_text = this.options.D;
+                }
+                if(this.done_list.indexOf(this.num) === -1) {
+                    this.remain = this.totalNum-(this.done_list.push(this.num));
+                }
+                this.formData.idx = this.prob_list[this.num - 1];
+                this.formData.finish = 1;
+                axios.post("/postSheet", $.param(this.formData)  //引入jQuery的作用
+                ).then((response) => {
+                        this.$nextTick(() => {
+                            this.setSheet();
+                        });
+                        // resolve(response);
+                    }
+                );
+            },
+
+            controlDrawer: function () {
+                if(this.is_show === 1) {
+                    $("#drawer").animate({right:"-260px"});
+                    this.is_show = 0;
+                }else {
+                    $("#drawer").animate({right:"0px"});
+                    this.is_show = 1;
+                }
+            },
+
+            getId: function (option) {
+                return "answer_" + option;
+            },
+
+            jumpProblem: function (option) {
+                if(option > this.opt_num){
+                    this.num = option;
+                    this.store();
+                    window.location.replace("/exercise_txt");
+                }else {
+                    this.num = option;
+                    this.store();
+                    this.refreshAnswer();
+                    this.remember(option);
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                    });
+                }
+            },
+
+            nextProblem: function () {
+                if(this.num < this.totalNum){
+                    if(this.num === this.opt_num){
+                        this.num += 1;
+                        this.store();
+                        window.location.replace("/exercise_txt");
+                    }else {
+                        this.num += 1;
+                        this.store();
+                        this.refreshAnswer();
+                        this.remember(this.num);
+                        this.$nextTick(() => {
+                            this.fetchProblem();
+                        });
+                    }
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '已经是最后一题了'
+                    });
+                }
+            },
+
+            refreshAnswer: function () {
+                document.getElementById('img-a').src = this.default_img_src;
+                document.getElementById('img-b').src = this.default_img_src;
+                document.getElementById('img-c').src = this.default_img_src;
+                document.getElementById('img-d').src = this.default_img_src;
+            },
+
+            // 获取 sheet_list
+            getSheet: function () {
+                return new Promise(resolve => {
+                    axios.get("/getSheet"
+                    ).then((response) => {
+                        this.options_list = response.data.sheet_list;
+                        resolve(response.data.sheet_list);
+                    });
+                })
+            },
+
+            //一个坑：js 执行存在异步、不按顺序；.then里的函数就是一个异步任务
+            //解决：配合使用 Promise、async、await 函数
+
+            setSheet: async function () {
+                this.options_list = await this.getSheet();
+                for (var i = 0; i < this.options_list.length; i++) {
+                    ans = this.options_list[i];
+                    if(ans.finish === 1) {
+                        document.getElementById('answer_' + (this.prob_list.indexOf(ans["idx"]) + 1).toString()).src = this.chose_img_src;
+                        this.img_src[i] = this.chose_img_src;
+                    }
+                }
+                this.store();
+            },
+
+            getInitPaper: function () {
+                return new Promise(resolve => {
+                    axios.get("/initPaper"
+                    ).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setInitPaper: async function () {
+                if(this.remain === -1) {
+                    var res = await this.getInitPaper();
+                    console.log(res);
+                    this.totalNum = res.sheet_list.length;
+                    this.prob_list = res.num_list;   //直接获取题号序列
+                    this.opt_num = res.opt_num;
+                    this.id = res.id;
+                    this.remain = this.totalNum;
+                    this.opt_box = [];
+                    this.txt_box = [];
+                    for(var j = 1;j <= this.totalNum;j++) {
+                        this.img_src.push(this.default_img_src);
+                        if(j > this.opt_num) {
+                            this.txt_box.push(j);
+                        }else {
+                            this.opt_box.push(j);
+                        }
+                    }
+                }
+                this.fetchProblem();
+            },
+
+
+            fetchProblem: async function () {
+                var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
+                this.prob_text = prob.data.prob_text;
+                this.options_id = prob.data.options_id;
+                var option = await axios.get("/getOptions?id="+this.options_id);
+                this.options.A = option.data.option_a;
+                this.options.B = option.data.option_b;
+                this.options.C = option.data.option_c;
+                if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
+                    this.options.D = option.data.option_d;
+                    document.getElementById('option_D').style.display = "";
+                }else {
+                    this.options.D = "";
+                    document.getElementById('option_D').style.display = "none";
+                }
+            },
+
+            remember: function (option) {
+                //答题卡渲染函数
+                axios.get("/getSheet").then((response) => {
+                    for (var i=0; i<response.data.sheet_list.length; i++) {
+                        if(((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) === option) && (response.data.sheet_list[i].finish === 1)) {
+                                document.getElementById('img-' + response.data.sheet_list[i].choice).src = this.chose_img_src;
+                            break;
+                        }
+                    }
+                });
+            },
+
+            handIn: function () {
+                //交卷则结束刷题状态，清除 session
+                if(this.remain > 1){
+                    this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
+                        confirmButtonText: '确定',
+                        cancelButtonText: '取消',
+                        type: 'warning'
+                    }).then(() => {
+                        this.$message({
+                            type: 'success',
+                            message: '已交卷'
+                        });
+                        //var url = sessionStorage.getItem('lastUrl');
+                        //history.replaceState(null,null,url);
+                        sessionStorage.clear();
+                        window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+                    })
+                }
+                else {
+                    //var url = sessionStorage.getItem('lastUrl');
+                    //history.replaceState(null,null,url);
+                    sessionStorage.clear();
+                    window.location.replace("/prob_opt_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+                }
+            },
+
+            store: function () {
+                sessionStorage.setItem('questionId',this.num.toString());
+                sessionStorage.setItem('isShown',this.is_show.toString());
+                sessionStorage.setItem('remainNum',this.remain.toString());
+                sessionStorage.setItem('total',this.totalNum.toString());
+                sessionStorage.setItem('opt',this.opt_num.toString());
+                sessionStorage.setItem('list',this.done_list.toString());
+                sessionStorage.setItem('optlist',this.opt_box.toString());
+                sessionStorage.setItem('txtlist',this.txt_box.toString());
+                sessionStorage.setItem('problist',this.prob_list.toString());
+                sessionStorage.setItem('src',this.src);
+                sessionStorage.setItem('id',this.id);
+                sessionStorage.setItem('imgSrc',this.img_src);
+            },
+
+            setParam: function () {
+                if(window.location.search.indexOf("ai",window.location.search.indexOf("src")) > -1) {
+                    this.src = "ai";
+                    if(window.location.search.indexOf("refId") !== -1) {
+                        this.setting.sys = window.location.search.substr((window.location.search.indexOf("refId") + 6));
+                        this.setting.src = this.src;
+                        axios.post("/postSetting",$.param(this.setting)
+                        ).then((response) => {
+                            console.log("已设置参数: ", response.data);
+                        });
+                    }
+                }else if(window.location.search.indexOf("test",window.location.search.indexOf("src")) > -1) {
+                    this.src = "test";
+                    this.setting.src = "test";
+                    this.setting.sys = window.location.search.substr((window.location.search.indexOf("week") + 5));
+                    axios.post("/postSetting",$.param(this.setting)
+                    ).then((response) => {
+                        console.log("已设置参数: ", response.data);
+                    });
+                }else if(window.location.search.indexOf("wrong",window.location.search.indexOf("src")) > -1) {
+                    this.src = "wrong";
+                    this.setting.src = "wrong";
+                    axios.post("/postSetting",$.param(this.setting)
+                    ).then((response) => {
+                        console.log("已设置参数: ", response.data);
+                    });
+                }else if(window.location.search.indexOf("recomnd",window.location.search.indexOf("src")) > -1) {
+                    this.src = "recomnd";
+                    this.setting.src = "recomnd";
+                    this.setting.sys = window.location.search.substr((window.location.search.indexOf("refId") + 6));
+                    axios.post("/postSetting",$.param(this.setting)
+                    ).then((response) => {
+                        console.log("已设置参数: ", response.data);
+                    });
+                }else {
+                    this.src = "lesson";
+                    if(window.location.search.indexOf("refId") !== -1) {
+                        this.setting.src = "lesson";
+                        this.setting.sys = window.location.search.substr((window.location.search.indexOf("refId") + 6));
+                    }else {
+                        this.setting.src = "lesson";
+                        this.setting.sys = window.location.search.substr((window.location.search.lastIndexOf("lesson") + 7));
+                        this.setting.lev = window.location.search.substring((window.location.search.indexOf("lev") + 4),1);
+                    }
+                    axios.post("/postSetting",$.param(this.setting)
+                    ).then((response) => {
+                        console.log("已设置参数: ", response.data);
+                    });
+                }
+            }
+        },
+
+        watch: {},
+
+        created() {
+            if(localStorage.getItem('SMTusername') !== null) {
+                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                    localStorage.clear();
+                    window.location.replace('/login');
+                }
+            }else {
+                window.location.replace('/login');
+            }
+            if(sessionStorage.getItem('questionId') !== null) {  // 如果已经进入刷题状态了，就读取 session
+                console.log("已有 sessionStorage", sessionStorage.getItem('questionId'));
+                this.num = parseInt(sessionStorage.getItem('questionId'));
+                this.is_show = parseInt(sessionStorage.getItem('isShown'));
+                this.remain = parseInt(sessionStorage.getItem('remainNum'));
+                this.totalNum = parseInt(sessionStorage.getItem('total'));
+                this.opt_num = parseInt(sessionStorage.getItem('opt'));
+                this.src = sessionStorage.getItem('src');
+                this.opt_box = sessionStorage.getItem('optlist').split(',').map(Number);
+                this.txt_box = sessionStorage.getItem('txtlist').split(',').map(Number);
+                this.prob_list = sessionStorage.getItem('problist').split(',').map(Number);
+                this.id = parseInt(sessionStorage.getItem('id'));
+                if(sessionStorage.getItem('imgSrc') !== "") {
+                    this.img_src = sessionStorage.getItem('imgSrc').split(',');
+                }
+                if(sessionStorage.getItem('list') !== "") {
+                    this.done_list = sessionStorage.getItem('list').split(',').map(Number);
+                }
+                if(this.is_show === 0) {
+                    document.getElementById("drawer").className = "drawer2";
+                }else {
+                    document.getElementById("drawer").className = "drawer1";
+                }
+            }else {   // 未在刷题状态，设置新的 param
+                console.log("未在刷题状态，设置新的 param");
+                this.setParam();
+            }
+            this.$nextTick(() => {
+                this.setInitPaper();
+            });
+            window.onbeforeunload = function (event) {
+                var url = sessionStorage.getItem('lastUrl');
+                history.replaceState('change',null,url);
+            }
+        },
+
+        mounted() {
+            this.remember(this.num);
+            this.setSheet();
+        },
+    })
+</script>
+</html>
