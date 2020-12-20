@@ -86,7 +86,6 @@ eval_res 为 1 表示正确
 （按重要性排序，伴随着解决旧问题、提出新问题而持续更新）
 ### 1. 页面结构大部分相同的 html 应该兼并为一个 html
 合并html ✅
-上图中标红线的 html，最后应合并为 2 个 html， 即选择题和文本题，命名为 `prob_opt_marked.html` 和 `prob_txt_marked.html`
 
 ### 2. js 代码 clean
 1. 命名规则
@@ -104,24 +103,13 @@ eval_res 为 1 表示正确
 2. 代码格式与可读性
 - js 中所有判断使用三等号 `===` 和 `!==`
 - 重复使用的长变量可以使用临时变量，比如多次调用 `sheet.sheet_list[i]` ，则设置 `var cur_problem = sheet.sheet_list[i];  // cur_problem: 答题卡中的某一题` 命名要一目了然，尽量不要设置 `var temp` 这种模棱两可的变量，也不要设置 `curproblem` `optlist` 这种未下划线分割的不规范命名
-- 代码冗余：
-![](http://qkaz4czp3.hn-bkt.clouddn.com/Snip20201124_204042.png)
-例如上图这种代码是肯定是可以“想办法”大大压缩的，数组化、字典化、参数化、函数化、模块化
+- 代码冗余 ✅
 
-3. 代码健壮性
-多考虑 exception 和 corner-case，比如使用 `substr()` 和 `split()` 这种字符串函数时，在字符串可能为 null 的情况下，一定要判断 `if(string !== null)`, 比如 `resolve()` 一定要配合 `Promise` 使用，确保浏览器的控制台 0 error
+3. 代码健壮性 ✅
 
-### 3. seesion 和 cookie 的使用、用户数据、用户行为
-- 用户有很多不规则操作，比如刷到一半点前进、后退、刷新、关闭，输入URL随意跳转页面等，伴随着 session 和 cookie 的 storage， 这些情况下前端很容易出现错乱
-- session 和 cookie 尽量不要滥用，越少越好，少存储本地变量，多做即时的 api 请求，来get信息判断
-- “想办法”禁止或避免用户进行非常识性的操作，比如已经进入到刷题结果页面了，就不能 back 到做题页面，如果用户自行点 back，按照逻辑就应该  redirect 到首页，而非重新做题、篡改等
+### 3. seesion 和 cookie 的使用、用户数据、用户行为 ✅
 
-### 4. css 重构
-- 不紧急，但是利于后续维护
-- 逐渐将 `<div id="u27">` 这样不直观的标签修改、取消，统一为可读性强的 css 结构
-- 多使用 ElementUI 中的组件加强统一性
-- 实现页面的响应式、伸缩性，在任何尺寸的电脑屏幕上都不错乱
-
+### 4. css 重构 ✅
 
 ## 备注
 - 目前的做题判题三大主要 API：
@@ -173,23 +161,80 @@ eval_res 为 1 表示正确
 }
 ```
 
-### 11-30 更新说明 @李
+### 11-30 ~ 12-03 更新说明 @李
 1.完成了所有页面HTML的id和css规范命名，将“句子改写题”暂时更名为文本题  
 2.在ExerciseController.java中将部分接口url漏掉的"/"补上  
 3.对prob_opt_marked和prob_txt_marked两个页面的函数做了一些改动，修复了<b>选择题做题页面更改选择后原先选择不会变白</b>、<b>文本题做题页面交卷时正在做的题不会提交答案</b>、<b>文本题刷题详情页面用户答案无法显示</b>这三个bug  
 一个建议：目前文本题只有题干，而没有其他任何提示，用户只能看到一句英文而不知道要干什么（如：是要改写句子，还是改错，还是填空）
+添加了对于用户后退、前进的控制。现在如果用户在刷题过程中，则可以后退到之前的非刷题页面，但无法再前进到刷题页面；如果用户完成了刷题，则无法后退到刷题页面。  
+例如：用户从A页面（非刷题页面）跳转到B页面（刷题页面），那么他可以再后退到A页面，但如果在回到A页面后又点击前进，那么他不会跳到B页面，而是跳转到A页面（看起来像是原地刷新一下）；  
+用户从A页面（非刷题页面）跳到B页面（刷题页面），完成刷题后来到C页面（结算页面），那么用户点击后退不会跳到B页面，而是会跳转到A页面。
+对prob_opt_marked和prob_txt_marked页面进行修改，修复一个在刷题结算页面，后退时触发的bug。  
+修改了prob_txt页面的交卷函数，现在假设用户在做某道文本题时交卷，如果用户在文本框里输入了内容，则这道题也会被提交；如果用户的输入框中为空，则这道题会视为没做。  
+对所有页面的head部分进行修改，使得对于任何浏览器在读css表时都采用utf-8编码。
+对prob_opt、prob_txt、prob_opt_marked、prob_txt_marked页面进行了修改，修复了一个刷新会导致页面跳转错误的bug。
 
-### 12-01 更新说明 @李
-    添加了对于用户后退、前进的控制。现在如果用户在刷题过程中，则可以后退到之前的非刷题页面，但无法再前进到刷题页面；如果用户完成了刷题，则无法后退到刷题页面。  
+### 12-20 更新说明 @许
+- 前端注意: 有时做完题答题卡没渲染出来(全白), 刷新一下可渲染. 考虑有什么 bug 要解决
+基本完成了出题算法的实现, 并且提供 API 可供即时的调用观察
+(题目难度暂未考虑, 后续进行)
+主要包含以下 API
 
-    例如：用户从A页面（非刷题页面）跳转到B页面（刷题页面），那么他可以再后退到A页面，但如果在回到A页面后又点击前进，那么他不会跳到B页面，而是跳转到A页面（看起来像是原地刷新一下）；  
-
-    用户从A页面（非刷题页面）跳到B页面（刷题页面），完成刷题后来到C页面（结算页面），那么用户点击后退不会跳到B页面，而是会跳转到A页面。
-
-### 12-02 更新说明 @李
-    对prob_opt_marked和prob_txt_marked页面进行修改，修复一个在刷题结算页面，后退时触发的bug。  
-    修改了prob_txt页面的交卷函数，现在假设用户在做某道文本题时交卷，如果用户在文本框里输入了内容，则这道题也会被提交；如果用户的输入框中为空，则这道题会视为没做。  
-    对所有页面的head部分进行修改，使得对于任何浏览器在读css表时都采用utf-8编码。
-
-### 12-03 更新说明 @李
-    对prob_opt、prob_txt、prob_opt_marked、prob_txt_marked页面进行了修改，修复了一个刷新会导致页面跳转错误的bug。
+#### 1.遗忘曲线
+```java
+@GetMapping("/getFromForgetCurve")
+public ArrayList<Long> getFromForgetCurve(@RequestParam("num") Integer partNum) {
+    /**
+    * @description: 按照做过(不论对错)的题目遗忘曲线方式出题，占比 2道/20
+    * @return: 题目序号列表
+    */
+```
+#### 2.相似题目
+```java
+@GetMapping("/getFromSimilar")
+public ArrayList<Long> getFromSimilar(@RequestParam("num") Integer partNum) {
+    /**
+    * @description: 根据该 level 内做错的相似题目出题，占比 5道/20，没有信息则随机
+    * @return: 题目序号列表
+    */
+```
+#### 3.新知识点(本课堂所学 lesson 对应的题)
+```java
+@GetMapping("/getFromNew")
+public ArrayList<Long> getFromNew(@RequestParam("lesson") Long lesson_id, @RequestParam("num") Integer partNum) {
+    /**
+    * @description: 根据用户当前的新知识点出题，即课课练中的当堂知识点出题，10道/20
+    * @return: 题目序号列表
+    */
+```
+#### 4.高频知识点(目前只包含一个考点:固定搭配)
+```java
+@GetMapping("/getHighFrequency")
+public ArrayList<Long> getHighFrequency(@RequestParam("num") Integer partNum) {
+    /**
+    * @description: 按照高频知识点出题，如固定搭配，占比 3道/20
+    * @return: 题目序号列表
+    */
+```
+#### 5.新入口: 推荐练习
+```java
+@GetMapping("/getFromRecommend")
+public ArrayList<Long> getFromRecommend(@RequestParam("num") Integer partNum) {
+    /**
+    * @description: 「推荐练习」模块，根据本次做错的题目，推荐相似的题目
+    *                目前按照同一考点来推
+    * @return: 题目序号列表
+    */
+```
+#### 6.新入口: 错题集(暂不考虑题量)
+```java
+@GetMapping(path = "/getWrong")
+public ArrayList<ProblemEvaluation> getWrong() {
+    /**
+    * @description: 获取用户做错的所有题 + 题的评判信息
+    * @return: 类似 sheetTemp 的列表
+    */
+```
+用法举例: `http://127.0.0.1:8080//getFromNew?lesson=4&num=10`
+返回 `[10199,10200,10201,10202,10203,10229,10230,10231,10232,10233]`
+当满足要求的题目足够时, 会随机截取 num 个数量的题目11

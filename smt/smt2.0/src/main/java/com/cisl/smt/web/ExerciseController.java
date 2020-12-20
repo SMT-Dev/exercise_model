@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 public class ExerciseController {
@@ -69,7 +70,9 @@ public class ExerciseController {
     }
 
     @GetMapping("/demo")
-    public ModelAndView demo() {
+    public ModelAndView demo(@RequestParam("src") String src) {
+        SettingTemp settingTemp = SettingTemp.getInstance();
+        settingTemp.setSrc(src);
         ModelAndView mav;
         mav = new ModelAndView("demo");
         return mav;
@@ -83,7 +86,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/prob_opt_marked")
-    public ModelAndView prob_opt_marked() { 
+    public ModelAndView prob_opt_marked() {
         ModelAndView mav;
         mav = new ModelAndView("prob_opt_marked");
         return mav;
@@ -98,7 +101,7 @@ public class ExerciseController {
 
     @GetMapping(path = "/getProblem")
     public Problem getProblem(@RequestParam() Long num) {
-        Problem pb = problemService.getProblem(num);
+        Problem pb = problemService.getProblemByProb_id(num);
         return pb;
     }
 
@@ -134,10 +137,26 @@ public class ExerciseController {
         return st;
     }
 
-    private Long countScore(ArrayList<ProblemAnsTemp> probList){
+    private Long countScore(ArrayList<ProblemAnsTemp> probList) {
         int sum = 0;
         for (ProblemAnsTemp pt : probList) sum += pt.getEval_res();
-        return (long) sum*100/probList.size();
+        return (long) sum * 100 / probList.size();
+    }
+
+    private ArrayList<Long> stringToList(String str) {
+        //TODO: 要学会 lambda 表达式
+        //List<User> userList = asList(new User("张三" , 10) , new User("李四" , 10) , new User("王五" , 13));
+        //String result = userList.stream().map(User::getUsername).collect(Collectors.joining("," , "[" , "]"));
+        ArrayList<Long> resList = new ArrayList<>();
+        str = str.substring(1, str.length() - 1);
+        if (!str.contains(",")) {
+            resList.add(Long.valueOf(str));
+        } else {
+            String[] strSplit = str.split(",");
+            for (String item : strSplit)
+                resList.add(Long.valueOf(item));
+        }
+        return resList;
     }
 
     @GetMapping(path = "/getJudgeDetail")
@@ -174,6 +193,8 @@ public class ExerciseController {
             if (pt.getFinish() == 0)   // 只记录做了的题
                 continue;
             ProblemEvaluation pe = new ProblemEvaluation();
+            //TODO prob_eval_id 设置：当前系统毫秒数
+            pe.setProb_eval_id(System.currentTimeMillis());
             pe.setProb_id(pt.getIdx());
             pe.setUser_id(USER_ID);
             pe.setChoice(pt.getChoice());
@@ -187,53 +208,42 @@ public class ExerciseController {
             pe.setProb_eval_time(sdf.format(new Date()));
             pe.setConsume_time((long) 20);
 
-            problemEvalService.insertProblemEval(pe);
+            try {
+                if (problemEvalService.getProblemEvalById(pe.getProb_eval_id()) == null) {
+                    problemEvalService.insertProblemEval(pe);
+                    System.out.println("已插入");
+                } else {
+                    System.out.println(problemEvalService.getProblemEvalById(pe.getProb_eval_id()));
+                    System.out.println("已存在");
+                }
+            } catch (org.springframework.dao.DataIntegrityViolationException e) {
+                System.out.println(problemEvalService.getProblemEvalById(pe.getProb_eval_id()));
+                System.out.println("重复插入,忽略");
+            }
 
-            if (pe.getProb_eval_res() == 0 && false) {   // 如果是错题
-                //TODO 暂时有 bug  稍后实现
+
+            if (pe.getProb_eval_res() == 0) {   // 如果是错题
                 String probEvalListStr, probListStr;
-                ArrayList<Long> probList = new ArrayList<>();
-                ArrayList<Long> probEvalList = new ArrayList<>();
+                ArrayList<Long> probList;
+                ArrayList<Long> probEvalList;
                 try {
-                    probEvalListStr = reviewCollecService.getCollec(USER_ID).getProb_eval_list();
                     probListStr = reviewCollecService.getCollec(USER_ID).getProb_list();
-                    //此处获取的是 prob_eval_id 列表，而非 problem 的 Id
-                    probEvalListStr = probEvalListStr.substring(1, probEvalListStr.length() - 1);
-                    probListStr = probListStr.substring(1, probListStr.length() - 1);
+                    probEvalListStr = reviewCollecService.getCollec(USER_ID).getProb_eval_list();
 
-                    String[] probEvalListSplit = probEvalListStr.split(",");
-                    String[] probListSplit = probListStr.split(",");
-                    for (String str : probEvalListSplit) {
-                        probEvalList.add(Long.valueOf(str));
-                    }
-                    for (String str : probListSplit) {
-                        probList.add(Long.valueOf(str));
-                    }
+                    probList = stringToList(probListStr);
+                    probEvalList = stringToList(probEvalListStr);
                 } catch (Exception e) {
                     //如果暂时没有此用户的记录，就 new 一个空的
-//                    reviewCollecService.insertCollec(USER_ID, "[1606562925251, 1606562925253]", "[10001, 10002]");
+//                    reviewCollecService.insertCollec(USER_ID, "[1606562924833]", "[10001]");
+                    System.out.println(getException(e));
                     return st;
                 }
 
-                if (probList.indexOf(pt.getIdx()) == -1){  //现在的方法是不重复 才加入
+                if (probList.indexOf(pt.getIdx()) == -1) {  //现在的方法是不重复 才加入
                     probEvalList.add(pe.getProb_eval_id());   //核心步骤：加入 eval_id
                     probList.add(pt.getIdx());
-                    String eval_list_res = "[";
-                    for (Long val : probEvalList) {
-                        eval_list_res = eval_list_res.concat(val.toString() + ",");
-                    }
-                    eval_list_res = eval_list_res.substring(0, eval_list_res.length() - 1);
-                    eval_list_res = eval_list_res.concat("]");
-                    System.out.println(eval_list_res);
 
-                    String list_res = "[";
-                    for (Long val : probList) {
-                        list_res = list_res.concat(val.toString() + ",");
-                    }
-                    list_res = list_res.substring(0, list_res.length() - 1);
-                    list_res = list_res.concat("]");
-                    System.out.println(list_res);
-                    reviewCollecService.updateCollec(USER_ID, eval_list_res, list_res);   //更新该用户的错题集
+                    reviewCollecService.updateCollec(USER_ID, probEvalList.toString().replaceAll(" ", ""), probList.toString().replaceAll(" ", ""));   //更新该用户的错题集
                 }
             }
         }
@@ -244,23 +254,43 @@ public class ExerciseController {
         return st;
     }
 
-    public ArrayList<Long> getFromLesson(Integer lesson, Integer totalNum) {
+    private List<Problem> customizeProbList(List<Problem> probList, Integer choiceNum, Integer txtNum) {
         /**
-         * @description: 从对应的 lesson 中抽取题目，难度配比
+         * @description: 根据参数，定制题目列表
+         *      随机打乱一套题目的顺序，保证选择题排在文本题前面，给定题目类型和难度参数
          * @return: 题目序号列表
          */
-        ArrayList<Long> probList = new ArrayList<>();
-        for (int i = 10001; i <= 10017; i++) {
-            probList.add((long) i);
-        }
-        Collections.shuffle(probList);
-
-        for (int i = 10259; i <= 10266; i++) {
-            probList.add((long) i);
+        List<Problem> choiceProblemList = new ArrayList<>();
+        List<Problem> txtProblemList = new ArrayList<>();
+        for (Problem pro : probList) {
+            if (pro.getProb_attr().equals("Choice"))
+                choiceProblemList.add(pro);
+            else txtProblemList.add(pro);
         }
 
+        List<Problem> resList = new ArrayList<>();
+        try {
+            Collections.shuffle(choiceProblemList);
+            resList = choiceProblemList.subList(0, choiceNum);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("276: 当前 level 的选择题数量不够，题库有问题");
+        }
+        try {
+            Collections.shuffle(txtProblemList);
+            resList.addAll(txtProblemList.subList(0, txtNum));
+        } catch (IndexOutOfBoundsException e) {
+            //当前 level 的文本题数量不够，选择题凑
+            resList.addAll(choiceProblemList.subList(choiceNum, choiceNum + txtNum - txtProblemList.size()));
+            resList.addAll(txtProblemList);
+        }
 
-        return probList;
+        return resList;
+    }
+
+    public Long getOneRandom() {
+        int max = 10400, min = 10000;
+        int res = new Random().nextInt(max - min) + min;
+        return (long) res;
     }
 
     public ArrayList<Long> getFromNaive(Integer totalNum) {
@@ -269,7 +299,7 @@ public class ExerciseController {
          * @return: 题目序号列表
          */
         ArrayList<Long> probList = new ArrayList<>();
-        if(totalNum == 25){
+        if (totalNum == 25) {
             for (int i = 10001; i <= 10017; i++) {
                 probList.add((long) i);
             }
@@ -277,15 +307,15 @@ public class ExerciseController {
             for (int i = 10259; i <= 10266; i++) {
                 probList.add((long) i);
             }
-        }else if(totalNum == 20){
-            for (int i = 10001; i <= 10015; i++) {
+        } else if (totalNum == 20) {
+            for (int i = 10001; i <= 10010; i++) {
                 probList.add((long) i);
             }
             Collections.shuffle(probList);   //打乱顺序
-            for (int i = 10259; i <= 10263; i++) {
+            for (int i = 10279; i <= 10288; i++) {
                 probList.add((long) i);
             }
-        }else {
+        } else {
             for (int i = 10001; i <= 10012; i++) {
                 probList.add((long) i);
             }
@@ -298,44 +328,154 @@ public class ExerciseController {
         return probList;
     }
 
-    public ArrayList<Long> getFromForgetCurve(Integer partNum) {
+    public ArrayList<Long> getFromLesson(Long lesson_id, Integer totalNum) {
         /**
-         * @description: 按照做过(不论对错)的题目遗忘曲线方式出题，占比 40%
+         * @description: 从对应的 lesson 中抽取题目，默认文本与选择各占一半
          * @return: 题目序号列表
          */
+        ArrayList<Long> probNumList = new ArrayList<>();
+        List<Problem> probList = problemService.getProblemByLesson_id(lesson_id);
+
+        //从数据库中取出给定 lesson 的题，交给 customize 定制
+        probList = customizeProbList(probList, totalNum / 2, totalNum / 2);
+        for (Problem pro : probList)
+            probNumList.add(pro.getProb_id());
+
+        return probNumList;
+    }
+
+    @GetMapping("/getFromForgetCurve")
+    public ArrayList<Long> getFromForgetCurve(@RequestParam("num") Integer partNum) {
+        /**
+         * @description: 按照做过(不论对错)的题目遗忘曲线方式出题，占比 2道/20
+         * @return: 题目序号列表
+         */
+        //TODO 以两周为分界线
         ArrayList<Long> probList = new ArrayList<>();
+        ArrayList<ProblemEvaluation> probEvalList = problemEvalService.getProblemEvalByUser(USER_ID);
+        Collections.shuffle(probEvalList);
+        for (int i = 0; i < partNum; i++)
+            probList.add(probEvalList.get(i).getProb_id());
 
         return probList;
     }
 
-    public ArrayList<Long> getFromSimilar(Integer partNum) {
+    @GetMapping("/getFromSimilar")
+    public ArrayList<Long> getFromSimilar(@RequestParam("num") Integer partNum) {
         /**
-         * @description: 根据该 level 内做错的相似题目出题，占比 40%，没有信息则随机
+         * @description: 根据该 level 内做错的相似题目出题，占比 5道/20，没有信息则随机
          * @return: 题目序号列表
          */
+        String probEvalListStr = reviewCollecService.getCollec(USER_ID).getProb_eval_list();
+        ArrayList<Long> probEvalList = stringToList(probEvalListStr); //所有错题
+        ArrayList<Long> wrongList = new ArrayList<>();
         ArrayList<Long> probList = new ArrayList<>();
+        Integer curLevel = SettingTemp.getInstance().getLev();
+        for (Long num : probEvalList) {
+            Long probId = problemEvalService.getProblemEvalById(num).getProb_id();
+            //只选取level 等于 当前level的题
+            if (Integer.valueOf(problemService.getProblemByProb_id(probId).getProb_level()).equals(curLevel))
+                wrongList.add(probId);
+        }
+        Collections.shuffle(wrongList);
+
+        try {
+            wrongList = new ArrayList<>(wrongList.subList(0, partNum)); //wrongList 表示在当前 level 的错题,选取了 5 道
+        } catch (IndexOutOfBoundsException e) {
+            //数量不够, 不切割,
+            ;
+        }
+        int curSum = 0;
+        for (Long wrongId : wrongList) {
+            Long pointId = problemService.getProblemByProb_id(wrongId).getProb_id();  //找到对应的知识点
+            List<Problem> pointProblemList = problemService.getProblemByPoint_id(pointId); //找到同知识点的所有题
+            List<Long> tmpList = pointProblemList.stream().map(Problem::getProb_id).collect(Collectors.toList());
+
+            if (curSum + tmpList.size() >= partNum) {
+                //数量已足够
+                probList.addAll(tmpList.subList(0, partNum - curSum));
+                break;
+            } else
+                probList.addAll(tmpList);
+            curSum += tmpList.size();
+        }
+
+        while (curSum < partNum) {
+            //题目仍然不够
+            probList.add(getOneRandom());
+            curSum++;
+        }
+
 
         return probList;
     }
 
-    public ArrayList<Long> getFromNew(Integer partNum) {
+    @GetMapping("/getFromNew")
+    public ArrayList<Long> getFromNew(@RequestParam("lesson") Long lesson_id, @RequestParam("num") Integer partNum) {
         /**
-         * @description: 根据用户当前的新知识点出题，占比 10%
+         * @description: 根据用户当前的新知识点出题，即课课练中的当堂知识点出题，10道/20
          * @return: 题目序号列表
          */
-        ArrayList<Long> probList = new ArrayList<>();
+        ArrayList<Long> probList = getFromLesson(lesson_id, partNum);
 
         return probList;
     }
 
-    public ArrayList<Long> getHighFrequency(Integer partNum) {
+    @GetMapping("/getHighFrequency")
+    public ArrayList<Long> getHighFrequency(@RequestParam("num") Integer partNum) {
         /**
-         * @description: 按照高频知识点出题，如固定搭配，占比 10%
+         * @description: 按照高频知识点出题，如固定搭配，占比 3道/20
          * @return: 题目序号列表
          */
         ArrayList<Long> probList = new ArrayList<>();
+        // 数据库中 0 表示固定搭配，-1 表示未知考点
+        ArrayList<Problem> problemList = new ArrayList<>(problemService.getProblemByPoint_id((long) 0));
+        for (Problem problem : problemList)
+            probList.add(problem.getProb_id());
+
+        Collections.shuffle(probList);
+        probList = new ArrayList<>(probList.subList(0, partNum));
 
         return probList;
+    }
+
+    @GetMapping("/getFromRecommend")
+    public ArrayList<Long> getFromRecommend(@RequestParam("num") Integer partNum) {
+        /**
+         * @description: 「推荐联系」模块，根据本次做错的题目，推荐相似的题目
+         *                目前按照同一考点来推
+         * @return: 题目序号列表
+         */
+        ArrayList<ProblemEvaluation> wrongList = getWrong();
+        ArrayList<Long> pointList = new ArrayList<>();
+        ArrayList<Long> outputProblemList = new ArrayList<>();
+        for (ProblemEvaluation pe : wrongList)
+            //收集所有错题的考点
+            pointList.add(problemService.getProblemByProb_id(pe.getProb_id()).getPoint_id());
+        Collections.shuffle(pointList);
+        for (Long pointId : pointList) {
+            List<Problem> allProb = problemService.getProblemByPoint_id(pointId);
+            //聚集该考点的所有题目-题号
+            outputProblemList.addAll(allProb.stream().map(Problem::getProb_id).collect(Collectors.toList()));
+        }
+        Collections.shuffle(outputProblemList);
+        outputProblemList = reorganizeProbList(outputProblemList);
+        outputProblemList = new ArrayList<>(outputProblemList.subList(0, partNum));
+
+        return outputProblemList;
+    }
+
+    private ArrayList<Long> reorganizeProbList(ArrayList<Long> tmpList) {
+        ArrayList<Long> orderList = new ArrayList<>();
+        for (Long tmpNum : tmpList)
+            if (problemService.getProblemByProb_id(tmpNum).getProb_attr().equals("Choice"))
+                orderList.add(tmpNum);
+
+        for (Long tmpNum : tmpList)
+            if (!problemService.getProblemByProb_id(tmpNum).getProb_attr().equals("Choice"))
+                orderList.add(tmpNum);
+
+        return orderList;
     }
 
 
@@ -347,52 +487,52 @@ public class ExerciseController {
          */
         //TODO 也应该接受一个 id
         //TODO 实现各种出题逻辑,包括设置选择题和文本题各自的题量
-        //setting 中 src: ai  sys: smt  lev: 1-6   prob: 15 20 25
-        //15 = 6+6+2+1, 20 = 8+8+2+2, 25 = 10+10+3+2  可以设置个选项，默认只有选择题
-
-        HashMap<Integer, Integer[]> probPartMap = new HashMap<>();
-        probPartMap.put(15, new Integer[]{6,6,2,1});
-        probPartMap.put(20, new Integer[]{8,8,2,2});
-        probPartMap.put(25, new Integer[]{10,10,3,2});
-        int forgetCurveIdx = 0;
-        int simillarIdx = 1;
-        int newIdx = 2;
-        int highFrequencyIdx = 3;
+        //setting 中 src: lesson/wrong/recommend
+        //题量-20，其中新知识点-10，基于相似-5，高频练习-3，基于遗忘曲线-2（新知识点10题数量不可改变）
 
 
         SettingTemp settingTemp = SettingTemp.getInstance();
         ArrayList<Long> probList = new ArrayList<>();
-        Integer totalNum = settingTemp.getProbNum();
+        Integer totalNum = settingTemp.getProbNum();  //lesson 默认 totalNum = 20
         Integer level = settingTemp.getLev();
-        if(settingTemp.getSrc().equals("ai")){
-            //进入 AI 刷题温故知新, 依次接收四个来源
-//            probList.addAll(getFromForgetCurve(probPartMap.get(totalNum)[forgetCurveIdx]));
-//            probList.addAll(getFromSimilar(probPartMap.get(totalNum)[simillarIdx]));
-//            probList.addAll(getFromNew(probPartMap.get(totalNum)[newIdx]));
-//            probList.addAll(getHighFrequency(probPartMap.get(totalNum)[highFrequencyIdx]));
-        }
-        else if(settingTemp.getSrc().equals("lesson")){
-            //进入课课练做题，只按照 lesson 抽取, 此处 sys 代表课时
-//            Integer lesson = Integer.valueOf(settingTemp.getSys());
-//            probList.addAll(getFromLesson(lesson, totalNum));
-        }
-        else if(settingTemp.getSrc().equals("test")){
+        System.out.println(settingTemp);
+        if (settingTemp.getSrc().equals("ai")) {
+            //进入 AI 刷题温故知新, 依次接收四个来源. 2.0 版本已废弃
+        } else if (settingTemp.getSrc().equals("lesson")) {
+            //进入课课练做题，V2.0版本中，按照 4 个来源组合抽取, 此处 sys 代表lesson_id
+            Long lesson_id = Long.valueOf(settingTemp.getSys());
+            ArrayList<Long> tmpList = new ArrayList<>();
+            tmpList.addAll(getFromNew(lesson_id, 10));
+            tmpList.addAll(getFromSimilar(5));
+            tmpList.addAll(getHighFrequency(3));
+            tmpList.addAll(getFromForgetCurve(2));
+
+            //保证选择题在文本题前面
+            probList = reorganizeProbList(tmpList);
+
+        } else if (settingTemp.getSrc().equals("test")) {
             //进入双周测 or 阶段测做题，此处 sys=7-8 表示7-8周
 //            String week = settingTemp.getSys();
 //            probList.addAll(getFromLesson(lesson, totalNum));
-        }
-        else if(settingTemp.getSrc().equals("recomnd")){
+        } else if (settingTemp.getSrc().equals("recomnd")) {
             //进入推荐练习做题，只按照 lesson 抽取, 此处 sys 代表 redId=8888（参考的试卷）
 //            Integer refId = Integer.valueOf(settingTemp.getSys());
-//            probList.addAll(getFromLesson(lesson, totalNum));
-        }
-        else if(settingTemp.getSrc().equals("wrong")){
+            probList = getFromRecommend(totalNum);
+
+        } else if (settingTemp.getSrc().equals("wrong")) {
             //进入错题集做题，此处 sys 无意义
-//            probList.addAll(getFromLesson(lesson, totalNum));
+            //注意一定要按顺序，选择在前，文本在后
+            for (ProblemEvaluation pe : getWrong()) {
+                if (problemService.getProblemByProb_id(pe.getProb_id()).getProb_attr().equals("Choice"))
+                    probList.add(pe.getProb_id());
+            }
+            for (ProblemEvaluation pe : getWrong()) {
+                if (!problemService.getProblemByProb_id(pe.getProb_id()).getProb_attr().equals("Choice"))
+                    probList.add(pe.getProb_id());
+            }
         }
 
-        probList = getFromNaive(totalNum);
-        //TODO 以上方法暂未实现，暂时使用 naive 覆盖
+//        probList = getFromNaive(totalNum)
 
 
         SheetTemp st = SheetTemp.getInstance();
@@ -406,7 +546,7 @@ public class ExerciseController {
         for (Long probNum : probList) {  //将题目填入 sheet_list
             ProblemAnsTemp pt = new ProblemAnsTemp();
 
-            Problem p = problemService.getProblem(probNum);
+            Problem p = problemService.getProblemByProb_id(probNum);
             if (p.getProb_attr().equals("Choice")) {
                 optNum++;
                 pt.setType("opt");
@@ -431,7 +571,7 @@ public class ExerciseController {
         Exercise exercise = new Exercise();
         exercise.setExercise_id(st.getId());
         exercise.setGrammar_id((long) -1);
-        exercise.setProb_list(probList.toString());
+        exercise.setProb_list(probList.toString().replaceAll(" ", ""));
         exercise.setExercise_attr("ai");
         exercise.setUpdate_time(sdf.format(new Date()));
 
@@ -480,7 +620,7 @@ public class ExerciseController {
     }
 
     @GetMapping(path = "/homepageInitial")
-    public HashMap<String, Integer> homepageInitial(){
+    public HashMap<String, Integer> homepageInitial() {
         // 主页初始化操作
         HashMap<String, Integer> map = new HashMap<String, Integer>();
         map.put("level", 1);
@@ -491,6 +631,10 @@ public class ExerciseController {
     @GetMapping(path = "/getHistory")
     public List<ExerciseEvaluation> getHistory() {
         // TODO 加上参数用户 id
+        /**
+         * @description: 获取用户做的历史试卷
+         * @return: 试卷序号列表
+         */
         return exerciseEvalService.getExerciseEval(USER_ID);
     }
 
@@ -509,20 +653,18 @@ public class ExerciseController {
 
     @GetMapping(path = "/getWrong")
     public ArrayList<ProblemEvaluation> getWrong() {
-        // TODO String 转 List 专门做一个函数
+        /**
+         * @description: 获取用户做错的所有题 + 题的评判信息
+         * @return: 类似 sheetTemp 的列表
+         */
         ArrayList<ProblemEvaluation> wrongList = new ArrayList<>();
 
         try {
-            String probEvalStr = reviewCollecService.getCollec(USER_ID).getProb_eval_list();
-            ArrayList<Long> probEvalList = new ArrayList<>();
-            probEvalStr = probEvalStr.substring(1, probEvalStr.length() - 1);
-            String[] probListSplit = probEvalStr.split(",");
-            for (String str : probListSplit) {
-                probEvalList.add(Long.valueOf(str));
-            }
-            for (Long probEvalId : probEvalList) {
-                wrongList.addAll(problemEvalService.getProblemEvalById(probEvalId));
-            }
+            String probEvalListStr = reviewCollecService.getCollec(USER_ID).getProb_eval_list();
+            System.out.println("getWrong558: " + probEvalListStr);
+            ArrayList<Long> probEvalList = stringToList(probEvalListStr);
+            for (Long probEvalId : probEvalList)
+                wrongList.add(problemEvalService.getProblemEvalById(probEvalId));
         } catch (Exception e) {
             System.out.println(getException(e));
         }

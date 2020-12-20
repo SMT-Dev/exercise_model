@@ -5,6 +5,8 @@ import com.cisl.smt.po.Problem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProblemServiceImpl implements ProblemService{
     /**
@@ -17,8 +19,17 @@ public class ProblemServiceImpl implements ProblemService{
     private ProblemRepository problemRepository;
 
     @Override
-    public Problem getProblem(Long num){
-        Problem problem = problemRepository.findByProb_id(num);
-        return problem;
+    public Problem getProblemByProb_id(Long num){
+        return problemRepository.getProblemByProb_id(num);
+    }
+
+    @Override
+    public List<Problem> getProblemByLesson_id(Long lesson_id){
+        return problemRepository.getProblemByLesson_id(lesson_id);
+    }
+
+    @Override
+    public List<Problem> getProblemByPoint_id(Long point_id){
+        return problemRepository.getProblemByPoint_id(point_id);
     }
 }

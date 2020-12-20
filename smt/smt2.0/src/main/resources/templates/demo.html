@@ -494,6 +494,14 @@
                     this.level = parseInt(sessionStorage.getItem("level"));
                     this.lesson = parseInt(sessionStorage.getItem("lesson"));
                     document.getElementById("heading2").innerHTML = "推荐练习";
+                    //wrong 暂时不需要设置 probNum，但是 recomnd 需要设置 probNum
+                    this.setting.src = "recomnd";
+                    this.setting.probNum = 20;
+                    this.setting.lev = parseInt(sessionStorage.getItem("level"));
+                    axios.post("/postSetting",$.param(this.setting)
+                    ).then((response) => {
+                        console.log("已设置参数: ", response.data);
+                    });
                 }else if(window.location.search.indexOf("wrong") > -1) {
                     this.src = "wrong";
                     document.getElementById("heading1").innerHTML = "错题练习";

@@ -9,6 +9,6 @@ public interface ProblemEvalService {
 
     ArrayList<ProblemEvaluation> getProblemEvalByUser(Long user_id);
 
-    ArrayList<ProblemEvaluation> getProblemEvalById(Long prob_eval_id);
+    ProblemEvaluation getProblemEvalById(Long prob_eval_id);
 
 }

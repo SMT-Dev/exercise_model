@@ -33,7 +33,7 @@ public class ProblemEvalServiceImpl implements ProblemEvalService {
     }
 
     @Override
-    public ArrayList<ProblemEvaluation> getProblemEvalById(Long prob_eval_id) {
+    public ProblemEvaluation getProblemEvalById(Long prob_eval_id) {
         return problemEvalRepository.getProblemEvalById(prob_eval_id);
     }
 
