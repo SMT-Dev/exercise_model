@@ -671,4 +671,20 @@ public class ExerciseController {
 
         return wrongList;
     }
+
+    @GetMapping("/getProblemList")
+    public ArrayList<Problem> getProblemList(@RequestParam("list") String listStr){
+        /**
+         * @description: 开放 API，给定 problem 的列表字符串参数，返回题目细节
+         * @return: Problem 的列表
+         */
+        listStr = listStr.replaceAll(" ", "");
+        listStr = "[" + listStr + "]";
+        ArrayList<Long> probList = stringToList(listStr);
+        ArrayList<Problem> outputList = new ArrayList<>();
+        for (Long num : probList)
+            outputList.add(problemService.getProblemByProb_id(num));
+
+        return outputList;
+    }
 }

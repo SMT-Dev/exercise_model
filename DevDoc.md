@@ -238,3 +238,15 @@ public ArrayList<ProblemEvaluation> getWrong() {
 用法举例: `http://127.0.0.1:8080//getFromNew?lesson=4&num=10`
 返回 `[10199,10200,10201,10202,10203,10229,10230,10231,10232,10233]`
 当满足要求的题目足够时, 会随机截取 num 个数量的题目11
+
+#### 辅助 API: 查看题目详情
+便于自动评测, 查看出题算法是否符合逻辑等
+```java
+@GetMapping("/getProblemList")
+public ArrayList<Problem> getProblemList(@RequestParam("list") String listStr){
+    /**
+    * @description: 开放 API，给定 problem 的列表字符串参数，返回题目细节
+    * @return: Problem 的列表
+    */
+```
+用法举例: `http://127.0.0.1:8080//getProblemList?list=10199,10200,10201`
