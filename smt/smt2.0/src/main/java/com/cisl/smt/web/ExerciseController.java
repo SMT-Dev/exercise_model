@@ -3,7 +3,7 @@ package com.cisl.smt.web;
 import com.cisl.smt.po.*;
 import com.cisl.smt.service.*;
 import com.cisl.smt.web.Temp.ProblemAnsTemp;
-import com.cisl.smt.web.Temp.ResultTemp;
+import com.cisl.smt.web.Temp.CommentTemp;
 import com.cisl.smt.web.Temp.SettingTemp;
 import com.cisl.smt.web.Temp.SheetTemp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class ExerciseController {
     private ReviewCollecService reviewCollecService;
 
     private long USER_ID = 3;   // 暂时的模拟变量
-    private ResultTemp resultTemp = new ResultTemp();  // 内部的试卷评估变量
+    private CommentTemp commentTemp = new CommentTemp();  // 内部的试卷评估变量
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -137,12 +137,6 @@ public class ExerciseController {
         return st;
     }
 
-    private Long countScore(ArrayList<ProblemAnsTemp> probList) {
-        int sum = 0;
-        for (ProblemAnsTemp pt : probList) sum += pt.getEval_res();
-        return (long) sum * 100 / probList.size();
-    }
-
     private ArrayList<Long> stringToList(String str) {
         //TODO: 要学会 lambda 表达式
         //List<User> userList = asList(new User("张三" , 10) , new User("李四" , 10) , new User("王五" , 13));
@@ -159,6 +153,36 @@ public class ExerciseController {
         return resList;
     }
 
+    private int countScore(ArrayList<ProblemAnsTemp> probList) {
+        int sum = 0;
+        for (ProblemAnsTemp pt : probList) sum += pt.getEval_res();
+        return sum * 100 / probList.size();
+    }
+
+    public int countHandleRate(ArrayList<ProblemAnsTemp> probList) {
+        /**
+         * @description: 计算该次测试的考点掌握程度，共 N 个考点，掌握 M 个，掌握程度 M/N
+         * 掌握的定义：该考点下做对比例超过一个 threshold, 暂定 70%
+         */
+        int threshold = 70;
+        int totalPointNum = 0;
+        int handlePointNum = 0;
+        HashMap<String, ArrayList<ProblemAnsTemp>> pointProbMap = new HashMap<>();
+        for (ProblemAnsTemp pt : probList) {
+            String pointId = pt.getPoint();
+            if (!pointProbMap.containsKey(pointId))
+                pointProbMap.put(pointId, new ArrayList<>());
+            pointProbMap.get(pointId).add(pt);
+        }
+        for (String pointId : pointProbMap.keySet()) {
+            totalPointNum += 1;
+            int rightNum = (int) pointProbMap.get(pointId).stream().filter(pt -> pt.getEval_res() == 1).count();
+            if (rightNum / pointProbMap.get(pointId).size() *100 > threshold)
+                handlePointNum += 1;
+        }
+        return handlePointNum *100 / totalPointNum;
+    }
+
     @GetMapping(path = "/getJudgeDetail")
     public SheetTemp getJudgeDetail(@RequestParam() Long id) {
         /**
@@ -166,7 +190,7 @@ public class ExerciseController {
          */
         SheetTemp st = SheetTemp.getInstance();   //获得唯一单例
         //TODO 不是返回当前的全局 SheetTemp 而是去数据库中抽取
-        //TODO 进行分数、掌握知识点等等的评价，写入 ResultTemp 和 exer_eval 数据库
+        //TODO 进行分数、掌握知识点等等的评价，写入 CommentTemp 和 t_exer_eval 数据库
 
 
         //最新的 SheetTemp 存入 t_exer_eval
@@ -174,15 +198,16 @@ public class ExerciseController {
         // t_exer_eval 中保存了 user_id 和 exercise_id
         ExerciseEvaluation ee = new ExerciseEvaluation();
 
-        Long evalScore = countScore(st.getSheet_list());
-        ee.setExer_eval_score(evalScore);
-        resultTemp.setScore(evalScore.intValue());
+        int evalScore = countScore(st.getSheet_list());
+        ee.setExer_eval_score((long) evalScore);
+        commentTemp.setScore(evalScore);
+        commentTemp.setHandle_rate(countHandleRate(st.getSheet_list()));
 
-        ee.setConsume_time((long) 120);
+        ee.setConsume_time((long) 120);  //TODO 做题用时
 
         String curTime = sdf.format(new Date());
         ee.setExer_eval_time(curTime);
-        resultTemp.setTime(curTime);
+        commentTemp.setTime(curTime);
 
         ee.setUser_id(USER_ID);
         exerciseEvalService.insertExerciseEval(ee);
@@ -604,19 +629,25 @@ public class ExerciseController {
         return settingTemp;
     }
 
-    @GetMapping(path = "/getResultAi")
-    public ResultTemp getResultAi(@RequestParam() Long id) {
-        return resultTemp;
+    @GetMapping(path = "/getCommentAi")
+    public CommentTemp getCommentAi(@RequestParam() Long id) {
+        /**
+         * @description: 根据用户此次做题结果，计算用户做题详情评论，如知识点掌握程度等
+         * @return: commentTemp 类
+         */
+        return commentTemp;
     }
 
-    @GetMapping(path = "/getResultLesson")
-    public ResultTemp getResultLesson(@RequestParam() Long id) {
-        return resultTemp;
+    @GetMapping(path = "/getCommentLesson")
+    public CommentTemp getCommentLesson(@RequestParam() Long id) {
+        commentTemp.setLesson(Integer.parseInt(SettingTemp.getInstance().getSys()));
+        commentTemp.setLevel(SettingTemp.getInstance().getLev());
+        return commentTemp;
     }
 
-    @GetMapping(path = "/getResultExtra")
-    public ResultTemp getResultExtra(@RequestParam() Long id) {
-        return resultTemp;
+    @GetMapping(path = "/getCommentExtra")
+    public CommentTemp getCommentExtra(@RequestParam() Long id) {
+        return commentTemp;
     }
 
     @GetMapping(path = "/homepageInitial")
@@ -673,7 +704,7 @@ public class ExerciseController {
     }
 
     @GetMapping("/getProblemList")
-    public ArrayList<Problem> getProblemList(@RequestParam("list") String listStr){
+    public ArrayList<Problem> getProblemList(@RequestParam("list") String listStr) {
         /**
          * @description: 开放 API，给定 problem 的列表字符串参数，返回题目细节
          * @return: Problem 的列表
