@@ -1,6 +1,6 @@
 package com.cisl.smt.web.Temp;
 
-public class ResultTemp {
+public class CommentTemp {
     /**
      * @description: 评卷结果综述
      * @author: Hopenx
@@ -10,10 +10,9 @@ public class ResultTemp {
     private String time = "2020-10-30 15:10:11";
     private int level = 1;
     private int score = 88;
-    private int unhandle = 88;
-    private int easy = 88;
-    private int medium = 88;
-    private int hard = 88;
+    private int lesson = 0;
+    private int avg_score = 88;
+    private int handle_rate = 88;
 
     public String getTime() {
         return time;
@@ -39,48 +38,39 @@ public class ResultTemp {
         this.score = score;
     }
 
-    public int getUnhandle() {
-        return unhandle;
+    public int getLesson() {
+        return lesson;
     }
 
-    public void setUnhandle(int unhandle) {
-        this.unhandle = unhandle;
+    public void setLesson(int lesson) {
+        this.lesson = lesson;
     }
 
-    public int getEasy() {
-        return easy;
+    public int getAvg_score() {
+        return avg_score;
     }
 
-    public void setEasy(int easy) {
-        this.easy = easy;
+    public void setAvg_score(int avg_score) {
+        this.avg_score = avg_score;
     }
 
-    public int getMedium() {
-        return medium;
+    public int getHandle_rate() {
+        return handle_rate;
     }
 
-    public void setMedium(int medium) {
-        this.medium = medium;
-    }
-
-    public int getHard() {
-        return hard;
-    }
-
-    public void setHard(int hard) {
-        this.hard = hard;
+    public void setHandle_rate(int handle_rate) {
+        this.handle_rate = handle_rate;
     }
 
     @Override
     public String toString() {
-        return "ResultTemp{" +
+        return "CommentTemp{" +
                 "time='" + time + '\'' +
                 ", level=" + level +
                 ", score=" + score +
-                ", unhandle=" + unhandle +
-                ", easy=" + easy +
-                ", medium=" + medium +
-                ", hard=" + hard +
+                ", lesson=" + lesson +
+                ", avg_score=" + avg_score +
+                ", handle_rate=" + handle_rate +
                 '}';
     }
 }

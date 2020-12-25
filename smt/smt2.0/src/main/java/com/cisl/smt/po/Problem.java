@@ -22,6 +22,7 @@ public class Problem {
     private Long lesson_id;
     private Long grammar_id;
     private Long point_id;
+    private Long blank_num;
 
     public Problem() {};
 
@@ -56,6 +57,14 @@ public class Problem {
     }
 
     public Long getLesson_id() { return lesson_id; }
+
+    public Long getBlank_num() {
+        return blank_num;
+    }
+
+    public void setBlank_num(Long blank_num) {
+        this.blank_num = blank_num;
+    }
 
     public void setLesson_id(Long lesson_id) {
         this.lesson_id = lesson_id;
@@ -103,6 +112,7 @@ public class Problem {
                 ", lesson_id=" + lesson_id +
                 ", grammar_id=" + grammar_id +
                 ", point_id=" + point_id +
+                ", blank_num=" + blank_num +
                 '}';
     }
 }
