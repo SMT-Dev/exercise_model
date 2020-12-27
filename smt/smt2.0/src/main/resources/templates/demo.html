@@ -24,10 +24,10 @@
             <div id="container2">
                 <div id="heading3">
                     <ul class="time">
+                        <el-divider id="line"></el-divider>
                         <li v-for="activity in activities">
-                            <el-divider :id="getLine(activity.index)"></el-divider>
                             <i :id="getId(activity.index)" class="el-icon-star-on" :style="{'color':activity.color}"></i>
-                            {{ activity.content }}
+                            <p><span>{{ activity.content }}</span></p>
                         </li>
                     </ul>
                 </div>
@@ -138,87 +138,7 @@
             answers_list: [],
             txt: [],
             input_num: [1,2],
-            activities: [{
-                content: 'Q1',
-                color: 'yellow',
-                index: 1
-            }, {
-                content: 'Q2',
-                color: 'yellow',
-                index: 2
-            }, {
-                content: 'Q3',
-                color: 'yellow',
-                index: 3
-            }, {
-                content: 'Q4',
-                color: 'yellow',
-                index: 4
-            }, {
-                content: 'Q5',
-                color: 'yellow',
-                index: 5
-            }, {
-                content: 'Q6',
-                color: 'yellow',
-                index: 6
-            }, {
-                content: 'Q7',
-                color: 'yellow',
-                index: 7
-            }, {
-                content: 'Q8',
-                color: 'yellow',
-                index: 8
-            }, {
-                content: 'Q9',
-                color: 'yellow',
-                index: 9
-            }, {
-                content: 'Q10',
-                color: 'yellow',
-                index: 10
-            },{
-                content: 'Q11',
-                color: 'yellow',
-                index: 11
-            }, {
-                content: 'Q12',
-                color: 'yellow',
-                index: 12
-            }, {
-                content: 'Q13',
-                color: 'yellow',
-                index: 13
-            }, {
-                content: 'Q14',
-                color: 'yellow',
-                index: 14
-            }, {
-                content: 'Q15',
-                color: 'yellow',
-                index: 15
-            }, {
-                content: 'Q16',
-                color: 'yellow',
-                index: 16
-            }, {
-                content: 'Q17',
-                color: 'yellow',
-                index: 17
-            }, {
-                content: 'Q18',
-                color: 'yellow',
-                index: 18
-            }, {
-                content: 'Q19',
-                color: 'yellow',
-                index: 19
-            }, {
-                content: 'Q20',
-                color: 'yellow',
-                index: 20
-            }]
+            activities: [],
         },
         methods: {
             chooseOption: function (option) {
@@ -265,10 +185,6 @@
 
             getId: function (option) {
                 return "icon_" + option;
-            },
-
-            getLine: function (option) {
-                return "line" + option;
             },
 
             confirm: function() {
@@ -474,7 +390,6 @@
             setInitPaper: async function () {
                 if(this.remain === -1) {
                     var res = await this.getInitPaper();
-                    console.log(res);
                     this.totalNum = res.sheet_list.length;
                     this.prob_list = res.num_list;   //直接获取题号序列
                     this.opt_num = res.opt_num;
@@ -483,6 +398,12 @@
                     this.opt_box = [];
                     this.txt_box = [];
                     for(var j = 1;j <= this.totalNum;j++) {
+                        var activityTemp = {};
+                        activityTemp.content = 'Q' + j.toString();
+                        activityTemp.index = j;
+                        activityTemp.color = 'yellow';
+                        this.activities.push(activityTemp);
+                        console.log(this.activities);
                         if(j > this.opt_num) {
                             this.txt_box.push(j);
                         }else {

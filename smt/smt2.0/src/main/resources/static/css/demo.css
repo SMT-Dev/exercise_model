@@ -161,21 +161,11 @@ body {
     display: none;
 }
 
-#line2,#line3,#line4,#line5,#line6,#line7,#line8,#line9,#line10 {
+#line {
     position: absolute;
     top: -13px;
-    left: -21px;
-    width: 180%;
-    z-index: 0;
-    height: 10px;
-    background-color: #330099;
-}
-
-#line11,#line12,#line13,#line14,#line15,#line16,#line17,#line18,#line19 {
-    position: absolute;
-    top: -13px;
-    left: -21px;
-    width: 180%;
+    left: 2.5%;
+    width: 95%;
     z-index: 0;
     height: 10px;
     background-color: #330099;
@@ -184,14 +174,17 @@ body {
 #icon_1,#icon_2,#icon_3,#icon_4,#icon_5,#icon_6,#icon_7,#icon_8,#icon_9,#icon_10 {
     position: relative;
     z-index: 1;
+    width: 100%;
 }
 
 #icon_11,#icon_12,#icon_13,#icon_14,#icon_15,#icon_16,#icon_17,#icon_18,#icon_19,#icon_20 {
     position: relative;
     z-index: 1;
+    width: 100%;
 }
 
 ul {
+    position: relative;
     margin: 0;
     padding: 0;
     width: 80%;
@@ -203,9 +196,11 @@ ul {
 }
 
 li {
+    width: 5%;
     position: relative;
     font-size: 30px;
     font-family: 'TW Cen MT Condensed';
+    z-index: 1;
 }
 
 #question_card {

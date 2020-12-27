@@ -212,8 +212,13 @@ body {
     justify-content: flex-end;
 }
 
+#score {
+    width: 20%;
+    justify-content: center;
+}
+
 #average {
-    width: 25%;
+    width: 20%;
     justify-content: center;
 }
 
