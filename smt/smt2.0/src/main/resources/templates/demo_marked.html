@@ -9,7 +9,6 @@
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/jquery.min.js"></script>
-    <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
 <div id="app">
@@ -35,7 +34,7 @@
                 <div id="container3">
                     <div id="tag">
                         <div v-for="num in wrong_list" :id="getBox(num)">
-                            <el-button :id="getButton(num)" circle>{{ num }}</el-button>
+                            <el-button :id="getButton(num)" circle @click="jumpProblem(num)">{{ num }}</el-button>
                         </div>
                     </div>
                 </div>
@@ -79,8 +78,6 @@
                                 <p class="choice"><span>{{ options.D }}</span></p>
                             </div>
                         </div>
-                        <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
-                        <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
                     </div>
                     <div id="txt_part" style="display: none;">
                         <p id="prob_tip"><span></span></p>
@@ -90,9 +87,9 @@
                                 <p class="correct_ans"><span style="color: #006600;font-family: 'TW Cen MT Condensed';font-weight: 900;font-size: 24px;">Correct Answer {{ input + 1 }}: </span><span> {{ correct_txt[input] }}</span></p>
                             </div>
                         </div>
-                        <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
-                        <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
                     </div>
+                    <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
+                    <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
                 </div>
                 <div id="analysis_area">
                     <div id="analysis_text" style="display: none;">
@@ -255,7 +252,9 @@
                 this.show_analysis[this.num - 1] = 1;
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
                 setTimeout(() => {
-                    document.getElementById("next_button").style.display = "";
+                    if(this.num !== this.wrong_list[this.wrong_list.length - 1])
+                        document.getElementById("next_button").style.display = "";
+                    document.getElementById("num" + this.num).style.cursor = "pointer";
                 }, 3000);
             },
 
@@ -265,49 +264,62 @@
             },
 
             jumpProblem: function (option) {
-                if(this.num <= this.opt_num && option > this.opt_num){
-                    document.getElementById("box" + this.num).style.borderBottom = "none";
-                    document.getElementById('opt_part').style.display = "none";
-                    document.getElementById('txt_part').style.display = "";
-                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
-                }else if(this.num <= this.opt_num && option <= this.opt_num){
-                    document.getElementById("box" + this.num).style.borderBottom = "none";
-                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
-                    this.refreshAnswer();
-                }else if(this.num > this.opt_num && option <= this.opt_num){
-                    document.getElementById("box" + this.num).style.borderBottom = "none";
-                    document.getElementById('opt_part').style.display = "";
-                    document.getElementById('txt_part').style.display = "none";
-                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
-                    this.refreshAnswer();
-                }else if(this.num > this.opt_num && option > this.opt_num){
-                    document.getElementById("box" + this.num).style.borderBottom = "none";
-                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                if(this.show_analysis[option - 1] === 1) {
+                    if(this.num <= this.opt_num && option > this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById('opt_part').style.display = "none";
+                        document.getElementById('txt_part').style.display = "";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                    }else if(this.num <= this.opt_num && option <= this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
+                    }else if(this.num > this.opt_num && option <= this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById('opt_part').style.display = "";
+                        document.getElementById('txt_part').style.display = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
+                    }else if(this.num > this.opt_num && option > this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                    }
+                    this.num = option;
+                    if(this.num === this.wrong_list[0])
+                        document.getElementById("last_button").style.display = "none";
+                    else
+                        document.getElementById("last_button").style.display = "";
+                    document.getElementById("analysis_text").style.display = "none";
+                    if(this.num !== this.wrong_list[this.wrong_list.length - 1])
+                        document.getElementById("next_button").style.display = "";
+                    else
+                        document.getElementById("next_button").style.display = "none";
+                    this.store();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                        this.showAlready();
+                    });
                 }
-                this.num = option;
-                this.store();
-                this.$nextTick(() => {
-                    this.fetchProblem();
-                    this.showResult();
-                });
             },
 
             lastProblem: function () {
+                var tempIndex = this.wrong_list.indexOf(this.num);
                 if(this.num > this.wrong_list[0]){
-                    if(this.num === (this.opt_num + 1)){
+                    if(this.num > this.opt_num && this.wrong_list[tempIndex - 1] <= this.opt_num){
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num -= 1;
+                        this.num = this.wrong_list[tempIndex - 1];
                         document.getElementById('opt_part').style.display = "";
                         document.getElementById('txt_part').style.display = "none";
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else if(this.num > this.opt_num) {
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num -= 1;
+                        this.num = this.wrong_list[tempIndex - 1];
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                     }else {
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num -= 1;
+                        this.num = this.wrong_list[tempIndex - 1];
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }
@@ -333,25 +345,26 @@
 
             nextProblem: function () {
                 var len = this.wrong_list.length - 1;
+                var tempIndex = this.wrong_list.indexOf(this.num);
                 document.getElementById("last_button").style.display = "";
                 if(this.num < this.wrong_list[len]){
-                    if(this.num === this.opt_num){
+                    if(this.num <= this.opt_num && this.wrong_list[tempIndex + 1] > this.opt_num){
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num += 1;
+                        this.num = this.wrong_list[tempIndex + 1];
                         document.getElementById('opt_part').style.display = "none";
                         document.getElementById('txt_part').style.display = "";
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                     }else if(this.num < this.opt_num) {
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num += 1;
+                        this.num = this.wrong_list[tempIndex + 1];
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else {
                         document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num += 1;
+                        this.num = this.wrong_list[tempIndex + 1];
                         document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                     }
-                    if(this.show_analysis[this.num - 1] === 0) {
+                    if(this.show_analysis[this.num - 1] === 0 || this.num === this.wrong_list[len]) {
                         document.getElementById("next_button").style.display = "none";
                     }
                     document.getElementById("analysis_text").style.display = "none";
@@ -362,7 +375,6 @@
                         if(this.show_analysis[this.num - 1] === 1) {
                             this.showAlready();
                         }
-                        console.log(this.show_analysis);
                     });
                 }
                 else {
