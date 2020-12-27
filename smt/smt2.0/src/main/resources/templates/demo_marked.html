@@ -15,95 +15,98 @@
 <div id="app">
     <div id="main">
             <div id="header">
-                <el-page-header id="back_button" @back="goBack" content="详情页面"></el-page-header>
-                <div>
-                    <p id="heading"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
-                    <p id="time"><span>时间：{{ time }}</span></p>
-                    <p id="handle"><span>已掌握{{ easy }}个知识点到简单程度/{{ medium }}个知识点到中等程度/{{ hard }}个知识点到困难程度</span></p>
-                    <p id="unhandle"><span>未掌握知识点比例：{{ unhandle }}%</span></p>
+                <div id="back" @click="goBack">
+                    <i class="el-icon-d-arrow-left"></i>
+                    <p><span>Back</span></p>
+                </div>
+                <div id="container1">
+                    <div id="heading">
+                        <p id="heading1"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
+                        <p id="heading2"><span>课课练</span></p>
+                    </div>
+                </div>
+                <div id="container2">
+                    <div id="heading3">
+                        <p id="time"><span>完成时间：{{ time }}</span></p>
+                        <p id="average"><span>本次练习平均分：{{ average }}</span></p>
+                        <p id="handle"><span>本次练习考点的掌握程度：{{ handle }}%</span></p>
+                    </div>
+                </div>
+                <div id="container3">
+                    <div id="tag">
+                        <div v-for="num in wrong_list" :id="getBox(num)">
+                            <el-button :id="getButton(num)" circle>{{ num }}</el-button>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="question_card">
-                <div id="question_info">
-                    <p><span>题号： {{ num }} / {{ totalNum }}&nbsp;&nbsp;考点： {{ point_list[num - 1] }}</span></p>
-                    <el-button id="result" circle disabled>{{ is_correct }}</el-button>
-                </div>
-                <div id="question_text">
-                    <p><span>{{ prob_text }}</span></p>
-                </div>
-                <div id="opt_part">
-                    <div id="option_A" class="option">
-                        <el-button id="img-a" circle disabled>A</el-button>
-                        <div id="question_a_text">
-                            <p class="choice"><span>{{ options.A }}</span></p>
-                        </div>
-                    </div>
-                    <div id="option_B" class="option">
-                        <el-button id="img-b" circle disabled>B</el-button>
-                        <div id="question_b_text">
-                            <p class="choice"><span>{{ options.B }}</span></p>
-                        </div>
-                    </div>
-                    <div id="option_C" class="option">
-                        <el-button id="img-c" circle disabled>C</el-button>
-                        <div id="question_c_text">
-                            <p class="choice"><span>{{ options.C }}</span></p>
-                        </div>
-                    </div>
-                    <div id="option_D" class="option">
-                        <el-button id="img-d" circle disabled>D</el-button>
-                        <div id="question_d_text">
-                            <p class="choice"><span>{{ options.D }}</span></p>
-                        </div>
-                    </div>
-                    <div id="analysis_area1">
-                        <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
-                    </div>
-                    <el-button type="primary" class="round_button" round @click="nextProblem">下一题<i class="el-icon-right"></i></el-button>
-                </div>
-                <div id="txt_part" style="display: none;">
-                    <div id="input_box">
-                        <div v-for="input in input_num">
-                            <el-input v-model=txt[input] :id="getIndex(input)" :disabled="true" prefix-icon="" class="input_bar"></el-input>
-                            <div class="input_result">
-                                <i :id="getIcon(input)" :class=icon_list[input]></i>
-                                <p class="correct_ans"><span>正确答案： {{ correct_txt[input] }}</span></p>
+                <div id="question_area">
+                    <div id="question_info">
+                        <div id="container4">
+                            <p><span>Q {{ num }}</span></p>
+                            <p id="show_result">{{ is_correct }}&nbsp;&nbsp;&nbsp;</p>
+                            <div id="check_analysis" @click="showAnalysis">
+                                <i class="el-icon-search"></i><p><span>查看解析</span></p>
                             </div>
                         </div>
-                        <div id="analysis_area2">
-                            <p><span>解析：{{ analysis_list[num - 1] }}</span></p>
-                        </div>
                     </div>
-                    <el-button type="primary" class="round_button" round @click="nextProblem">下一题<i class="el-icon-right"></i></el-button>
+                    <div id="question_text">
+                        <p><span>{{ prob_text }}</span></p>
+                    </div>
+                    <div id="opt_part">
+                        <div id="option_A" class="option">
+                            <el-button id="img-a" circle disabled>A</el-button>
+                            <div id="question_a_text">
+                                <p class="choice"><span>{{ options.A }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_B" class="option">
+                            <el-button id="img-b" circle disabled>B</el-button>
+                            <div id="question_b_text">
+                                <p class="choice"><span>{{ options.B }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_C" class="option">
+                            <el-button id="img-c" circle disabled>C</el-button>
+                            <div id="question_c_text">
+                                <p class="choice"><span>{{ options.C }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_D" class="option">
+                            <el-button id="img-d" circle disabled>D</el-button>
+                            <div id="question_d_text">
+                                <p class="choice"><span>{{ options.D }}</span></p>
+                            </div>
+                        </div>
+                        <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
+                        <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
+                    </div>
+                    <div id="txt_part" style="display: none;">
+                        <p id="prob_tip"><span></span></p>
+                        <div id="input_box">
+                            <div v-for="input in input_num" class="input_result">
+                                <p class="submit_ans"><span style="color: #330099;font-family: 'TW Cen MT Condensed';font-weight: 900;font-size: 24px;">Your Answer {{ input + 1 }}: </span><span> {{ txt[input] }}</span></p>
+                                <p class="correct_ans"><span style="color: #006600;font-family: 'TW Cen MT Condensed';font-weight: 900;font-size: 24px;">Correct Answer {{ input + 1 }}: </span><span> {{ correct_txt[input] }}</span></p>
+                            </div>
+                        </div>
+                        <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
+                        <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
+                    </div>
+                </div>
+                <div id="analysis_area">
+                    <div id="analysis_text" style="display: none;">
+                        <p><span>本题解析：{{ analysis_list[num - 1] }}</span></p>
+                    </div>
                 </div>
             </div>
             <div id="footer">
-                <el-button id="again_button" type="primary" round @click="againExercise">再来一轮</el-button>
-                <el-button id="recomnd_button" type="primary" round @click="recomndExercise">推荐练习</el-button>
-                <el-button id="wrong_button" type="primary" round @click="wrongExercise">错题练习</el-button>
-            </div>
-    </div>
-    <div id="side">
-        <p id="answer_card"><span>答题卡</span></p>
-        <div id="drawer">
-            <div id="drawer_opt_text">
-                <p class="text"><span>单选题</span></p>
-            </div>
-            <div id="drawer_opt_button" class="num_box">
-                <div v-for="index in opt_box" class="drawer_button">
-                    <el-button :id="getId(index)" class="circle_button" circle @click="jumpProblem(index)">{{ index }}</el-button>
+                <div id="container5">
+                    <el-button id="again_button" type="primary" round @click="againExercise">再来一轮</el-button>
+                    <el-button id="recomnd_button" type="primary" round @click="recomndExercise">推荐练习</el-button>
+                    <el-button id="wrong_button" type="primary" round @click="wrongExercise">错题练习</el-button>
                 </div>
             </div>
-            <div id="drawer_txt_text">
-                <p class="text"><span>文本题</span></p>
-            </div>
-            <div id="drawer_txt_button" class="num_box">
-                <div v-for="index in txt_box" class="drawer_button">
-                    <el-button :id="getId(index)" class="circle_button" circle @click="jumpProblem(index)">{{ index }}</el-button>
-                </div>
-            </div>
-        </div>
-        <p id="score"><span>分数：{{ score }}</span></p>
     </div>
 </div>
 </body>
@@ -128,14 +131,12 @@
         el: "#app",
         data: {
             time: '',
-            unhandle: 0,
+            handle: 0,
+            average: 0,
             score: 0,
-            easy: 0,
-            medium: 0,
-            hard: 0,
             level: 0,
             lesson: 0,
-            num: 1,
+            num: 0,
             totalNum: 0,
             opt_num: 0,
             id: 0,    //全局的 this.id 指的是一份试卷 sheetTemp 的 id
@@ -162,14 +163,15 @@
             options_list: [],
             answers_list: [],
             txt: [],
-            input_num: [1,2],
+            input_num: [],
             ans_list: [],
             submit_list: [],
             results_list: [],
             analysis_list: [],
             point_list: [],
             correct_txt: [],
-            icon_list: []
+            wrong_list: [],
+            show_analysis: [],
         },
         methods: {
             goBack: function () {
@@ -179,8 +181,8 @@
             recomndExercise: function () {
                 this.setting.src = "recomnd";
                 this.setting.sys = this.id.toString();
-                this.setting.lev = 0;
-                this.setting.probNum = 0;
+                this.setting.lev = this.level;
+                this.setting.probNum = 20;
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
                     console.log("已设置参数: ", response.data);
@@ -236,20 +238,51 @@
                 return "answer_" + option;
             },
 
-            getIcon: function (option) {
-                return "icon" + (option + 1);
+            getButton: function (option) {
+                return "num" + option;
+            },
+
+            getSingleResult: function (option) {
+                return "singleResult" + (option + 1);
+            },
+
+            getBox: function (option) {
+                return "box" + option;
+            },
+
+            showAnalysis: function () {
+                $("#analysis_text").fadeIn(2000);
+                this.show_analysis[this.num - 1] = 1;
+                sessionStorage.setItem('showAnalysis',this.show_analysis);
+                setTimeout(() => {
+                    document.getElementById("next_button").style.display = "";
+                }, 3000);
+            },
+
+            showAlready: function () {
+                $("#analysis_text").fadeIn("fast");
+                sessionStorage.setItem('showAnalysis',this.show_analysis);
             },
 
             jumpProblem: function (option) {
                 if(this.num <= this.opt_num && option > this.opt_num){
+                    document.getElementById("box" + this.num).style.borderBottom = "none";
                     document.getElementById('opt_part').style.display = "none";
                     document.getElementById('txt_part').style.display = "";
+                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                 }else if(this.num <= this.opt_num && option <= this.opt_num){
+                    document.getElementById("box" + this.num).style.borderBottom = "none";
+                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     this.refreshAnswer();
                 }else if(this.num > this.opt_num && option <= this.opt_num){
+                    document.getElementById("box" + this.num).style.borderBottom = "none";
                     document.getElementById('opt_part').style.display = "";
                     document.getElementById('txt_part').style.display = "none";
+                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     this.refreshAnswer();
+                }else if(this.num > this.opt_num && option > this.opt_num){
+                    document.getElementById("box" + this.num).style.borderBottom = "none";
+                    document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                 }
                 this.num = option;
                 this.store();
@@ -259,22 +292,77 @@
                 });
             },
 
-            nextProblem: function () {
-                if(this.num < this.totalNum){
-                    if(this.num === this.opt_num){
-                        this.num += 1;
-                        document.getElementById('opt_part').style.display = "none";
-                        document.getElementById('txt_part').style.display = "";
-                    }else if(this.num < this.opt_num) {
-                        this.num += 1;
+            lastProblem: function () {
+                if(this.num > this.wrong_list[0]){
+                    if(this.num === (this.opt_num + 1)){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num -= 1;
+                        document.getElementById('opt_part').style.display = "";
+                        document.getElementById('txt_part').style.display = "none";
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
+                    }else if(this.num > this.opt_num) {
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num -= 1;
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                     }else {
-                        this.num += 1;
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num -= 1;
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
                     }
+                    if(this.num === this.wrong_list[0])
+                        document.getElementById("last_button").style.display = "none";
+                    document.getElementById("analysis_text").style.display = "none";
+                    document.getElementById("next_button").style.display = "";
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
                         this.showResult();
+                        this.showAlready();
+                        console.log(this.show_analysis);
+                    });
+                }
+                else {
+                    this.$message({
+                        type: 'info',
+                        message: '这是第一题'
+                    });
+                }
+            },
+
+            nextProblem: function () {
+                var len = this.wrong_list.length - 1;
+                document.getElementById("last_button").style.display = "";
+                if(this.num < this.wrong_list[len]){
+                    if(this.num === this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num += 1;
+                        document.getElementById('opt_part').style.display = "none";
+                        document.getElementById('txt_part').style.display = "";
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                    }else if(this.num < this.opt_num) {
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num += 1;
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
+                    }else {
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        this.num += 1;
+                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                    }
+                    if(this.show_analysis[this.num - 1] === 0) {
+                        document.getElementById("next_button").style.display = "none";
+                    }
+                    document.getElementById("analysis_text").style.display = "none";
+                    this.store();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
+                        if(this.show_analysis[this.num - 1] === 1) {
+                            this.showAlready();
+                        }
+                        console.log(this.show_analysis);
                     });
                 }
                 else {
@@ -297,6 +385,9 @@
             setini: async function () {
                 var res = await this.getSheet();
                 this.totalNum = res.sheet_list.length;
+                if(this.show_analysis.length === 0) {
+                    this.show_analysis = new Array(this.totalNum).fill(0);
+                }
                 this.opt_num = res.opt_num;
                 for (var i = 1; i <= this.totalNum; i++) {
                     if(i > this.opt_num){
@@ -324,7 +415,7 @@
                     mode = "Lesson";
                 }
                 return new Promise((resolve) => {
-                    axios.get("/getResult" + mode + "?id=" + this.id
+                    axios.get("/getComment" + mode + "?id=" + this.id
                     ).then((response) => {
                         resolve(response.data);
                     });
@@ -345,26 +436,17 @@
                 if(result.hasOwnProperty('score')) {
                     this.score = result.score;
                 }
-                this.unhandle = result.unhandle;
-                this.easy = result.easy;
-                this.medium = result.medium;
-                this.hard = result.hard;
+                this.handle = result.handle_rate;
+                this.average = result.avg_score;
                 this.prob_list = sheet.num_list;
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
                     if(cur_problem.eval_res === 1) {   // 正确
                         this.results_list.push(1);
-                        document.getElementById("answer_" + (i + 1)).style.background = "#409EFF";
-                        document.getElementById("answer_" + (i + 1)).style.color = "white";
-                    } else if(cur_problem.finish === 1){  //做错
-                        this.results_list.push(0);
-                        document.getElementById("answer_" + (i + 1)).style.background = "crimson";
-                        document.getElementById("answer_" + (i + 1)).style.color = "white";
-                    } else {                              //未做
+                    } else {                //未做
                         this.results_list.push(0);
                         //“没做”体现在答题结果上也应属于错误的一种
-                        document.getElementById("answer_" + (i + 1)).style.background = "crimson";
-                        document.getElementById("answer_" + (i + 1)).style.color = "white";
+                        this.wrong_list.push(i + 1);
                     }
                     this.ans_list.push(cur_problem.ans);
                     this.analysis_list.push(cur_problem.analysis);
@@ -375,9 +457,18 @@
                         this.submit_list.push(cur_problem.choice);
                     }
                 }
-                this.fetchProblem();
-                this.showResult();
-                this.store();
+                if(this.wrong_list === []) {
+                    this.num = 1;
+                    //************8
+                }else {
+                    if(this.num === 0)
+                        this.num = this.wrong_list[0];
+                    this.fetchProblem();
+                    this.showResult();
+                    this.store();
+                }
+                if(this.num !== this.wrong_list[0])
+                    document.getElementById("last_button").style.display = "";
             },
 
             fetchProblem: async function () {
@@ -396,6 +487,7 @@
                         this.options.D = "";
                         document.getElementById('option_D').style.display = "none";
                     }
+                    document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                 }else {
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
@@ -405,6 +497,13 @@
                     }
                     this.input_num = [...Array(2).keys()];
                     this.prob_text = prob.data.prob_text;
+                    if(this.prob_text.indexOf("Negative") > -1){
+                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，否定回答"
+                    }
+                    else if(prob.data.prob_text.indexOf("Positive") > -1){
+                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，肯定回答"
+                    }
+                    document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                 }
             },
 
@@ -412,52 +511,39 @@
                 if(this.num <= this.opt_num) {
                     this.refreshAnswer();
                     if(this.results_list[this.num - 1] === 1) {
-                        this.is_correct = '正确';
-                        document.getElementById('result').style.background = "#409EFF";
+                        this.is_correct = 'Correct';
+                        document.getElementById('show_result').style.color = "#409EFF";
                         document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.background = "#409EFF";
                         document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.color = "white";
                     }
                     else {
                         var subChoice = this.submit_list[this.num - 1];
                         if(subChoice !== null){
-                            this.is_correct = '错误';
+                            this.is_correct = 'Wrong';
                             document.getElementById('img-' + subChoice.toLowerCase()).style.background = "crimson";
                             document.getElementById('img-' + subChoice.toLowerCase()).style.color = "white";
                         }
-                        else this.is_correct = '未做';
-                        document.getElementById('result').style.background = "crimson";
+                        else this.is_correct = 'Not Finished';
+                        document.getElementById('show_result').style.color = "red";
                         document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.background = "#409EFF";
                         document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.color = "white";
                     }
                 }else {
                     var subText = this.submit_list[this.num - 1];
                     this.correct_txt = this.ans_list[this.num - 1].split("\n");
-                    this.icon_list = [];
+                    this.correct_txt.shift();
                     if(subText === null){
-                        this.is_correct = '未做';
-                        document.getElementById('result').style.background = "crimson";
-                        for(var i = 1;i <= this.input_num.length;i++) {
-                            this.icon_list.push("el-icon-error");
-                        }
+                        this.is_correct = 'Not Finished';
+                        document.getElementById('show_result').style.color = "red";
                     } else {
                         this.txt = subText.split("$");
                         if(this.results_list[this.num - 1] === 1) {
-                            this.is_correct = '正确';
-                            document.getElementById('result').style.background = "#409EFF";
-                            for(var i = 1;i <= this.input_num.length;i++) {
-                                this.icon_list.push("el-icon-success");
-                            }
+                            this.is_correct = 'Correct';
+                            document.getElementById('show_result').style.color = "#409EFF";
                         }
                         else {
-                            this.is_correct = '错误';
-                            document.getElementById('result').style.background = "crimson";
-                            for(var i = 1;i <= this.input_num.length;i++) {
-                                if(this.txt[i - 1] === this.correct_txt[i - 1]) {
-                                    this.icon_list.push("el-icon-success");
-                                }else {
-                                    this.icon_list.push("el-icon-error");
-                                }
-                            }
+                            this.is_correct = 'Wrong';
+                            document.getElementById('show_result').style.color = "red";
                         }
                     }
                 }
@@ -472,6 +558,7 @@
                 sessionStorage.setItem('problist',this.prob_list.toString());
                 sessionStorage.setItem('src',this.src);
                 sessionStorage.setItem('id',this.id);
+                sessionStorage.setItem('showAnalysis',this.show_analysis);
             },
         },
 
@@ -491,15 +578,23 @@
                 document.getElementById('again_button').style.display = "none";
                 document.getElementById('recomnd_button').style.display = "none";
                 document.getElementById('score').style.display = "none";
+                document.getElementById('average').style.display = "none";
             }else if(window.location.search.indexOf('wrong') > -1) {
                 document.getElementById('recomnd_button').style.display = "none";
                 document.getElementById('wrong_button').style.display = "none";
                 document.getElementById('score').style.display = "none";
+                document.getElementById('average').style.display = "none";
             }else if(window.location.search.indexOf('lesson') > -1) {
                 document.getElementById('again_button').style.display = "none";
             }
             if(sessionStorage.getItem('questionId') !== null) {
                 this.num = parseInt(sessionStorage.getItem('questionId'));
+                if(sessionStorage.getItem('showAnalysis') !== "") {
+                    this.show_analysis = sessionStorage.getItem('showAnalysis').split(',').map(Number);
+                    console.log(this.show_analysis);
+                }
+                if(this.show_analysis[this.num - 1] === 1)
+                    this.showAnalysis();
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
             if(this.src === "wrong")

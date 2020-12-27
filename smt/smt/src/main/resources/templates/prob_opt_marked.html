@@ -119,25 +119,7 @@
         }
         return "";
     }
-
-     Mock.mock('/getResultLesson?id=8888',{
-        "time":'2020-10-30 15:10:11',
-        "score|60-100":100,
-        "unhandle|1-99.1":1,
-        "easy|1-100":1,
-        "medium|1-100":1,
-        "hard|1-100":1,
-        "lesson":'LESSON'
-    });
-
-    Mock.mock('/getResultExtra?id=8888',{
-        "time":'2020-10-30 15:10:11',
-        "unhandle|1-99.1":1,
-        "easy|1-100":1,
-        "medium|1-100":1,
-        "hard|1-100":1,
-    });
-
+    
     var app = new Vue({
         el: "#app",
         data: {
