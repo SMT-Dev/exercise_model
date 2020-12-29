@@ -35,7 +35,12 @@
                 <div id="container3">
                     <div id="tag">
                         <div v-for="num in wrong_list" :id="getBox(num)">
-                            <el-button :id="getButton(num)" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                            <el-button :id="getButton(num)" style="background-color: #C00000;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                        </div>
+                        <div id="correct_container" style="display: none;">
+                            <div v-for="num in correct_list" :id="getBox(num)">
+                                <el-button :id="getButton(num)" style="background-color: #339900;cursor: pointer;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -97,6 +102,10 @@
                         <p><span>本题解析：{{ analysis_list[num - 1] }}</span></p>
                     </div>
                 </div>
+                <div id="show_more" style="display: none;">
+                    <el-button id="icon_container" circle @click="showMore"><i class="el-icon-view"></i></el-button>
+                    <p id="show_more_text"><span>&nbsp;查看做对题目解析</span></p>
+                </div>
             </div>
             <div id="footer">
                 <div id="container5">
@@ -138,6 +147,7 @@
             totalNum: 0,
             opt_num: 0,
             id: 0,    //全局的 this.id 指的是一份试卷 sheetTemp 的 id
+            is_show: 0,
             prob_list: [],
             opt_box: [],
             txt_box: [],
@@ -169,6 +179,7 @@
             point_list: [],
             correct_txt: [],
             wrong_list: [],
+            correct_list: [],
             show_analysis: [],
         },
         methods: {
@@ -255,13 +266,51 @@
                 setTimeout(() => {
                     if(this.num !== this.wrong_list[this.wrong_list.length - 1])
                         document.getElementById("next_button").style.display = "";
+                    else if(this.is_show === 0) {
+                        if(this.correct_list.length !== 0)
+                            document.getElementById("show_more").style.display = "flex";
+                    }
                     document.getElementById("num" + this.num).style.cursor = "pointer";
-                }, 3000);
+                }, 300);
+                this.store();
+            },
+
+            showMore: function () {
+                document.getElementById("correct_container").style.display = "";
+                document.getElementById("show_more").style.display = "none";
+                this.is_show = 1;
+                sessionStorage.setItem("isShow",this.is_show);
+                document.getElementById("next_button").style.display = "";
+                this.jumpProblem(this.correct_list[0]);
             },
 
             showAlready: function () {
-                $("#analysis_text").fadeIn("fast");
+                console.log(this.num);
+                console.log(this.wrong_list);
+                console.log(this.correct_list);
+                console.log(this.correct_list.indexOf(this.num));
+                if((this.show_analysis[this.num - 1] === 1) || (this.correct_list.indexOf(this.num) > -1)) {
+                    console.log("Yes");
+                    $("#analysis_text").fadeIn("fast");
+                }
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
+                setTimeout(() => {
+                    for(var i = 1;i <= this.totalNum;i++) {
+                        if(this.show_analysis[i - 1] === 1) {
+                            document.getElementById("num" + i).style.cursor = "pointer";
+                        }
+                    }
+                    if(this.show_analysis[this.num - 1] === 1 && this.num !== this.wrong_list[this.wrong_list.length - 1])
+                        document.getElementById("next_button").style.display = "";
+                    if(this.show_analysis[this.wrong_list[this.wrong_list.length - 1] - 1] === 1) {
+                        if(this.is_show === 0 && this.correct_list.length !== 0)
+                            document.getElementById("show_more").style.display = "flex";
+                    }
+                    if(this.is_show === 1 && this.num !== this.correct_list[this.correct_list.length - 1]) {
+                        document.getElementById("next_button").style.display = "";
+                    }
+                }, 500);
+                this.store();
             },
 
             jumpProblem: function (option) {
@@ -291,98 +340,204 @@
                     else
                         document.getElementById("last_button").style.display = "";
                     document.getElementById("analysis_text").style.display = "none";
-                    if(this.num !== this.wrong_list[this.wrong_list.length - 1])
-                        document.getElementById("next_button").style.display = "";
-                    else
+                    if((this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0) || this.num === this.correct_list[this.correct_list.length - 1])
                         document.getElementById("next_button").style.display = "none";
+                    else
+                        document.getElementById("next_button").style.display = "";
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
                         this.showResult();
                         this.showAlready();
+                    });
+                }else if(this.correct_list.indexOf(option) > -1) {
+                    if(this.num <= this.opt_num && option > this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById('opt_part').style.display = "none";
+                        document.getElementById('txt_part').style.display = "";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                    }else if(this.num <= this.opt_num && option <= this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
+                    }else if(this.num > this.opt_num && option <= this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById('opt_part').style.display = "";
+                        document.getElementById('txt_part').style.display = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                        this.refreshAnswer();
+                    }else if(this.num > this.opt_num && option > this.opt_num){
+                        document.getElementById("box" + this.num).style.borderBottom = "none";
+                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
+                    }
+                    this.num = option;
+                    document.getElementById("last_button").style.display = "";
+                    if(this.num !== this.correct_list[this.correct_list.length - 1])
+                        document.getElementById("next_button").style.display = "";
+                    else
+                        document.getElementById("next_button").style.display = "none";
+                    document.getElementById("analysis_text").style.display = "";
+                    this.store();
+                    this.$nextTick(() => {
+                        this.fetchProblem();
+                        this.showResult();
                     });
                 }
             },
 
             lastProblem: function () {
-                var tempIndex = this.wrong_list.indexOf(this.num);
-                if(this.num > this.wrong_list[0]){
-                    if(this.num > this.opt_num && this.wrong_list[tempIndex - 1] <= this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex - 1];
-                        document.getElementById('opt_part').style.display = "";
-                        document.getElementById('txt_part').style.display = "none";
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                        this.refreshAnswer();
-                    }else if(this.num > this.opt_num) {
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex - 1];
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                    }else {
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex - 1];
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                        this.refreshAnswer();
+                if(this.wrong_list.indexOf(this.num) > -1) {
+                    var tempIndex = this.wrong_list.indexOf(this.num);
+                    if(this.num > this.wrong_list[0]){
+                        if(this.num > this.opt_num && this.wrong_list[tempIndex - 1] <= this.opt_num){
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex - 1];
+                            document.getElementById('opt_part').style.display = "";
+                            document.getElementById('txt_part').style.display = "none";
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }else if(this.num > this.opt_num) {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex - 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        }else {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex - 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }
+                        if(this.num === this.wrong_list[0])
+                            document.getElementById("last_button").style.display = "none";
+                        document.getElementById("analysis_text").style.display = "none";
+                        document.getElementById("next_button").style.display = "";
+                        this.store();
+                        this.$nextTick(() => {
+                            this.fetchProblem();
+                            this.showResult();
+                            this.showAlready();
+                            console.log(this.show_analysis);
+                        });
                     }
-                    if(this.num === this.wrong_list[0])
-                        document.getElementById("last_button").style.display = "none";
-                    document.getElementById("analysis_text").style.display = "none";
-                    document.getElementById("next_button").style.display = "";
-                    this.store();
-                    this.$nextTick(() => {
-                        this.fetchProblem();
-                        this.showResult();
-                        this.showAlready();
-                        console.log(this.show_analysis);
-                    });
+                    else {
+                        this.$message({
+                            type: 'info',
+                            message: '这是第一道错题'
+                        });
+                    }
+                }else {
+                    var tempIndex = this.correct_list.indexOf(this.num);
+                    if(this.num > this.correct_list[0]){
+                        if(this.num > this.opt_num && this.correct_list[tempIndex - 1] <= this.opt_num){
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex - 1];
+                            document.getElementById('opt_part').style.display = "";
+                            document.getElementById('txt_part').style.display = "none";
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }else if(this.num > this.opt_num) {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex - 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        }else {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex - 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }
+                        if(this.wrong_list === [])
+                            document.getElementById("last_button").style.display = "none";
+                        document.getElementById("analysis_text").style.display = "none";
+                        document.getElementById("next_button").style.display = "";
+                        this.store();
+                        this.$nextTick(() => {
+                            this.fetchProblem();
+                            this.showResult();
+                            this.showAlready();
+                        });
+                    }
+                    else {
+                        this.jumpProblem(this.wrong_list[this.wrong_list.length - 1]);
+                    }
                 }
-                else {
-                    this.$message({
-                        type: 'info',
-                        message: '这是第一题'
-                    });
-                }
+                
             },
 
             nextProblem: function () {
-                var len = this.wrong_list.length - 1;
-                var tempIndex = this.wrong_list.indexOf(this.num);
-                document.getElementById("last_button").style.display = "";
-                if(this.num < this.wrong_list[len]){
-                    if(this.num <= this.opt_num && this.wrong_list[tempIndex + 1] > this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex + 1];
-                        document.getElementById('opt_part').style.display = "none";
-                        document.getElementById('txt_part').style.display = "";
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                    }else if(this.num < this.opt_num) {
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex + 1];
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                        this.refreshAnswer();
-                    }else {
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        this.num = this.wrong_list[tempIndex + 1];
-                        document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
-                    }
-                    if(this.show_analysis[this.num - 1] === 0 || this.num === this.wrong_list[len]) {
-                        document.getElementById("next_button").style.display = "none";
-                    }
-                    document.getElementById("analysis_text").style.display = "none";
-                    this.store();
-                    this.$nextTick(() => {
-                        this.fetchProblem();
-                        this.showResult();
-                        if(this.show_analysis[this.num - 1] === 1) {
-                            this.showAlready();
+                if(this.wrong_list.indexOf(this.num) > -1) {
+                    var len = this.wrong_list.length - 1;
+                    var tempIndex = this.wrong_list.indexOf(this.num);
+                    document.getElementById("last_button").style.display = "";
+                    if(this.num < this.wrong_list[len]){
+                        if(this.num <= this.opt_num && this.wrong_list[tempIndex + 1] > this.opt_num){
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex + 1];
+                            document.getElementById('opt_part').style.display = "none";
+                            document.getElementById('txt_part').style.display = "";
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        }else if(this.num < this.opt_num) {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex + 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }else {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.wrong_list[tempIndex + 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                         }
-                    });
-                }
-                else {
-                    this.$message({
-                        type: 'info',
-                        message: '已经是最后一题了'
-                    });
+                        if(this.show_analysis[this.num - 1] === 0 || this.num === this.wrong_list[len]) {
+                            document.getElementById("next_button").style.display = "none";
+                        }
+                        document.getElementById("analysis_text").style.display = "none";
+                        this.store();
+                        this.$nextTick(() => {
+                            this.fetchProblem();
+                            this.showResult();
+                            if(this.show_analysis[this.num - 1] === 1) {
+                                this.showAlready();
+                            }
+                        });
+                    }
+                    else {
+                        this.jumpProblem(this.correct_list[0]);
+                    }
+                }else {
+                    var len = this.correct_list.length - 1;
+                    var tempIndex = this.correct_list.indexOf(this.num);
+                    document.getElementById("last_button").style.display = "";
+                    if(this.num < this.correct_list[len]){
+                        if(this.num <= this.opt_num && this.correct_list[tempIndex + 1] > this.opt_num){
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex + 1];
+                            document.getElementById('opt_part').style.display = "none";
+                            document.getElementById('txt_part').style.display = "";
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        }else if(this.num < this.opt_num) {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex + 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            this.refreshAnswer();
+                        }else {
+                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            this.num = this.correct_list[tempIndex + 1];
+                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                        }
+                        if(this.num === this.correct_list[len]) {
+                            document.getElementById("next_button").style.display = "none";
+                        }
+                        document.getElementById("analysis_text").style.display = "none";
+                        this.store();
+                        this.$nextTick(() => {
+                            this.fetchProblem();
+                            this.showResult();
+                            this.showAlready();
+                        });
+                    }
+                    else {
+                        this.$message({
+                            type: 'info',
+                            message: '已经是最后一题了'
+                        });
+                    }
                 }
             },
 
@@ -415,6 +570,10 @@
                 }else {
                     document.getElementById('opt_part').style.display = "none";
                     document.getElementById('txt_part').style.display = "";
+                }
+                if(this.is_show === 1) {
+                    document.getElementById("correct_container").style.display = "";
+                    document.getElementById("show_more").style.display = "none";
                 }
             },
 
@@ -452,14 +611,17 @@
                 this.handle = result.handle_rate;
                 this.average = result.avg_score;
                 this.prob_list = sheet.num_list;
+                this.wrong_list = [];
+                this.correct_list = [];
                 for (var i = 0; i < sheet.sheet_list.length; i++) {
                     var cur_problem = sheet.sheet_list[i];
                     if(cur_problem.eval_res === 1) {   // 正确
                         this.results_list.push(1);
+                            this.correct_list.push(i + 1);
                     } else {                //未做
                         this.results_list.push(0);
                         //“没做”体现在答题结果上也应属于错误的一种
-                        this.wrong_list.push(i + 1);
+                            this.wrong_list.push(i + 1);
                     }
                     this.ans_list.push(cur_problem.ans);
                     this.analysis_list.push(cur_problem.analysis);
@@ -572,6 +734,9 @@
                 sessionStorage.setItem('src',this.src);
                 sessionStorage.setItem('id',this.id);
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
+                sessionStorage.setItem('isShow',this.is_show);
+                sessionStorage.setItem('wronglist',this.wrong_list);
+                sessionStorage.setItem('correctlist',this.correct_list);
             },
         },
 
@@ -604,10 +769,15 @@
                 this.num = parseInt(sessionStorage.getItem('questionId'));
                 if(sessionStorage.getItem('showAnalysis') !== "") {
                     this.show_analysis = sessionStorage.getItem('showAnalysis').split(',').map(Number);
-                    console.log(this.show_analysis);
                 }
-                if(this.show_analysis[this.num - 1] === 1)
-                    this.showAnalysis();
+                if(sessionStorage.getItem('wronglist') !== "") {
+                    this.wrong_list = sessionStorage.getItem('wronglist').split(',').map(Number);
+                }
+                if(sessionStorage.getItem('correctlist') !== "") {
+                    this.correct_list = sessionStorage.getItem('correctlist').split(',').map(Number);
+                }
+                this.is_show = parseInt(sessionStorage.getItem("isShow"));
+                this.showAlready();
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));
             if(this.src === "wrong")
