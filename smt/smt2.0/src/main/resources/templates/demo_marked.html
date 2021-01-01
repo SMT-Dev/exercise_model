@@ -59,6 +59,9 @@
                     <div id="question_text">
                         <p><span>{{ prob_text }}</span></p>
                     </div>
+                    <div id="congrats" style="display: none;">
+                        <p><span>恭喜你，全部做对啦！</span></p>
+                    </div>
                     <div id="opt_part">
                         <div id="option_A" class="option">
                             <el-button id="img-a" circle disabled>A</el-button>
@@ -278,6 +281,10 @@
             showMore: function () {
                 document.getElementById("correct_container").style.display = "";
                 document.getElementById("show_more").style.display = "none";
+                document.getElementById("congrats").style.display = "none";
+                document.getElementById("question_info").style.display = "";
+                document.getElementById("question_text").style.display = "";
+                document.getElementById("opt_part").style.display = "";
                 this.is_show = 1;
                 sessionStorage.setItem("isShow",this.is_show);
                 document.getElementById("next_button").style.display = "";
@@ -371,7 +378,10 @@
                         document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     }
                     this.num = option;
-                    document.getElementById("last_button").style.display = "";
+                    if(this.wrong_list.length === 0 && this.num === 1)
+                        document.getElementById("last_button").style.display = "none";
+                    else
+                        document.getElementById("last_button").style.display = "";
                     if(this.num !== this.correct_list[this.correct_list.length - 1])
                         document.getElementById("next_button").style.display = "";
                     else
@@ -444,7 +454,7 @@
                             document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
                             this.refreshAnswer();
                         }
-                        if(this.wrong_list === [])
+                        if(this.wrong_list.length === 0)
                             document.getElementById("last_button").style.display = "none";
                         document.getElementById("analysis_text").style.display = "none";
                         document.getElementById("next_button").style.display = "";
@@ -632,18 +642,37 @@
                         this.submit_list.push(cur_problem.choice);
                     }
                 }
-                if(this.wrong_list === []) {
-                    this.num = 1;
-                    //************8
+                console.log(this.wrong_list);
+                if(this.wrong_list.length === 0) {
+                    if(this.is_show === 0) {
+                        this.num = 1;
+                        document.getElementById("question_info").style.display = "none";
+                        document.getElementById("question_text").style.display = "none";
+                        document.getElementById("opt_part").style.display = "none";
+                        document.getElementById("congrats").style.display = "flex";
+                        document.getElementById("show_more").style.display = "flex";
+                    }else {
+                        this.fetchProblem();
+                        this.showResult();
+                        this.store();
+                        if(this.num !== 1)
+                            document.getElementById("last_button").style.display = "";
+                        else
+                            document.getElementById("last_button").style.display = "none";
+                    }
                 }else {
                     if(this.num === 0)
                         this.num = this.wrong_list[0];
+                    if(this.num > this.opt_num) {
+                        document.getElementById('opt_part').style.display = "none";
+                        document.getElementById('txt_part').style.display = "";
+                    }
                     this.fetchProblem();
                     this.showResult();
                     this.store();
+                    if(this.num !== this.wrong_list[0])
+                        document.getElementById("last_button").style.display = "";
                 }
-                if(this.num !== this.wrong_list[0])
-                    document.getElementById("last_button").style.display = "";
             },
 
             fetchProblem: async function () {
