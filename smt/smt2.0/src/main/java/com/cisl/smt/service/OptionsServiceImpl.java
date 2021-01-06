@@ -21,4 +21,9 @@ public class OptionsServiceImpl implements OptionsService{
         return optionsRepository.getOptions(id);
     }
 
+    @Override
+    public void updateOptions(Long id, String optionA, String optionB, String optionC, String optionD){
+        optionsRepository.updateOptions(id, optionA, optionB, optionC, optionD);
+    }
+
 }

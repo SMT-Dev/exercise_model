@@ -20,4 +20,5 @@ public class AnswerServiceImpl implements AnswerService{
     public Answer getAnswer(Long id){
         return answerRepository.getAnswer(id);
     }
+
 }

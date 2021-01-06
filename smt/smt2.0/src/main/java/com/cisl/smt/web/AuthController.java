@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 public class AuthController {
     /**
@@ -35,7 +38,8 @@ public class AuthController {
     @PostMapping("/postRegister")
     public String postRegister(@RequestParam("username") String username,
                                @RequestParam("password") String password,
-                               @RequestParam("re_password") String re_password) {
+                               @RequestParam("re_password") String re_password,
+                               HttpServletResponse response) {
 
         System.out.println(userService.getUserByUsername(username));
         if(userService.getUserByUsername(username) != null){
@@ -46,13 +50,18 @@ public class AuthController {
         user.setUsername(username);
         user.setPassword(password);
         userService.saveUser(user);
+        User tmp = userService.getUserByUsername(username);
+        Long user_id = tmp.getUser_id();
+        Cookie cookie = new Cookie("user_id",user_id.toString());
+        response.addCookie(cookie);
 
         return user.toString();
     }
 
     @PostMapping("/postLogin")
     public String postLogin(@RequestParam("username") String username,
-                            @RequestParam("password") String password) {
+                            @RequestParam("password") String password,
+                            HttpServletResponse response) {
 
         User tmp = userService.getUserByUsername(username);
 
@@ -61,6 +70,9 @@ public class AuthController {
         }
 
         if(password.equals(tmp.getPassword())){     //比较字符串必须用 equals
+            Long user_id = tmp.getUser_id();
+            Cookie cookie = new Cookie("user_id",user_id.toString());
+            response.addCookie(cookie);
             return "OK";
         }
 

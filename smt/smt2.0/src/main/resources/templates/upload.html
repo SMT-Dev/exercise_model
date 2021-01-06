@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>题库上传页面</title>
+    <meta http-equiv="content-type" content="text/html charset=utf-8"/>
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.cookie.js"></script>
+    <script src="/js/rules.js"></script>
+
+    <style>
+        .el-main {
+            text-decoration: none;
+            color: #333;
+            margin-left: 100px;
+        }
+
+        body {
+            width: 600px;
+        }
+
+        .hide {
+            display: none;
+        }
+
+        .tip {
+            font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+            font-weight: 400;
+            font-size: 14px;
+            color: #8c939d;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
+            padding: 8px 16px;
+            background-color: #ecf8ff;
+            border-radius: 4px;
+            border-left: 5px solid #50bfff;
+            margin: 20px 0;
+        }
+
+        .tip span {
+            color: #f56c6c;
+        }
+    </style>
+</head>
+
+<body>
+
+<el-container>
+    <div id="app">
+        <el-header style="margin-bottom: 120px">
+            <h1>{{ mode }}题目</h1>
+            <el-button type="primary" plain @click="back">← 返回题目列表</el-button>
+            <div class="tip">
+                <div v-if="mode === '编辑'">
+                <p>当前 Level <span>{{ level }}</span>，当前 Lesson <span>{{ lesson_id }}</span></p>
+                </div>
+
+                <div v-if="mode === '新增'">
+                    <p>请选择 level 和 lesson</span></p>
+                </div>
+            </div>
+        </el-header>
+
+        <el-main>
+            <!-- 添加题目表单开始 -->
+            <template>
+                <el-form ref="form" :model="formData" label-width="100px" :rules="rules">
+
+                    <div v-if="mode === '新增'" style="display: inline-block">
+                        <h3>level</h3>
+                        <el-select v-model="formData.prob_level" width="80">
+                            <el-option v-for="item in levels" :label="item" :value="item">
+                            </el-option>
+                        </el-select>
+
+                        <h3>lesson</h3>
+                        <el-select v-model="formData.lesson_id" width="80">
+                            <el-option v-for="item in lessons" :label="item" :value="item">
+                            </el-option>
+                        </el-select>
+                    </div>
+
+                    <h3>类型：prob_attr</h3>
+                    <el-form-item>
+                        <el-radio-group v-model="radioType">
+                            <el-radio label="Choice">选择题</el-radio>
+                            <el-radio label="txt">文本题</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+
+                    <h3>难度：prob_diff</h3>
+                    <el-form-item prop="account">
+                        <el-select v-model="formData.prob_diff" placeholder="选择难度">
+                            <el-option label="Easy" value="Easy"></el-option>
+                            <el-option label="Medium" value="Medium"></el-option>
+                            <el-option label="Hard" value="Hard"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <div v-if="radioType === 'txt'">
+                        <h3>文本题类型：txt_type</h3>
+                        <el-form-item prop="txt_type">
+                            <el-select v-model="formData.txt_type" placeholder="文本题类型">
+                                <el-option label="Rewrite 改写" value="Rewrite"></el-option>
+                                <el-option label="Fill 填空" value="Fill"></el-option>
+                                <el-option label="Correct 改错" value="Correct"></el-option>
+                                <el-option label="Translation 翻译" value="Translation"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </div>
+
+                    <h3>题干：prob_text</h3>
+                    <el-form-item label="" prop="prob_text">
+                        <el-input label-width="400px" type="textarea" :rows="3" v-model="formData.prob_text"></el-input>
+                    </el-form-item>
+
+                    <div v-if="radioType === 'Choice'">
+                        <h3>选项：options</h3>
+                        <el-form-item label="A.">
+                            <el-input v-model="formData.optionA"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="B.">
+                            <el-input v-model="formData.optionB"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="C.">
+                            <el-input v-model="formData.optionC"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="D.">
+                            <el-input v-model="formData.optionD" placeholder="无 D 选项可不填"></el-input>
+                        </el-form-item>
+
+                        <el-form-item label="正确答案" prop="answer">
+                            <el-select v-model="formData.answer" placeholder="选择选项">
+                                <el-option label="A" value="A"></el-option>
+                                <el-option label="B" value="B"></el-option>
+                                <el-option label="C" value="C"></el-option>
+                                <el-option label="D" value="D"></el-option>
+                            </el-select>
+                        </el-form-item>
+
+                    </div>
+
+                    <div v-if="radioType === 'txt'">
+                        <h3>作答的空行数量：blank_num</h3>
+                        <el-input-number style="margin-left: 100px" v-model="formData.blank_num" @change="handleChange"
+                                         :min="0" :max="5"></el-input-number>
+
+                        <h3>正确答案: answer</h3>
+                        <v-for>
+                            <el-form-item label="" prop="answer">
+                                <el-input type="textarea" :rows="2" v-model="formData.answer"></el-input>
+                            </el-form-item>
+                        </v-for>
+                    </div>
+
+                    <h3>解析: analysis</h3>
+                    <el-form-item label="" prop="analysis">
+                        <el-input type="textarea" :rows="4" v-model="formData.analysis"></el-input>
+                    </el-form-item>
+
+                    <el-form-item>
+                        <el-button type="primary" plain @click="back">← 返回列表</el-button>
+                        <el-button type="primary" @click="addProb">提交</el-button>
+                    </el-form-item>
+                </el-form>
+            </template>
+            <div class="tip" style="margin-top: 50px">
+                <p>提示:</p>
+                <p>下划线使用英文下划线 ____ 即可, 无法使用下划线可以用括号代替</p>
+                <p>若答案包括多行，则注意换行</p>
+            </div>
+            <!-- 添加题目表单结束 -->
+        </el-main>
+    </div>
+</el-container>
+</body>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        mixins: [rules],
+        data: {
+            mode: '新增',
+            radioType: 'Choice',
+            levels: ['1', '2'],
+            lessons: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+            formData: {
+                optionA: '',
+                optionB: '',
+                optionC: '',
+                optionD: '',
+                prob_attr: '',
+                prob_text: '',
+                prob_diff: '',
+                prob_level: '',
+                lesson_id: 0,
+                point_text: '',
+                prob_id: 0,
+                answer: '',
+                analysis: '',
+                blank_num: 0,
+                txt_type: '',
+                mode: 1
+            },
+            level: '0',
+            lesson_id: 0,
+            grammar: 'Example: is/am/are',
+            rules: {
+                prob_text: [{
+                    required: true,
+                    message: '请输入题干内容',
+                    trigger: 'blur'
+                }, {
+                    min: 5,
+                    max: 400,
+                    message: '长度在 5 到 400 个字符',
+                    trigger: 'blur'
+                }],
+                answer: [{
+                    required: true,
+                    message: '答案不能为空',
+                    trigger: 'blur'
+                },],
+            },
+            problem: {}
+
+        },
+
+        methods: {
+            handleChange: function (value) {
+                this.formData.blank_num = value;
+            },
+
+            back: function () {
+                window.location.replace("/upload_list");
+            },
+
+            addProb: function () {
+                if(this.mode === "编辑") {
+                    this.formData["prob_level"] = this.level;
+                    this.formData["lesson_id"] = this.lesson_id;
+                }
+
+                if(this.formData["prob_level"].length === 0 || this.formData["lesson_id"] === 0 ||
+                    this.formData["prob_text"].length === 0 || this.formData["answer"].length === 0)
+                    this.$message({
+                        type: 'error',
+                        message: '请检查 lesson、level、题目、答案是否完整'
+                    });
+
+                else {
+                    this.formData["prob_attr"] = this.radioType;
+                    if (this.formData["prob_attr"] !== "Choice") {
+                        this.formData["prob_attr"] = this.formData["txt_type"];
+                    }
+                    console.log("submit:", this.formData);
+                    $.cookie("prob_id", null);
+                    $.cookie("level", this.formData["prob_level"]);
+                    $.cookie("lesson_id", this.formData["lesson_id"]);
+
+                    axios.post("/postProblem", $.param(this.formData) //引入jQuery的作用
+                    ).then((response) => {
+                        if(response.data === "OK"){
+                            if(this.mode === "编辑")
+                                this.$message({
+                                    type: 'success',
+                                    message: '题目编号'+this.formData["prob_id"].toString()+' 修改成功！'
+                                });
+                            else
+                                this.$confirm('新增题目成功！请选择操作', '提示', {
+                                    confirmButtonText: '继续新增 →',
+                                    cancelButtonText: '← 返回列表',
+                                    type: 'warning'
+                                }).then(() => {
+                                    window.location.replace("/upload");
+                                }).catch(() => {
+                                    window.location.replace("/upload_list");
+                                });
+                        }
+                        else {
+                            this.$message({
+                                type: 'error',
+                                message: '修改失败,请联系管理员'
+                            });
+                        }
+                    });
+                }
+            },
+
+            getProblemDetail: function (prob_id) {
+                return new Promise(resolve => {
+                    axios.get("/getProblemDetail?prob_id=" + prob_id).then((response) => {
+                        resolve(response.data);
+                    });
+                })
+            },
+
+            setProblemDetail: async function () {
+                if ($.cookie("prob_id") !== null && $.cookie("prob_id").toString() !== "null") {
+                    console.log($.cookie("prob_id").toString());
+                    this.mode = "编辑";
+                    this.formData["mode"] = 0;
+
+                    var prob_id = $.cookie("prob_id");
+                    this.formData["prob_id"] = prob_id;
+                    this.problem = await this.getProblemDetail(prob_id);
+                    if (this.problem["prob_attr"] === "Choice")
+                        this.radioType = "Choice";
+                    else {
+                        this.radioType = "txt";
+                        this.formData["txt_type"] = this.problem["prob_attr"];
+                    }
+                    this.formData["prob_diff"] = this.problem["prob_diff"];
+                    this.formData["prob_text"] = this.problem["prob_text"];
+                    this.formData["answer"] = this.problem["answer_text"];
+                    this.formData["analysis"] = this.problem["analysis"];
+                    if (this.problem["blank_num"] !== null)
+                        this.formData["blank_num"] = this.problem["blank_num"];
+                    this.lesson_id = this.problem["lesson_id"];
+                    this.level = this.problem["prob_level"];
+
+                    //this.formData["point_text"] = this.problem["point_text"];
+                    this.formData["optionA"] = this.problem["options"].split("【A】")[1].split("【B】")[0];
+                    this.formData["optionB"] = this.problem["options"].split("【B】")[1].split("【C】")[0];
+                    if (this.problem["options"].indexOf("【D】") > 0) {
+                        this.formData["optionC"] = this.problem["options"].split("【C】")[1].split("【D】")[0];
+                        this.formData["optionD"] = this.problem["options"].split("【D】")[1];
+                    } else this.formData["optionC"] = this.problem["options"].split("【C】")[1];
+                }
+            },
+        },
+
+        created() {
+            this.lesson_id = $.cookie("lesson_id");
+            this.level = $.cookie("level");
+            this.setProblemDetail();
+        }
+    });
+    window.app = app;
+</script>
