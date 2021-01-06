@@ -444,8 +444,24 @@ public class ExerciseController {
             outputProblemList.addAll(allProb.stream().map(Problem::getProb_id).collect(Collectors.toList()));
         }
         Collections.shuffle(outputProblemList);
-        outputProblemList = reorganizeProbList(outputProblemList);
-        outputProblemList = new ArrayList<>(outputProblemList.subList(0, partNum));
+        outputProblemList = uniqueProbList(outputProblemList);
+        HashSet<Long> hashSet = new HashSet<>(outputProblemList);
+        assert outputProblemList.size() == hashSet.size();  //保证列表去重
+
+        outputProblemList = reorganizeProbList(outputProblemList);  //保证选择题在文本题前面的顺序
+        if(outputProblemList.size() > partNum)   //推荐的题目太多则裁剪
+            outputProblemList = new ArrayList<>(outputProblemList.subList(0, partNum));
+        else {   //题目太少则补充随机
+            int margin = partNum - outputProblemList.size();
+            if(margin > 0) System.out.println("推荐刷题进入去重，补齐" + margin);
+            while (margin > 0) {
+                long newId = getOneRandom();
+                if(!outputProblemList.contains(newId)){
+                    outputProblemList.add(newId);
+                    margin--;
+                }
+            }
+        }
 
         return outputProblemList;
     }
@@ -479,6 +495,10 @@ public class ExerciseController {
             tmpList.addAll(getFromSimilar(5, USER_ID));
             tmpList.addAll(getHighFrequency(3));
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
+
+            tmpList = uniqueProbList(tmpList);
+            HashSet<Long> hashSet = new HashSet<>(tmpList);
+            assert tmpList.size() == hashSet.size(); //保证列表去重
 
             //保证选择题在文本题前面
             probList = reorganizeProbList(tmpList);
@@ -655,6 +675,24 @@ public class ExerciseController {
                 orderList.add(tmpNum);
 
         return orderList;
+    }
+
+    public ArrayList<Long> uniqueProbList(ArrayList<Long> tmpList) {
+        //列表去重，然后通过随机抽取题目进行补齐
+        int origin = tmpList.size();
+        HashSet<Long> set = new HashSet<>(tmpList);
+        tmpList.clear();
+        tmpList.addAll(set);
+        int margin = origin - tmpList.size();
+        if(margin > 0) System.out.println("进入去重，补齐" + margin);
+        while (margin > 0) {
+            long newId = getOneRandom();
+            if(!tmpList.contains(newId)){
+                tmpList.add(newId);
+                margin--;
+            }
+        }
+        return tmpList;
     }
 
     @GetMapping("/getProblemList")

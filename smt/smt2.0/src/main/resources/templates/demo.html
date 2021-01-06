@@ -391,6 +391,16 @@
                 if(this.remain === -1) {
                     var res = await this.getInitPaper();
                     this.totalNum = res.sheet_list.length;
+
+                    if(this.totalNum === 0){
+                        this.$alert('这个页面目前还没有题目，请点击返回主界面', '提示', {
+                            confirmButtonText: '确定',
+                            callback: action => {
+                                window.location.replace("/start");
+                            }
+                        });
+                    }
+
                     this.prob_list = res.num_list;   //直接获取题号序列
                     this.opt_num = res.opt_num;
                     this.id = res.id;
