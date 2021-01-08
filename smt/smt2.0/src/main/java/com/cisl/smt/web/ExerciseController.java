@@ -10,6 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.security.KeyException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -125,18 +126,31 @@ public class ExerciseController {
         return answerService.getAnswer(id);
     }
 
+    @GetMapping(path = "/getMap")
+    public SheetMap getMap(){
+        return SheetMap.getInstance();
+    }
+
     @GetMapping(path = "/getSheet")
-    public SheetTemp getSheet() {
-        return SheetTemp.getInstance();
+    public SheetTemp getSheet(HttpServletRequest request) {
+        Long userId = getUserFromCookies(request);
+        HashMap<Long, SheetTemp> map = SheetMap.getInstance().getTempHashMap();
+        SheetTemp st = map.get(userId);
+        if(st == null){  //键不存在
+            map.put(userId, new SheetTemp());   //一个 user_id 有自己的 sheetTemp
+        }
+        assert map.get(userId) != null;
+        return map.get(userId);
     }
 
     @PostMapping("/postSheet")
     public SheetTemp postSheet(@RequestParam("idx") Long idx,
                                @RequestParam("finish") Long finish,
                                @RequestParam("choice") String choice,
-                               @RequestParam("choice_text") String choice_text) {
+                               @RequestParam("choice_text") String choice_text,
+                               HttpServletRequest request) {
 
-        SheetTemp st = SheetTemp.getInstance();   //获得唯一单例
+        SheetTemp st = getSheet(request);   //获得对应的 SheetTemp
         ArrayList<ProblemAnsTemp> tmpList = st.getSheet_list();
         for (ProblemAnsTemp pt : tmpList) {
             if (pt.getIdx().equals(idx)) {
@@ -156,9 +170,8 @@ public class ExerciseController {
         /**
          * @description: 获得数据库中某个 SheetTemp 记录, 属于评估后的记录
          */
-        SheetTemp st = SheetTemp.getInstance();   //获得唯一单例
+        SheetTemp st = getSheet(request);   //获得对应的 SheetTemp
         Long USER_ID = getUserFromCookies(request);  // 获得当前用户
-        //TODO 不是返回当前的全局 SheetTemp 而是去数据库中抽取
         //TODO 进行分数、掌握知识点等等的评价，写入 CommentTemp 和 t_exer_eval 数据库
 
 
@@ -491,7 +504,7 @@ public class ExerciseController {
             ArrayList<Long> tmpList = new ArrayList<>();
 
             Long lesson_id = Long.valueOf(settingTemp.getSys());
-            tmpList.addAll(getFromNew(lesson_id, 10));
+            tmpList.addAll(getFromNew(lesson_id, 10));  //如果该 lesson 缺题目，则返回空，无新知识点
             tmpList.addAll(getFromSimilar(5, USER_ID));
             tmpList.addAll(getHighFrequency(3));
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
@@ -527,9 +540,9 @@ public class ExerciseController {
 
 //        probList = getFromNaive(totalNum)
 
-        SheetTemp st = SheetTemp.getInstance();
+        SheetTemp st = getSheet(request);
         if (st.getSheet_list().size() > 0)  //如果当前 sheet 没有清空，则进行一次清空
-            st.setSheet_list(new ArrayList<>());
+            st.clearSheet_list();
         st.setNum_list(probList);  // 一个坑，这里是同一个对象，影响了下面的 probList
 
         st.setId(System.currentTimeMillis());  //试卷 id 的生成: 当前时间的毫秒数
@@ -558,7 +571,7 @@ public class ExerciseController {
         st.setOpt_num((long) optNum);
         st.setTxt_num((long) txtNum);
 
-        //本次出题组卷，插入数据库
+        //TODO 本次出题组卷，插入数据库（目前好像没什么作用）
 
         Exercise exercise = new Exercise();
         exercise.setExercise_id(st.getId());

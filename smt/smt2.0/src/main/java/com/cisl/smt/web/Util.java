@@ -105,7 +105,8 @@ public class Util {
             Collections.shuffle(choiceProblemList);
             resList = choiceProblemList.subList(0, choiceNum);
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("276: 当前 level 的选择题数量不够，题库有问题");
+            System.out.println("Util 108: 当前 level 的选择题数量不够，题库有问题，返回一个空列表");
+            return resList;
         }
         try {
             Collections.shuffle(txtProblemList);

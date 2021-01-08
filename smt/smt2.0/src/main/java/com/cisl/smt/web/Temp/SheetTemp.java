@@ -9,23 +9,16 @@ public class SheetTemp {
      * @date: 2020.10.19
      */
 
-    private Long id;
+    private Long id;   //此处 id 为试卷 id，当前毫秒数
     private ArrayList<ProblemAnsTemp> sheet_list;
     private ArrayList<Long> num_list;
     private Long opt_num;
     private Long txt_num;
-    private static SheetTemp instance = null;
 
-    private SheetTemp(){}   // 单例模式，外部不能new
-
-    public static SheetTemp getInstance() {
-        if(instance == null) {
-            instance = new SheetTemp();
-            instance.setSheet_list(new ArrayList<>());
-            instance.setNum_list(new ArrayList<>());
-        }
-        return instance;
-    }
+    public SheetTemp(){
+        this.setSheet_list(new ArrayList<>());
+        this.setNum_list(new ArrayList<>());
+    };   //还要初始化自己的列表
 
     public Long getId() {
         return id;
@@ -69,7 +62,7 @@ public class SheetTemp {
 
     public void addSheet_list(ProblemAnsTemp pt) {
         if(this.sheet_list == null){
-            instance.setSheet_list(new ArrayList<>());
+            this.setSheet_list(new ArrayList<>());
         }
         this.sheet_list.add(pt);
     }
