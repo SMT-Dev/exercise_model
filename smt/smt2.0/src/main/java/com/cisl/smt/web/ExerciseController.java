@@ -41,7 +41,7 @@ public class ExerciseController {
     @Autowired
     private ReviewCollecService reviewCollecService;
 
-    private Util util = new Util();  //工具库变量
+    private final Util util = new Util();  //工具库变量
     private long USER_ID = 3;   // 暂时的模拟变量
     private CommentTemp commentTemp = new CommentTemp();  // 内部的试卷评估变量
 
