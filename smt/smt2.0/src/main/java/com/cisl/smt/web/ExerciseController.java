@@ -197,7 +197,7 @@ public class ExerciseController {
         //每一题都存一个 prob_eval
         for (ProblemAnsTemp pt : st.getSheet_list()) {
 
-            if (pt.getFinish() == 0)   // 只记录做了的题
+            if (pt.getFinish() == 0)   // 只记录做了的题，未做的不计入 eval 里面
                 continue;
             ProblemEvaluation pe = new ProblemEvaluation();
             //TODO prob_eval_id 设置：当前系统毫秒数
@@ -270,6 +270,7 @@ public class ExerciseController {
     }
 
 
+    @GetMapping("/getOneRandom")
     public Long getOneRandom() {
         //没有完全连续
         int max = 10363, min = 10000;
@@ -337,7 +338,7 @@ public class ExerciseController {
          * @description: 按照做过(不论对错)的题目遗忘曲线方式出题，占比 2道/20
          * @return: 题目序号列表
          */
-        //TODO 以两周为分界线
+        //TODO 以两周为分界线，目前是随机
         ArrayList<Long> probList = new ArrayList<>();
         ArrayList<ProblemEvaluation> probEvalList = new ArrayList<>();
         probEvalList = problemEvalService.getProblemEvalByUser(USER_ID);
@@ -357,6 +358,7 @@ public class ExerciseController {
     public ArrayList<Long> getFromSimilar(@RequestParam("num") Integer partNum, Long USER_ID) {
         /**
          * @description: 根据该 level 内做错的相似题目出题，占比 5道/20，没有信息则随机
+         *               和 recommend 区别在于，只取本 level
          * @return: 题目序号列表
          */
         String probEvalListStr = "[]";
@@ -440,7 +442,7 @@ public class ExerciseController {
     @GetMapping("/getFromRecommend")
     public ArrayList<Long> getFromRecommend(@RequestParam("num") Integer partNum, Long USER_ID) {
         /**
-         * @description: 「推荐联系」模块，根据本次做错的题目，推荐相似的题目
+         * @description: 「推荐练习」模块，根据所有做错的题目，推荐相似的题目
          *                目前按照同一考点来推
          * @return: 题目序号列表
          */
@@ -458,10 +460,10 @@ public class ExerciseController {
         }
         Collections.shuffle(outputProblemList);
         outputProblemList = uniqueProbList(outputProblemList);
+        Collections.shuffle(outputProblemList);  //一定要打乱，因为 unique 之后会正序
         HashSet<Long> hashSet = new HashSet<>(outputProblemList);
         assert outputProblemList.size() == hashSet.size();  //保证列表去重
 
-        outputProblemList = reorganizeProbList(outputProblemList);  //保证选择题在文本题前面的顺序
         if(outputProblemList.size() > partNum)   //推荐的题目太多则裁剪
             outputProblemList = new ArrayList<>(outputProblemList.subList(0, partNum));
         else {   //题目太少则补充随机
@@ -475,7 +477,27 @@ public class ExerciseController {
                 }
             }
         }
+        outputProblemList = reorganizeProbList(outputProblemList);  //保证选择题在文本题前面的顺序
 
+        return outputProblemList;
+    }
+
+    @GetMapping("/getFromStrengthen")
+    public ArrayList<Long> getFromStrengthen(@RequestParam("num") Integer partNum, HttpServletRequest request) {
+        /**
+         * @description: 强化练习部分，本次错题+推荐练习合二为一；总题量 20 道
+         * @return: 题目序号列表
+         */
+
+        ArrayList<Long> outputProblemList = new ArrayList<>();
+        SheetTemp st = getSheet(request);
+        for (ProblemAnsTemp pat : st.getSheet_list()) {
+            if(pat.getFinish() == 1 && pat.getEval_res() == 0)  //已做且做错的题目
+                outputProblemList.add(pat.getIdx());
+        }
+        Long USER_ID = getUserFromCookies(request);
+        outputProblemList.addAll(getFromRecommend(partNum - outputProblemList.size(), USER_ID));
+        outputProblemList = reorganizeProbList(outputProblemList);
         return outputProblemList;
     }
 
@@ -510,6 +532,7 @@ public class ExerciseController {
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
+            //此处 tmpList 已固定题量 20，不需要 shuffle
             HashSet<Long> hashSet = new HashSet<>(tmpList);
             assert tmpList.size() == hashSet.size(); //保证列表去重
 
@@ -524,6 +547,10 @@ public class ExerciseController {
             //进入推荐练习做题，只按照 lesson 抽取, 此处 sys 代表 redId=8888（参考的试卷）
 //            Integer refId = Integer.valueOf(settingTemp.getSys());
             probList = getFromRecommend(totalNum, USER_ID);
+
+        } else if (settingTemp.getSrc().equals("strengthen")) {
+            //进入强化练习做题，本次错题 + 推荐练习
+            probList = getFromStrengthen(totalNum, request);
 
         } else if (settingTemp.getSrc().equals("wrong")) {
             //进入错题集做题，此处 sys 无意义
@@ -691,7 +718,7 @@ public class ExerciseController {
     }
 
     public ArrayList<Long> uniqueProbList(ArrayList<Long> tmpList) {
-        //列表去重，然后通过随机抽取题目进行补齐
+        //列表去重，然后通过随机抽取题目进行补齐. 注意一点，unique 中 hashset 会自动排序，后序需要再 shuffle
         int origin = tmpList.size();
         HashSet<Long> set = new HashSet<>(tmpList);
         tmpList.clear();
