@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <title>选择题答题界面</title>
+    <title>答题界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
     <link href="/css/demo.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/jquery.min.js"></script>
-    <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
 <div id="app">
+    <div id="layer" v-show="handin"></div>
+    <img id="popBox" v-show="handin" src="/image/pop_box.png"></img>
+    <div id="pop_msg" v-show="handin">
+        <p><span style="color: #DCDCDC;">你还有 </span><span style="color: #FF8900;">{{ remain }}道题</span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+    </div>
+    <button type="button" id="handIn_confirm" v-show="handin" @click="handInConfirm"></button>
+    <button type="button" id="handIn_cancel" v-show="handin" @click="handInCancel"></button>
     <div id="main">
         <div id="header">
             <div id="container1">
                 <div id="heading">
                     <p id="heading1"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
-                    <p id="heading2"><span>课课练</span></p>
+                    <p id="heading2"><span>智能推送练习</span></p>
                 </div>
             </div>
             <div id="container2">
@@ -26,62 +33,67 @@
                     <ul class="time">
                         <el-divider id="line"></el-divider>
                         <li v-for="activity in activities">
-                            <i :id="getId(activity.index)" class="el-icon-star-on" :style="{'color':activity.color}"></i>
-                            <p><span>{{ activity.content }}</span></p>
+                            <img :src="activity.src" :id="getId(activity.index)"></i>
+                            <p :id="getNum(activity.index)"><span>{{ activity.content }}</span></p>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
+        <img id="link_left" src="/image/link.png">
+        <img id="link_right" src="/image/link.png">
         <div id="question_card">
-            <div id="question_info">
-                <p><span>Q : {{ num }} / {{ totalNum }}</span></p>
-            </div>
-            <div id="question_text">
-                <p><span>{{ prob_text }}</span></p>
-            </div>
-            <div id="opt_part">
-                <div id="option_A" class="option">
-                    <el-button id="img-a" circle @click="chooseOption('a')">A</el-button>
-                    <div id="question_a_text">
-                        <p class="choice"><span>{{ options.A }}</span></p>
+            <div id="book_container">
+                <img src="/image/book.png" id="book">
+                <div id="question_area">
+                    <div id="question_info">
+                        <p style="font-family: 'GothamRoundedMedium';color: #2A7DE1;font-size: 42px;"><span>Q{{ num }}</span></p>
+                        <div style="border-radius: 40px;background-color: #2A7DE1;font-family: 'Microsoft YaHei';color: white;font-weight: bold;font-size: 20px;margin-left: 10px;padding-left: 5px;padding-right: 5px;">
+                            <p><span>{{ prob_attr }}题</span></p>
+                        </div>
+                    </div>
+                    <div id="question_text">
+                        <p><span>{{ prob_text }}</span></p>
+                    </div>
+                    <div id="opt_part">
+                        <div id="option_A" class="option" @click="chooseOption('a')">
+                            <div id="question_a_text">
+                                <p class="choice"><span>A. {{ options.A }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_B" class="option" @click="chooseOption('b')">
+                            <div id="question_b_text">
+                                <p class="choice"><span>B. {{ options.B }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_C" class="option" @click="chooseOption('c')">
+                            <div id="question_c_text">
+                                <p class="choice"><span>C. {{ options.C }}</span></p>
+                            </div>
+                        </div>
+                        <div id="option_D" class="option" style="display: none;" @click="chooseOption('d')">
+                            <div id="question_d_text">
+                                <p class="choice"><span>D. {{ options.D }}</span></p>
+                            </div>
+                        </div>
+                        <button type="button" id="last_button" @click="lastProblem"></button>
+                        <button type="button" id="next_button" @click="nextProblem"></button>
+                    </div>
+                    <div id="txt_part" style="display: none;">
+                        <div id="input_box">
+                            <div v-for="input in input_num">
+                                <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
+                            </div>
+                        </div>
+                        <button type="button" id="last_button" @click="lastProblem"></button>
+                        <button type="button" id="next_button" @click="nextProblem"></button>
                     </div>
                 </div>
-                <div id="option_B" class="option">
-                    <el-button id="img-b" circle @click="chooseOption('b')">B</el-button>
-                    <div id="question_b_text">
-                        <p class="choice"><span>{{ options.B }}</span></p>
-                    </div>
-                </div>
-                <div id="option_C" class="option">
-                    <el-button id="img-c" circle @click="chooseOption('c')">C</el-button>
-                    <div id="question_c_text">
-                        <p class="choice"><span>{{ options.C }}</span></p>
-                    </div>
-                </div>
-                <div id="option_D" class="option" style="display: none;">
-                    <el-button id="img-d" circle @click="chooseOption('d')">D</el-button>
-                    <div id="question_d_text">
-                        <p class="choice"><span>{{ options.D }}</span></p>
-                    </div>
-                </div>
-                <el-button type="primary" id="last_button" round @click="lastProblem"><i class="el-icon-caret-left"></i>上一题</el-button>
-                <el-button type="primary" id="next_button" round @click="nextProblem">下一题<i class="el-icon-caret-right"></i></el-button>
-            </div>
-            <div id="txt_part" style="display: none;">
-                <p id="prob_tip"><span></span></p>
-                <div id="input_box">
-                    <div v-for="input in input_num">
-                        <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
-                    </div>
-                </div>
-                <el-button type="primary" id="last_button" round @click="lastProblem"><i class="el-icon-caret-left"></i>上一题</el-button>
-                <el-button type="primary" id="next_button" round @click="nextProblem">下一题<i class="el-icon-caret-right"></i></el-button>
             </div>
         </div>
         <div id="footer">
             <div id="container3">
-                <el-button id="finish_button" type="success" @click="handIn">交&nbsp;&nbsp;卷</el-button>
+                <button type="button" id="finish_button" @click="handIn"></button>
             </div>
         </div>
     </div>
@@ -104,9 +116,29 @@
         return "";
     }
 
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey === true || event.metaKey === true)
+            && (event.keyCode === 61 || event.keyCode === 107
+                || event.keyCode === 173 || event.keyCode === 109
+                || event.keyCode === 187 || event.keyCode === 189)) {
+            event.preventDefault();
+        }
+    }, false);
+
+    document.addEventListener('mousewheel', function (e) {
+        e = e || window.event;
+        if ((e.wheelDelta && event.ctrlKey) || e.detail) {
+            event.preventDefault();
+        }
+    }, {
+        capture: false,
+        passive: false
+    });
+
     var app = new Vue({
         el: "#app",
         data: {
+            handin: false,
             num: 1,
             totalNum: 0,
             opt_num: 0,
@@ -120,6 +152,7 @@
             txt_box: [],
             src: "",
             prob_text: "test",
+            prob_attr: "",
             options_id: 0,
             options: {A: "A", B: "B", C: "C", D: "D"},
             formData: {
@@ -137,14 +170,14 @@
             options_list: [],
             answers_list: [],
             txt: [],
-            input_num: [1,2],
+            input_num: [],
             activities: [],
         },
         methods: {
             chooseOption: function (option) {
                 this.refreshAnswer();
-                document.getElementById('img-' + option).style.background = "#409EFF";
-                document.getElementById('img-' + option).style.color = "white";
+                document.getElementById('option_' + option.toUpperCase()).style.background = "#00D87E";
+                document.getElementById('option_' + option.toUpperCase()).style.color = "white";
                 this.formData.choice = option;
                 if (option === 'a') {
                     this.formData.choice_text = this.options.A;
@@ -169,14 +202,14 @@
             },
 
             refreshAnswer: function () {
-                document.getElementById('img-a').style.background = "white";
-                document.getElementById('img-a').style.color = "black";
-                document.getElementById('img-b').style.background = "white";
-                document.getElementById('img-b').style.color = "black";
-                document.getElementById('img-c').style.background = "white";
-                document.getElementById('img-c').style.color = "black";
-                document.getElementById('img-d').style.background = "white";
-                document.getElementById('img-d').style.color = "black";
+                document.getElementById('option_A').style.background = "#F0F0F0";
+                document.getElementById('option_A').style.color = "black";
+                document.getElementById('option_B').style.background = "#F0F0F0";
+                document.getElementById('option_B').style.color = "black";
+                document.getElementById('option_C').style.background = "#F0F0F0";
+                document.getElementById('option_C').style.color = "black";
+                document.getElementById('option_D').style.background = "#F0F0F0";
+                document.getElementById('option_D').style.color = "black";
             },
 
             getIndex: function (option) {
@@ -185,6 +218,10 @@
 
             getId: function (option) {
                 return "icon_" + option;
+            },
+
+            getNum: function (option) {
+                return "num_" + option;
             },
 
             confirm: function() {
@@ -329,31 +366,22 @@
                     }
                 }
                 if(this.remain > 0){
-                    this.$confirm('你还有'+this.remain+'道题没完成，是否交卷？', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'
-                    }).then(() => {
-                        this.$message({
-                            type: 'success',
-                            message: '已交卷'
-                        });
-                        //var url = sessionStorage.getItem('lastUrl');
-                        //history.replaceState(null,null,url);
-                        sessionStorage.clear();
-                        window.location.replace("/demo_marked?src=" + this.src + "&mode=finish&id=" + this.id);
-                    }).catch(() => {
-                        this.$message({
-                            type: 'info',
-                            message: '请继续作答'
-                        });
-                    });
+                    this.handin = true;
                 }else {
                     //var url = sessionStorage.getItem('lastUrl');
                     //history.replaceState(null,null,url);
                     sessionStorage.clear();
                     window.location.replace("/demo_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                 }
+            },
+
+            handInConfirm: function () {
+                sessionStorage.clear();
+                window.location.replace("/demo_marked?src=" + this.src + "&mode=finish&id=" + this.id);
+            },
+
+            handInCancel: function () {
+                this.handin = false;
             },
 
             getSheet: function () {
@@ -372,9 +400,11 @@
                     ans = this.options_list[i];
                     if(ans.finish === 1) {
                         var index = this.prob_list.indexOf(ans["idx"]);
-                        this.activities[index]["color"] = "#00FF00";
+                        this.activities[index]["src"] = "/image/yellow-star.png";
+                        document.getElementById("num_" + (index + 1)).style.color = "#2A7DE1";
                     }
                 }
+                
                 this.store();
             },
 
@@ -391,7 +421,6 @@
                 if(this.remain === -1) {
                     var res = await this.getInitPaper();
                     this.totalNum = res.sheet_list.length;
-
                     if(this.totalNum === 0){
                         this.$alert('这个页面目前还没有题目，请点击返回主界面', '提示', {
                             confirmButtonText: '确定',
@@ -411,9 +440,8 @@
                         var activityTemp = {};
                         activityTemp.content = 'Q' + j.toString();
                         activityTemp.index = j;
-                        activityTemp.color = 'yellow';
+                        activityTemp.src = '/image/grey-star.png';
                         this.activities.push(activityTemp);
-                        console.log(this.activities);
                         if(j > this.opt_num) {
                             this.txt_box.push(j);
                         }else {
@@ -435,12 +463,14 @@
                 if(this.num <= this.opt_num) {
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
+                    this.prob_attr = "选择";
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
+                    console.log(option.data)
                     this.options.A = option.data.option_a;
                     this.options.B = option.data.option_b;
                     this.options.C = option.data.option_c;
-                    if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
+                    if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null) && (option.data.option_d.length > 0)) {
                         this.options.D = option.data.option_d;
                         document.getElementById('option_D').style.display = "";
                     }else {
@@ -451,18 +481,43 @@
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
-                    for(var i = 0;i < 2;i++) {
+                    this.prob_attr = "改写";
+                    for(var i = 0;i < 2;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }
-                    this.input_num = [...Array(2).keys()];
+                    this.input_num = [...Array(2).keys()];//2记得改为prob.data.blank_num
                     this.prob_text = prob.data.prob_text;
-                    if(this.prob_text.toLowerCase().indexOf("negative") > -1){
-                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，否定回答"
+                    if(this.prob_text.toLowerCase().indexOf("question") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+肯定回答";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+否定回答";
+                        }
+                    }else if(this.prob_text.toLowerCase().indexOf("sentence") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成肯定句";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成否定句";
+                        }
+                    }else if(this.prob_text.toLowerCase().indexOf("answer") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "回答问题：用肯定句回答";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "回答问题：用否定句回答";
+                        }
                     }
-                    else if(prob.data.prob_text.toLowerCase().indexOf("positive") > -1){
-                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，肯定回答"
-                    } else {
-                        document.getElementById("prob_tip").innerHTML = "文本题"
+                }
+                for (var j = 1; j <= this.totalNum; j++) {
+                    if(j === this.num) {
+                        document.getElementById("icon_" + j).style.width = "30px";
+                        document.getElementById("icon_" + j).style.height = "30px";
+                        document.getElementById("icon_" + j).style.margin = "0px 0px 0px 0px";
+                        document.getElementById("num_" + j).style.fontSize = "20px";
+                    }else {
+                        document.getElementById("icon_" + j).style.width = "21px";
+                        document.getElementById("icon_" + j).style.height = "21px";
+                        document.getElementById("icon_" + j).style.margin = "4px 0px 0px 0px"
+                        document.getElementById("num_" + j).style.fontSize = "16px";
                     }
                 }
             },
@@ -471,8 +526,8 @@
                 axios.get("/getSheet").then((response) => {
                     for (var i=0; i<response.data.sheet_list.length; i++) {
                         if(((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) === option) && (response.data.sheet_list[i].finish === 1)) {
-                            document.getElementById('img-'+response.data.sheet_list[i].choice).style.background = "#409EFF";
-                            document.getElementById('img-'+response.data.sheet_list[i].choice).style.color = "white";
+                            document.getElementById('option_'+response.data.sheet_list[i].choice.toUpperCase()).style.background = "#00D87E";
+                            document.getElementById('option_'+response.data.sheet_list[i].choice.toUpperCase()).style.color = "white";
                             break;
                         }
                     }
@@ -559,6 +614,7 @@
                     document.getElementById("heading2").style.display = "none";
                 }
             }
+            this.setSheet();
             this.setInitPaper();
             window.onbeforeunload = function (event) {
                 var url = sessionStorage.getItem('lastUrl');

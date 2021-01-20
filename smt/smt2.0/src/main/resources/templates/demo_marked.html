@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <title>选择题答题界面</title>
+    <title>详情界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
     <link href="/css/demo_marked.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
@@ -14,107 +14,112 @@
 <div id="app">
     <div id="main">
             <div id="header">
-                <div id="back" @click="goBack">
-                    <i class="el-icon-d-arrow-left"></i>
-                    <p><span>Back</span></p>
-                </div>
                 <div id="container1">
                     <div id="heading">
+                        <button type="button" id="back_button" @click="goBack"></button>
                         <p id="heading1"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
-                        <p id="heading2"><span>课课练</span></p>
+                        <p id="heading2"><span>智能推送练习</span></p>
                     </div>
                 </div>
                 <div id="container2">
                     <div id="heading3">
-                        <p id="time"><span>完成时间：{{ time }}</span></p>
-                        <p id="score"><span>你的得分：{{ score }} </span></p>
-                        <p id="average"><span>本次练习平均分：{{ average }}</span></p>
-                        <p id="handle"><span>本次练习考点的掌握程度：{{ handle }}%</span></p>
+                        <div id="time">
+                            <p><span style="font-family: 'Microsoft YaHei';color: #2A7DE1;font-weight: bold;">完成时间：</span><span style="font-family: 'GothamRoundedMedium';color: #FF5554;">{{ time }}</span></p>
+                        </div>
+                        <div id="score">
+                            <p><span style="font-family: 'Microsoft YaHei';color: #2A7DE1;font-weight: bold;">你的得分：</span><span style="font-family: 'GothamRoundedMedium';color: #FF5554;">{{ score }} </span></p>
+                        </div>
+                        <div id="average">
+                            <p><span style="font-family: 'Microsoft YaHei';color: #2A7DE1;font-weight: bold;">本次练习平均分：</span><span style="font-family: 'GothamRoundedMedium';color: #FF5554;">{{ average }}</span></p>
+                        </div>
+                        <div id="handle">
+                            <p><span style="font-family: 'Microsoft YaHei';color: #2A7DE1;font-weight: bold;">本次练习考点的掌握程度：</span><span style="font-family: 'GothamRoundedMedium';color: #FF5554;">{{ handle }}%</span></p>
+                        </div>
                     </div>
                 </div>
                 <div id="container3">
                     <div id="tag">
                         <div v-for="num in wrong_list" :id="getBox(num)">
-                            <el-button :id="getButton(num)" style="background-color: #C00000;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                            <el-button :id="getButton(num)" style="background-color: #2A7DE1;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                            <img src="/image/wrong.png" class="num-result">
                         </div>
                         <div id="correct_container" style="display: none;">
                             <div v-for="num in correct_list" :id="getBox(num)">
-                                <el-button :id="getButton(num)" style="background-color: #339900;cursor: pointer;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                                <el-button :id="getButton(num)" style="background-color: #2A7DE1;cursor: pointer;" circle @click="jumpProblem(num)">{{ num }}</el-button>
+                                <img src="/image/correct.png" class="num-result">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div id="question_card">
-                <div id="question_area">
-                    <div id="question_info">
-                        <div id="container4">
-                            <p><span>Q {{ num }}</span></p>
-                            <p id="show_result">{{ is_correct }}&nbsp;&nbsp;&nbsp;</p>
-                            <div id="check_analysis" @click="showAnalysis">
-                                <i class="el-icon-search"></i><p><span>查看解析</span></p>
+                <div id="book_container">
+                    <img src="/image/book.png" id="book">
+                    <div id="question_area">
+                        <div id="question_info">
+                            <div id="container4">
+                                <p><span>Q{{ num }}</span></p>
+                                <p id="show_result">{{ is_correct }}</p>
+                                <button style="display:none" type="button" id="check_analysis" @click="showAnalysis"></button>
+                            </div>
+                        </div>
+                        <div id="question_text">
+                            <p><span>{{ prob_text }}</span></p>
+                        </div>
+                        <div id="congrats" style="display: none;">
+                            <p><span>恭喜你，全部做对啦！</span></p>
+                        </div>
+                        <div id="opt_part">
+                            <div id="option_A" class="option">
+                                <div id="question_a_text">
+                                    <p class="choice"><span>A. {{ options.A }}</span></p>
+                                </div>
+                            </div>
+                            <div id="option_B" class="option">
+                                <div id="question_b_text">
+                                    <p class="choice"><span>B. {{ options.B }}</span></p>
+                                </div>
+                            </div>
+                            <div id="option_C" class="option">
+                                <div id="question_c_text">
+                                    <p class="choice"><span>C. {{ options.C }}</span></p>
+                                </div>
+                            </div>
+                            <div id="option_D" class="option" style="display: none;">
+                                <div id="question_d_text">
+                                    <p class="choice"><span>D. {{ options.D }}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="txt_part" style="display: none;">
+                            <div id="input_box">
+                                <div v-for="input in input_num" class="input_result">
+                                    <p class="submit_ans"><span style="color: #330099;font-family: 'GothamRoundedMedium';font-weight: 900;font-size: 24px;">Your Answer {{ input + 1 }}: </span><span> {{ txt[input] }}</span></p>
+                                    <p class="correct_ans"><span style="color: #006600;font-family: 'GothamRoundedMedium';font-weight: 900;font-size: 24px;">Correct Answer {{ input + 1 }}: </span><span> {{ correct_txt[input] }}</span></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div id="question_text">
-                        <p><span>{{ prob_text }}</span></p>
-                    </div>
-                    <div id="congrats" style="display: none;">
-                        <p><span>恭喜你，全部做对啦！</span></p>
-                    </div>
-                    <div id="opt_part">
-                        <div id="option_A" class="option">
-                            <el-button id="img-a" circle disabled>A</el-button>
-                            <div id="question_a_text">
-                                <p class="choice"><span>{{ options.A }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_B" class="option">
-                            <el-button id="img-b" circle disabled>B</el-button>
-                            <div id="question_b_text">
-                                <p class="choice"><span>{{ options.B }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_C" class="option">
-                            <el-button id="img-c" circle disabled>C</el-button>
-                            <div id="question_c_text">
-                                <p class="choice"><span>{{ options.C }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_D" class="option">
-                            <el-button id="img-d" circle disabled>D</el-button>
-                            <div id="question_d_text">
-                                <p class="choice"><span>{{ options.D }}</span></p>
-                            </div>
+                    <div id="analysis_area">
+                        <img id="analysis_background" src="/image/background.png">
+                        <div id="analysis_text">
+                            <p><span>本题解析：{{ analysis_list[num - 1] }}</span></p>
                         </div>
                     </div>
-                    <div id="txt_part" style="display: none;">
-                        <p id="prob_tip"><span></span></p>
-                        <div id="input_box">
-                            <div v-for="input in input_num" class="input_result">
-                                <p class="submit_ans"><span style="color: #330099;font-family: 'TW Cen MT Condensed';font-weight: 900;font-size: 24px;">Your Answer {{ input + 1 }}: </span><span> {{ txt[input] }}</span></p>
-                                <p class="correct_ans"><span style="color: #006600;font-family: 'TW Cen MT Condensed';font-weight: 900;font-size: 24px;">Correct Answer {{ input + 1 }}: </span><span> {{ correct_txt[input] }}</span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <el-button type="primary" id="last_button" round @click="lastProblem" style="display: none;"><i class="el-icon-caret-left"></i>上一题</el-button>
-                    <el-button type="primary" id="next_button" round @click="nextProblem" style="display: none;">下一题<i class="el-icon-caret-right"></i></el-button>
-                </div>
-                <div id="analysis_area">
-                    <div id="analysis_text" style="display: none;">
-                        <p><span>本题解析：{{ analysis_list[num - 1] }}</span></p>
-                    </div>
-                </div>
-                <div id="show_more" style="display: none;">
-                    <el-button id="icon_container" circle @click="showMore"><i class="el-icon-view"></i></el-button>
-                    <p id="show_more_text"><span>&nbsp;查看做对题目解析</span></p>
+                    <!--<div id="show_more" style="display: none;">
+                        <el-button id="icon_container" circle @click="showMore"><i class="el-icon-view"></i></el-button>
+                        <p id="show_more_text"><span>&nbsp;查看做对题目解析</span></p>
+                    </div>-->
+                    <button type="button" id="last_button" style="display: none;" @click="lastProblem"></button>
+                    <button type="button" id="next_button" v-show="flag" @click="nextProblem"></button>
+                    <button type="button" id="disable_button" v-show="flag === false"></button>
+                    <button type="button" id="blank_button" style="display: none;"></button>
+                    <button type="button" id="show_more" style="display: none;" @click="showMore"></button>
                 </div>
             </div>
             <div id="footer">
                 <div id="container5">
-                    <el-button id="again_button" type="primary" round @click="againExercise">再来一轮</el-button>
-                    <el-button id="recomnd_button" type="primary" round @click="recomndExercise">推荐练习</el-button>
-                    <el-button id="wrong_button" type="primary" round @click="wrongExercise">错题练习</el-button>
+                    <button type="button" id="recomnd_button" @click="recomndExercise"></button>
                 </div>
             </div>
     </div>
@@ -136,10 +141,30 @@
         }
         return "";
     }
+
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey === true || event.metaKey === true)
+            && (event.keyCode === 61 || event.keyCode === 107
+                || event.keyCode === 173 || event.keyCode === 109
+                || event.keyCode === 187 || event.keyCode === 189)) {
+            event.preventDefault();
+        }
+    }, false);
+
+    document.addEventListener('mousewheel', function (e) {
+        e = e || window.event;
+        if ((e.wheelDelta && event.ctrlKey) || e.detail) {
+            event.preventDefault();
+        }
+    }, {
+        capture: false,
+        passive: false
+    });
     
     var app = new Vue({
         el: "#app",
         data: {
+            flag: false,
             time: '',
             handle: 0,
             average: 0,
@@ -191,10 +216,10 @@
             },
 
             recomndExercise: function () {
-                this.setting.src = "recomnd";
+                this.setting.src = "strengthen";
                 this.setting.sys = this.id.toString();
                 this.setting.lev = this.level;
-                this.setting.probNum = 20;
+                this.setting.probNum = 20;//更改，这时候前端不能确定会有多少题目
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
                     console.log("已设置参数: ", response.data);
@@ -205,7 +230,7 @@
                 window.location.replace("/demo?src=recomnd");
             },
 
-            wrongExercise: function () {
+            /*wrongExercise: function () {
                 this.setting.src = "wrong";
                 this.setting.sys = "";
                 this.setting.lev = 0;
@@ -229,17 +254,17 @@
                 });
                 sessionStorage.clear();
                 window.location.replace("/demo?src=wrong");
-            },
+            },*/
 
             refreshAnswer: function () {
-                document.getElementById('img-a').style.background = "white";
-                document.getElementById('img-a').style.color = "black";
-                document.getElementById('img-b').style.background = "white";
-                document.getElementById('img-b').style.color = "black";
-                document.getElementById('img-c').style.background = "white";
-                document.getElementById('img-c').style.color = "black";
-                document.getElementById('img-d').style.background = "white";
-                document.getElementById('img-d').style.color = "black";
+                document.getElementById('option_A').style.background = "#F0F0F0";
+                document.getElementById('option_A').style.color = "black";
+                document.getElementById('option_B').style.background = "#F0F0F0";
+                document.getElementById('option_B').style.color = "black";
+                document.getElementById('option_C').style.background = "#F0F0F0";
+                document.getElementById('option_C').style.color = "black";
+                document.getElementById('option_D').style.background = "#F0F0F0";
+                document.getElementById('option_D').style.color = "black";
             },
 
             getIndex: function (option) {
@@ -263,18 +288,18 @@
             },
 
             showAnalysis: function () {
-                $("#analysis_text").fadeIn(2000);
+                this.flag = false;
                 this.show_analysis[this.num - 1] = 1;
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
                 setTimeout(() => {
-                    if(this.num !== this.wrong_list[this.wrong_list.length - 1])
-                        document.getElementById("next_button").style.display = "";
-                    else if(this.is_show === 0) {
+                    if(this.num !== this.wrong_list[this.wrong_list.length - 1]) {
+                        this.flag = true;
+                    }else if(this.is_show === 0) {
                         if(this.correct_list.length !== 0)
-                            document.getElementById("show_more").style.display = "flex";
+                            document.getElementById("show_more").style.display = "";
                     }
                     document.getElementById("num" + this.num).style.cursor = "pointer";
-                }, 300);
+                }, 3000);
                 this.store();
             },
 
@@ -287,70 +312,64 @@
                 document.getElementById("opt_part").style.display = "";
                 this.is_show = 1;
                 sessionStorage.setItem("isShow",this.is_show);
-                document.getElementById("next_button").style.display = "";
+                this.flag = true;
                 this.jumpProblem(this.correct_list[0]);
             },
 
             showAlready: function () {
-                console.log(this.num);
-                console.log(this.wrong_list);
-                console.log(this.correct_list);
-                console.log(this.correct_list.indexOf(this.num));
-                if((this.show_analysis[this.num - 1] === 1) || (this.correct_list.indexOf(this.num) > -1)) {
-                    console.log("Yes");
-                    $("#analysis_text").fadeIn("fast");
-                }
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
-                setTimeout(() => {
-                    for(var i = 1;i <= this.totalNum;i++) {
-                        if(this.show_analysis[i - 1] === 1) {
-                            document.getElementById("num" + i).style.cursor = "pointer";
-                        }
+                for(var i = 1;i <= this.totalNum;i++) {
+                    if(this.show_analysis[i - 1] === 1) {
+                        document.getElementById("num" + i).style.cursor = "pointer";
                     }
-                    if(this.show_analysis[this.num - 1] === 1 && this.num !== this.wrong_list[this.wrong_list.length - 1])
-                        document.getElementById("next_button").style.display = "";
-                    if(this.show_analysis[this.wrong_list[this.wrong_list.length - 1] - 1] === 1) {
-                        if(this.is_show === 0 && this.correct_list.length !== 0)
-                            document.getElementById("show_more").style.display = "flex";
-                    }
-                    if(this.is_show === 1 && this.num !== this.correct_list[this.correct_list.length - 1]) {
-                        document.getElementById("next_button").style.display = "";
-                    }
-                }, 500);
+                }
+                if(this.show_analysis[this.num - 1] === 1 && this.num !== this.wrong_list[this.wrong_list.length - 1]) {
+                    this.flag = true;
+                }
+                if(this.show_analysis[this.wrong_list[this.wrong_list.length - 1] - 1] === 1) {
+                    if(this.is_show === 0 && this.correct_list.length !== 0)
+                        document.getElementById("show_more").style.display = "flex";
+                }
+                if(this.is_show === 1 && this.num !== this.correct_list[this.correct_list.length - 1]) {
+                    this.flag = true;
+                }
                 this.store();
             },
 
             jumpProblem: function (option) {
                 if(this.show_analysis[option - 1] === 1) {
                     if(this.num <= this.opt_num && option > this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
                         document.getElementById('opt_part').style.display = "none";
                         document.getElementById('txt_part').style.display = "";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     }else if(this.num <= this.opt_num && option <= this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else if(this.num > this.opt_num && option <= this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
                         document.getElementById('opt_part').style.display = "";
                         document.getElementById('txt_part').style.display = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else if(this.num > this.opt_num && option > this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     }
+                    document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                    document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                    document.getElementById("num" + this.num).style.border = "2px solid white";
+                    document.getElementById("num" + option).style.color = "#2A7DE1";
+                    document.getElementById("num" + option).style.backgroundColor = "#FFFFFF";
+                    document.getElementById("num" + option).style.border = "2px solid #2A7DE1";
                     this.num = option;
                     if(this.num === this.wrong_list[0])
                         document.getElementById("last_button").style.display = "none";
                     else
                         document.getElementById("last_button").style.display = "";
-                    document.getElementById("analysis_text").style.display = "none";
-                    if((this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0) || this.num === this.correct_list[this.correct_list.length - 1])
-                        document.getElementById("next_button").style.display = "none";
-                    else
-                        document.getElementById("next_button").style.display = "";
+                    if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0) {
+                        this.flag = false;
+                        document.getElementById("blank_button").style.display = "none";
+                    }else if(this.num === this.correct_list[this.correct_list.length - 1]) {
+                        this.flag = false;
+                        document.getElementById("blank_button").style.display = "";
+                    }else{
+                        document.getElementById("blank_button").style.display = "none";
+                        this.flag = true;
+                    }
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -359,34 +378,34 @@
                     });
                 }else if(this.correct_list.indexOf(option) > -1) {
                     if(this.num <= this.opt_num && option > this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
                         document.getElementById('opt_part').style.display = "none";
                         document.getElementById('txt_part').style.display = "";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     }else if(this.num <= this.opt_num && option <= this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else if(this.num > this.opt_num && option <= this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
                         document.getElementById('opt_part').style.display = "";
                         document.getElementById('txt_part').style.display = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                         this.refreshAnswer();
                     }else if(this.num > this.opt_num && option > this.opt_num){
-                        document.getElementById("box" + this.num).style.borderBottom = "none";
-                        document.getElementById("box" + option).style.borderBottom = "3px solid yellow";
                     }
+                    document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                    document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                    document.getElementById("num" + this.num).style.border = "2px solid white";
+                    document.getElementById("num" + option).style.color = "#2A7DE1";
+                    document.getElementById("num" + option).style.backgroundColor = "#FFFFFF";
+                    document.getElementById("num" + option).style.border = "2px solid #2A7DE1";
                     this.num = option;
                     if(this.wrong_list.length === 0 && this.num === 1)
                         document.getElementById("last_button").style.display = "none";
                     else
                         document.getElementById("last_button").style.display = "";
-                    if(this.num !== this.correct_list[this.correct_list.length - 1])
-                        document.getElementById("next_button").style.display = "";
-                    else
-                        document.getElementById("next_button").style.display = "none";
-                    document.getElementById("analysis_text").style.display = "";
+                    if(this.num !== this.correct_list[this.correct_list.length - 1]) {
+                        this.flag = true;
+                        document.getElementById("blank_button").style.display = "none";
+                    }else {
+                        document.getElementById("blank_button").style.display = "";
+                        this.flag = false;
+                    }
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -400,32 +419,42 @@
                     var tempIndex = this.wrong_list.indexOf(this.num);
                     if(this.num > this.wrong_list[0]){
                         if(this.num > this.opt_num && this.wrong_list[tempIndex - 1] <= this.opt_num){
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex - 1];
                             document.getElementById('opt_part').style.display = "";
                             document.getElementById('txt_part').style.display = "none";
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }else if(this.num > this.opt_num) {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex - 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }else {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex - 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }
                         if(this.num === this.wrong_list[0])
                             document.getElementById("last_button").style.display = "none";
-                        document.getElementById("analysis_text").style.display = "none";
-                        document.getElementById("next_button").style.display = "";
+                        this.flag = true;
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
                             this.showResult();
                             this.showAlready();
-                            console.log(this.show_analysis);
                         });
                     }
                     else {
@@ -438,26 +467,36 @@
                     var tempIndex = this.correct_list.indexOf(this.num);
                     if(this.num > this.correct_list[0]){
                         if(this.num > this.opt_num && this.correct_list[tempIndex - 1] <= this.opt_num){
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex - 1];
                             document.getElementById('opt_part').style.display = "";
                             document.getElementById('txt_part').style.display = "none";
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }else if(this.num > this.opt_num) {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex - 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }else {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex - 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }
-                        if(this.wrong_list.length === 0)
-                            document.getElementById("last_button").style.display = "none";
-                        document.getElementById("analysis_text").style.display = "none";
-                        document.getElementById("next_button").style.display = "";
+                        document.getElementById("blank_button").style.display = "none";
+                        this.flag = true;
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
@@ -479,32 +518,37 @@
                     document.getElementById("last_button").style.display = "";
                     if(this.num < this.wrong_list[len]){
                         if(this.num <= this.opt_num && this.wrong_list[tempIndex + 1] > this.opt_num){
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex + 1];
                             document.getElementById('opt_part').style.display = "none";
                             document.getElementById('txt_part').style.display = "";
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }else if(this.num < this.opt_num) {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex + 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }else {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.wrong_list[tempIndex + 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }
-                        if(this.show_analysis[this.num - 1] === 0 || this.num === this.wrong_list[len]) {
-                            document.getElementById("next_button").style.display = "none";
-                        }
-                        document.getElementById("analysis_text").style.display = "none";
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
                             this.showResult();
-                            if(this.show_analysis[this.num - 1] === 1) {
-                                this.showAlready();
-                            }
                         });
                     }
                     else {
@@ -516,25 +560,38 @@
                     document.getElementById("last_button").style.display = "";
                     if(this.num < this.correct_list[len]){
                         if(this.num <= this.opt_num && this.correct_list[tempIndex + 1] > this.opt_num){
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex + 1];
                             document.getElementById('opt_part').style.display = "none";
                             document.getElementById('txt_part').style.display = "";
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }else if(this.num < this.opt_num) {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex + 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                             this.refreshAnswer();
                         }else {
-                            document.getElementById("box" + this.num).style.borderBottom = "none";
+                            document.getElementById("num" + this.num).style.color = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.border = "2px solid white";
                             this.num = this.correct_list[tempIndex + 1];
-                            document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                            document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                            document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                            document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }
                         if(this.num === this.correct_list[len]) {
-                            document.getElementById("next_button").style.display = "none";
-                        }
-                        document.getElementById("analysis_text").style.display = "none";
+                            this.flag = false;
+                            document.getElementById("blank_button").style.display = "";
+                        }else 
+                            document.getElementById("blank_button").style.display = "none";
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
@@ -646,6 +703,7 @@
                 if(this.wrong_list.length === 0) {
                     if(this.is_show === 0) {
                         this.num = 1;
+                        document.getElementById("analysis_area").style.display = "none";
                         document.getElementById("question_info").style.display = "none";
                         document.getElementById("question_text").style.display = "none";
                         document.getElementById("opt_part").style.display = "none";
@@ -691,23 +749,40 @@
                         this.options.D = "";
                         document.getElementById('option_D').style.display = "none";
                     }
-                    document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                    document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                    document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                    document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                 }else {
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
-                    for(var i = 0;i < 2;i++) {
+                    for(var i = 0;i < 2;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }
-                    this.input_num = [...Array(2).keys()];
+                    this.input_num = [...Array(2).keys()];//2记得改为prob.data.blank_num
                     this.prob_text = prob.data.prob_text;
-                    if(this.prob_text.indexOf("Negative") > -1){
-                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，否定回答"
+                    if(this.prob_text.toLowerCase().indexOf("question") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+肯定回答";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+否定回答";
+                        }
+                    }else if(this.prob_text.toLowerCase().indexOf("sentence") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成肯定句";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成否定句";
+                        }
+                    }else if(this.prob_text.toLowerCase().indexOf("answer") > -1) {
+                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "回答问题：用肯定句回答";
+                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
+                            document.getElementById("prob_tip").innerHTML = "回答问题：用否定句回答";
+                        }
                     }
-                    else if(prob.data.prob_text.indexOf("Positive") > -1){
-                        document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+回答，肯定回答"
-                    }
-                    document.getElementById("box" + this.num).style.borderBottom = "3px solid yellow";
+                    document.getElementById("num" + this.num).style.color = "#2A7DE1";
+                    document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
+                    document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                 }
             },
 
@@ -716,21 +791,23 @@
                     this.refreshAnswer();
                     if(this.results_list[this.num - 1] === 1) {
                         this.is_correct = 'Correct';
-                        document.getElementById('show_result').style.color = "#409EFF";
-                        document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.background = "#409EFF";
-                        document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.color = "white";
+                        document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_correct.png)";
+                        document.getElementById('show_result').style.color = "#2A7DE1";
+                        document.getElementById('option_' + this.ans_list[this.num - 1].toUpperCase()).style.background = "#00D87E";
+                        document.getElementById('option_' + this.ans_list[this.num - 1].toUpperCase()).style.color = "white";
                     }
                     else {
+                        document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_wrong.png)";
                         var subChoice = this.submit_list[this.num - 1];
                         if(subChoice !== null){
                             this.is_correct = 'Wrong';
-                            document.getElementById('img-' + subChoice.toLowerCase()).style.background = "crimson";
-                            document.getElementById('img-' + subChoice.toLowerCase()).style.color = "white";
+                            document.getElementById('option_' + subChoice.toUpperCase()).style.background = "#FF5554";
+                            document.getElementById('option_' + subChoice.toUpperCase()).style.color = "white";
                         }
                         else this.is_correct = 'Not Finished';
-                        document.getElementById('show_result').style.color = "red";
-                        document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.background = "#409EFF";
-                        document.getElementById('img-' + this.ans_list[this.num - 1].toLowerCase()).style.color = "white";
+                        document.getElementById('show_result').style.color = "#FF5554";
+                        document.getElementById('option_' + this.ans_list[this.num - 1].toUpperCase()).style.background = "#00D87E";
+                        document.getElementById('option_' + this.ans_list[this.num - 1].toUpperCase()).style.color = "white";
                     }
                 }else {
                     var subText = this.submit_list[this.num - 1];
@@ -738,18 +815,26 @@
                     this.correct_txt.shift();
                     if(subText === null){
                         this.is_correct = 'Not Finished';
-                        document.getElementById('show_result').style.color = "red";
+                        document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_wrong.png)";
+                        document.getElementById('show_result').style.color = "#FF5554";
                     } else {
                         this.txt = subText.split("$");
                         if(this.results_list[this.num - 1] === 1) {
                             this.is_correct = 'Correct';
-                            document.getElementById('show_result').style.color = "#409EFF";
+                            document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_correct.png)";
+                            document.getElementById('show_result').style.color = "#2A7DE1";
                         }
                         else {
                             this.is_correct = 'Wrong';
-                            document.getElementById('show_result').style.color = "red";
+                            document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_wrong.png)";
+                            document.getElementById('show_result').style.color = "#FF5554";
                         }
                     }
+                }
+                if(this.wrong_list.indexOf(this.num) > -1 && this.show_analysis[this.num - 1] !== 1) {
+                    this.showAnalysis();
+                }else if(this.show_analysis[this.num - 1] === 1) {
+                    this.showAlready();
                 }
             },
 
@@ -766,6 +851,7 @@
                 sessionStorage.setItem('isShow',this.is_show);
                 sessionStorage.setItem('wronglist',this.wrong_list);
                 sessionStorage.setItem('correctlist',this.correct_list);
+                sessionStorage.setItem('flag',this.flag.toString());
             },
         },
 
@@ -782,20 +868,18 @@
 
         mounted() {
             if(window.location.search.indexOf('recomnd') > -1) {
-                document.getElementById('again_button').style.display = "none";
                 document.getElementById('recomnd_button').style.display = "none";
                 document.getElementById('score').style.display = "none";
                 document.getElementById('average').style.display = "none";
             }else if(window.location.search.indexOf('wrong') > -1) {
                 document.getElementById('recomnd_button').style.display = "none";
-                document.getElementById('wrong_button').style.display = "none";
                 document.getElementById('score').style.display = "none";
                 document.getElementById('average').style.display = "none";
             }else if(window.location.search.indexOf('lesson') > -1) {
-                document.getElementById('again_button').style.display = "none";
             }
             if(sessionStorage.getItem('questionId') !== null) {
                 this.num = parseInt(sessionStorage.getItem('questionId'));
+                this.flag = sessionStorage.getItem('flag') === "true" ? true : false;
                 if(sessionStorage.getItem('showAnalysis') !== "") {
                     this.show_analysis = sessionStorage.getItem('showAnalysis').split(',').map(Number);
                 }
