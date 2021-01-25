@@ -273,7 +273,7 @@ public class ExerciseController {
     @GetMapping("/getOneRandom")
     public Long getOneRandom() {
         //没有完全连续
-        int max = 10363, min = 10000;
+        int max = 10050, min = 10000;
         int res = new Random().nextInt(max - min) + min;
         return (long) res;
     }
@@ -434,7 +434,14 @@ public class ExerciseController {
             probList.add(problem.getProb_id());
 
         Collections.shuffle(probList);
-        probList = new ArrayList<>(probList.subList(0, partNum));
+        if(probList.size() >= partNum)
+            probList = new ArrayList<>(probList.subList(0, partNum));
+        else {
+            while (probList.size() < partNum){
+                if(!probList.contains(getOneRandom()))
+                    probList.add(getOneRandom());
+            }
+        }
 
         return probList;
     }
@@ -449,16 +456,21 @@ public class ExerciseController {
         ArrayList<ProblemEvaluation> wrongList = getWrong(USER_ID);
         ArrayList<Long> pointList = new ArrayList<>();
         ArrayList<Long> outputProblemList = new ArrayList<>();
-        for (ProblemEvaluation pe : wrongList)
+        for (ProblemEvaluation pe : wrongList) {
             //收集所有错题的考点
-            pointList.add(problemService.getProblemByProb_id(pe.getProb_id()).getPoint_id());
+            Long point_id = problemService.getProblemByProb_id(pe.getProb_id()).getPoint_id();
+            if (!pointList.contains(point_id))
+                pointList.add(point_id);
+        }
         Collections.shuffle(pointList);
+        System.out.println("考点列表" + pointList.toString());
         for (Long pointId : pointList) {
             List<Problem> allProb = problemService.getProblemByPoint_id(pointId);
             //聚集该考点的所有题目-题号
             outputProblemList.addAll(allProb.stream().map(Problem::getProb_id).collect(Collectors.toList()));
         }
         Collections.shuffle(outputProblemList);
+        System.out.println("470考点下题目" + outputProblemList.toString());
         outputProblemList = uniqueProbList(outputProblemList);
         Collections.shuffle(outputProblemList);  //一定要打乱，因为 unique 之后会正序
         HashSet<Long> hashSet = new HashSet<>(outputProblemList);
@@ -495,8 +507,13 @@ public class ExerciseController {
             if(pat.getFinish() == 1 && pat.getEval_res() == 0)  //已做且做错的题目
                 outputProblemList.add(pat.getIdx());
         }
+        System.out.println("505");
+        System.out.println(outputProblemList);
         Long USER_ID = getUserFromCookies(request);
-        outputProblemList.addAll(getFromRecommend(partNum - outputProblemList.size(), USER_ID));
+        ArrayList<Long> rec = getFromRecommend(partNum - outputProblemList.size(), USER_ID);
+        System.out.println("509");
+        System.out.println(rec);
+        outputProblemList.addAll(rec);
         outputProblemList = reorganizeProbList(outputProblemList);
         return outputProblemList;
     }
@@ -724,8 +741,8 @@ public class ExerciseController {
         tmpList.clear();
         tmpList.addAll(set);
         int margin = origin - tmpList.size();
-        if(margin > 0) System.out.println("进入去重，补齐" + margin);
-        while (margin > 0) {
+        if(margin > 0) System.out.println("uniq进入去重，补齐" + margin);
+        while (margin > 0) {  //题目不够会陷入死循环
             long newId = getOneRandom();
             if(!tmpList.contains(newId)){
                 tmpList.add(newId);

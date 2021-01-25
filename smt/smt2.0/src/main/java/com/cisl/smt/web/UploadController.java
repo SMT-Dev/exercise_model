@@ -145,5 +145,17 @@ public class UploadController {
         return "OK";
     }
 
+    @PostMapping("/deleteProb")
+    public String deleteProb(@RequestParam("prob_id") Long prob_id){
+        try {
+            String prob_text = problemRepository.getProblemByProb_id(prob_id).getProb_text();
+            problemRepository.markDeleteProblem(prob_id, "【题目已被删除】" + prob_text);
+        } catch (Exception e){
+            e.printStackTrace();
+            return "Fail";
+        }
+        return "OK";
+    }
+
 
 }

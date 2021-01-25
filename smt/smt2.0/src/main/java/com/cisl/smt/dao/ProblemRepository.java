@@ -42,4 +42,10 @@ public interface ProblemRepository extends JpaRepository<Problem, Long> {  //Lon
     @Modifying
     @Query(value = "INSERT INTO t_problem(prob_id, grammar_id, point_id, prob_attr, prob_diff, prob_level, prob_text, options_id, answer_id, lesson_id, blank_num) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11);", nativeQuery = true)
     void insertProblem(Long prob_id, Long grammar_id, Long point_id, String prob_attr, String prob_diff, String prob_level, String prob_text, Long options_id, Long answer_id, Long lesson_id, Long blank_num);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE t_problem SET prob_text=:prob_text WHERE prob_id=:prob_id", nativeQuery = true)
+    void markDeleteProblem(@Param("prob_id") Long prob_id, @Param("prob_text") String prob_text);
+
 }
