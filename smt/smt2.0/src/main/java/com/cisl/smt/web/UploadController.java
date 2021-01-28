@@ -45,6 +45,13 @@ public class UploadController {
         return Long.valueOf(prob_level + lesson_id.toString());
     }
 
+    @GetMapping("/preview")
+    public ModelAndView preview() {
+        ModelAndView mav;
+        mav = new ModelAndView("preview");
+        return mav;
+    }
+
     @GetMapping("/upload")
     public ModelAndView upload() {
         return new ModelAndView("upload");
@@ -67,6 +74,26 @@ public class UploadController {
             } catch (NullPointerException e) {
                 System.out.println(problem);
             }
+        }
+        return probDetList;
+    }
+
+    @GetMapping("/searchProb")
+    public ArrayList<ProblemDetail> searchProb(@RequestParam("text") String input_text) {  //要用 RequestParam
+        ArrayList<ProblemDetail> probDetList = new ArrayList<>();
+        if(input_text == null || input_text.length() == 0) {
+            return probDetList;
+        }
+        List<Problem> probList = problemRepository.getAllProblem();
+        try {
+            for (Problem prob : probList) {  //检查是否有匹配的题干
+                String probTxt = prob.getProb_text();
+                if (purify(probTxt).contains(purify(input_text)))
+                    probDetList.add(getProblemDetail(prob.getProb_id()));
+
+            }
+        } catch(Exception e){
+                e.printStackTrace();
         }
         return probDetList;
     }
@@ -104,6 +131,17 @@ public class UploadController {
         return problemDetail;
     }
 
+    public String purify(String raw){
+        //筛选出所有字母
+        StringBuilder sb = new StringBuilder("");
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if(Character.isLowerCase(c) || Character.isUpperCase(c))
+                sb.append(c);
+        }
+        return sb.toString();
+    }
+
     @PostMapping("/postProblem")
     public String postProblem(@RequestParam("prob_id") Long prob_id,
                               @RequestParam("optionA") String optionA,
@@ -127,6 +165,12 @@ public class UploadController {
                 Long point_id = problemRepository.getProblemByProb_id(prob_id).getPoint_id();
                 problemRepository.updateProblemByPoint_id(prob_id, prob_text, prob_attr, prob_diff, prob_level, lesson_id, point_id, blank_num);
             } else if (mode == 1) {   //新增模式
+                List<Problem> probList = problemRepository.getAllProblem();
+                for (Problem prob: probList) {  //检查是否有重复题目
+                    String probTxt = prob.getProb_text();
+                    if(purify(probTxt).equals(purify(prob_text)))
+                        return "已有重复题目: "+prob.getProb_id().toString();
+                }
                 prob_id = problemRepository.getLastProb_id() + 1;  //ID 顺次加一
                 optionsRepository.insertOptions(prob_id, optionA, optionB, optionC, optionD);
                 answerRepository.insertAnswer(prob_id, analysis, answer);

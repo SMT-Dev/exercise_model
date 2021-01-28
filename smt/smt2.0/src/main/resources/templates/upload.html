@@ -21,7 +21,7 @@
         }
 
         body {
-            width: 600px;
+            width: 800px;
         }
 
         .hide {
@@ -116,10 +116,10 @@
 
                     <h3>题干：prob_text</h3>
                     <el-form-item label="" prop="prob_text">
-                        <el-input label-width="400px" type="textarea" :rows="3" v-model="formData.prob_text"></el-input>
+                        <el-input label-width="800px" type="textarea" :rows="3" v-model="formData.prob_text"></el-input>
                     </el-form-item>
 
-                    <div v-if="radioType === 'Choice'">
+                    <div v-if="radioType === 'Choice'" style="width: 600px">
                         <h3>选项：options</h3>
                         <el-form-item label="A.">
                             <el-input v-model="formData.optionA"></el-input>
@@ -156,14 +156,14 @@
                         <h3>正确答案: answer</h3>
                         <v-for>
                             <el-form-item label="" prop="answer">
-                                <el-input type="textarea" :rows="2" v-model="formData.answer"></el-input>
+                                <el-input label-width="800px" type="textarea" :rows="2" v-model="formData.answer"></el-input>
                             </el-form-item>
                         </v-for>
                     </div>
 
                     <h3>解析: analysis</h3>
                     <el-form-item label="" prop="analysis">
-                        <el-input type="textarea" :rows="4" v-model="formData.analysis"></el-input>
+                        <el-input label-width="800px" type="textarea" :rows="4" v-model="formData.analysis"></el-input>
                     </el-form-item>
 
                     <el-form-item>
@@ -285,10 +285,16 @@
                                     window.location.replace("/upload_list");
                                 });
                         }
-                        else {
+                        else if (response.data === "Fail") {
                             this.$message({
                                 type: 'error',
                                 message: '修改失败,请联系管理员'
+                            });
+                        }
+                        else {
+                            this.$message({
+                                type: 'error',
+                                message: response.data
                             });
                         }
                     });

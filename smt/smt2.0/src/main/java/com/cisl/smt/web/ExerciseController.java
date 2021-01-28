@@ -513,7 +513,7 @@ public class ExerciseController {
         ArrayList<Long> rec = getFromRecommend(partNum - outputProblemList.size(), USER_ID);
         System.out.println("509");
         System.out.println(rec);
-        outputProblemList.addAll(rec);
+        outputProblemList.addAll(rec);  //不能保证无重复
         outputProblemList = reorganizeProbList(outputProblemList);
         return outputProblemList;
     }
