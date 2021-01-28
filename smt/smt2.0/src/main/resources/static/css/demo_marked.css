@@ -14,8 +14,8 @@
     url('/css/fonts/Gotham-rounded-medium.woff.ttf') format('woff');
 }
 html,body {
-    height: 100%;
-    width: 100%;
+    height: 729px;
+    width: 1549px;
 }
 
 p {
@@ -50,8 +50,8 @@ body {
 
 #last_button {
     position: absolute;
-    left: 62%;
-    top: 79%;
+    left: 960.4px;
+    top: 575.9px;
     z-index: 2;
     height: 40px;
     width: 100px;
@@ -68,8 +68,8 @@ body {
 
 #next_button {
     position: absolute;
-    left: 73%;
-    top: 79%;
+    left: 1130.8px;
+    top: 575.9px;
     z-index: 3;
     height: 40px;
     width: 100px;
@@ -86,8 +86,8 @@ body {
 
 #disable_button {
     position: absolute;
-    left: 73%;
-    top: 79%;
+    left: 1130.8px;
+    top: 575.9px;
     z-index: 2;
     height: 40px;
     width: 100px;
@@ -104,8 +104,8 @@ body {
 
 #show_more {
     position: absolute;
-    left: 73%;
-    top: 79%;
+    left: 1130.8px;
+    top: 575.9px;
     z-index: 3;
     height: 35px;
     width: 100px;
@@ -122,8 +122,8 @@ body {
 
 #blank_button {
     position: absolute;
-    left: 73%;
-    top: 79%;
+    left: 1130.8px;
+    top: 575.9px;
     z-index: 3;
     height: 40px;
     width: 100px;
@@ -395,9 +395,9 @@ body {
 #book {
     position: absolute;
     z-index: 0;
-    left: 15%;
-    width: 70%;
-    height: 65%;
+    left: 232.4px;
+    width: 1084.3px;
+    height: 473.9px;
 }
 
 #question_area {
@@ -472,14 +472,14 @@ body {
     align-items: flex-start;
     width: 300px;
     height: 380px;
-    left: 61%;
+    left: 944.9px;
 }
 
 #analysis_background {
     position: absolute;
     z-index: 1;
-    width: 100%;
-    height: 90%;
+    width: 300px;
+    height: 342px;
 }
 
 #analysis_text {
@@ -487,8 +487,8 @@ body {
     z-index: 2;
     margin-top: 25px;
     font-size: 16px;
-    height: 85%;
-    width: 85%;
+    height: 323px;
+    width: 255px;
 }
 
 #prob_tip {

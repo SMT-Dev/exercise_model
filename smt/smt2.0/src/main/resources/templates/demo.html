@@ -115,8 +115,19 @@
         }
         return "";
     }
+    
+    console.log(document.body.offsetHeight);
+    console.log(document.body.offsetWidth);
 
-    document.addEventListener('keydown', function (event) {
+    console.log(document.body.scrollHeight);
+    console.log(document.body.scrollWidth);
+
+    console.log(document.body.clientHeight);
+    console.log(document.body.clientWidth);
+
+
+
+    /*document.addEventListener('keydown', function (event) {
         if ((event.ctrlKey === true || event.metaKey === true)
             && (event.keyCode === 61 || event.keyCode === 107
                 || event.keyCode === 173 || event.keyCode === 109
@@ -133,7 +144,7 @@
     }, {
         capture: false,
         passive: false
-    });
+    });*/
 
     var app = new Vue({
         el: "#app",
@@ -482,10 +493,10 @@
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
                     this.prob_attr = "改写";
-                    for(var i = 0;i < 2;i++) {//2记得改为prob.data.blank_num
+                    for(var i = 0;i < prob.data.blank_num;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }
-                    this.input_num = [...Array(2).keys()];//2记得改为prob.data.blank_num
+                    this.input_num = [...Array(prob.data.blank_num).keys()];//2记得改为prob.data.blank_num
                     this.prob_text = prob.data.prob_text;
                     if(this.prob_text.toLowerCase().indexOf("question") > -1) {
                         if(this.prob_text.toLowerCase().indexOf("positive") > -1) {

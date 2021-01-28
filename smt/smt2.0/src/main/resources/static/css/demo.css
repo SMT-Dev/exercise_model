@@ -14,8 +14,8 @@
     url('/css/fonts/Gotham-rounded-medium.woff.ttf') format('woff');
 }
 html,body {
-    height: 100%;
-    width: 100%;
+    height: 729px;
+    width: 1549px;
 }
 
 p {
@@ -31,27 +31,27 @@ body {
     position: absolute;
     z-index: 3;
     background-color: #000000;
-    width: 100%;
-    height: 100%;
+    width: 1549px;
+    height: 729px;
     opacity: 0.15;
 }
 
 #popBox {
     position: absolute;
     z-index: 4;
-    height: 70%;
-    width: 54%;
-    top: 15%;
-    left: 23%;
+    height: 510.3px;
+    width: 836.5px;
+    top: 109.4px;
+    left: 356.3px;
 }
 
 #pop_msg {
     position: absolute;
     z-index: 5;
-    height: 10%;
-    width: 40%;
-    top: 49%;
-    left: 38%;
+    height: 72.9px;
+    width: 619.6px;
+    top: 357.2px;
+    left: 588.6px;
     font-size: 24px;
     font-family: 'Microsoft YaHei Regular';
 }
@@ -59,8 +59,8 @@ body {
 #handIn_confirm {
     position: absolute;
     z-index: 5;
-    left: 39.5%;
-    top: 57%;
+    left: 611.9px;
+    top: 415.5px;
     height: 55px;
     width: 145px;
     border: none;
@@ -82,8 +82,8 @@ body {
 #handIn_cancel {
     position: absolute;
     z-index: 5;
-    left: 50%;
-    top: 57%;
+    left: 774.5px;
+    top: 415.5px;
     height: 55px;
     width: 145px;
     border: none;
@@ -253,13 +253,13 @@ body {
 }
 
 #heading1 {
-    width: 18%;
+    width: 20%;
     font-family: 'GothamRoundedBold';
     justify-content: flex-end;
 }
 
 #heading2 {
-    width: 15%;
+    width: 20%;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: bold;
     justify-content: flex-start;
@@ -282,7 +282,7 @@ body {
 #line {
     position: absolute;
     top: -6.5px;
-    left: 2.5%;
+    left: 31.7px;
     width: 95%;
     z-index: 0;
     height: 7px;
@@ -331,7 +331,7 @@ li {
 
 li > p {
     position: relative;
-    margin: 0 20px;
+    width: 100%;
     font-family: 'GothamRoundedMedium';
     font-size: 16px;
     color: #DCDCDC;
@@ -344,15 +344,15 @@ li > p {
     z-index: 2;
     width: 55px;
     height: 65px;
-    top: 19%;
+    top: 138.5px;
 }
 
 #link_left {
-    left: 19.5%;
+    left: 302px;
 }
 
 #link_right {
-    right: 19.5%;
+    left: 1247px;
 }
 
 #question_card {
@@ -377,9 +377,9 @@ li > p {
 #book {
     position: absolute;
     z-index: 0;
-    left: 15%;
-    width: 70%;
-    height: 65%;
+    left: 232.4px;
+    width: 1084.3px;
+    height: 473.9px;
 }
 
 #question_area {
