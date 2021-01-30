@@ -14,8 +14,8 @@
     url('/css/fonts/Gotham-rounded-medium.woff.ttf') format('woff');
 }
 html,body {
-    height: 729px;
-    width: 1549px;
+    height: 100%;
+    width: 100%;
 }
 
 p {
@@ -24,6 +24,7 @@ p {
 }
 
 body {
+    background-color: #FFB71B;
     margin: 0;
 }
 
@@ -41,6 +42,7 @@ body {
     background-color: transparent;
     cursor: pointer;
     outline: none;
+    z-index: 3;
 }
 
 #back_button:after,#back_button:active {
@@ -50,8 +52,8 @@ body {
 
 #last_button {
     position: absolute;
-    left: 960.4px;
-    top: 575.9px;
+    left: 64%;
+    top: 83%;
     z-index: 2;
     height: 40px;
     width: 100px;
@@ -68,8 +70,8 @@ body {
 
 #next_button {
     position: absolute;
-    left: 1130.8px;
-    top: 575.9px;
+    left: 75%;
+    top: 83%;
     z-index: 3;
     height: 40px;
     width: 100px;
@@ -86,8 +88,8 @@ body {
 
 #disable_button {
     position: absolute;
-    left: 1130.8px;
-    top: 575.9px;
+    left: 75%;
+    top: 83%;
     z-index: 2;
     height: 40px;
     width: 100px;
@@ -104,8 +106,8 @@ body {
 
 #show_more {
     position: absolute;
-    left: 1130.8px;
-    top: 575.9px;
+    left: 75%;
+    top: 83%;
     z-index: 3;
     height: 35px;
     width: 100px;
@@ -122,8 +124,8 @@ body {
 
 #blank_button {
     position: absolute;
-    left: 1130.8px;
-    top: 575.9px;
+    left: 75%;
+    top: 83%;
     z-index: 3;
     height: 40px;
     width: 100px;
@@ -172,13 +174,14 @@ body {
 }
 
 #app {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-wrap: wrap;
+    margin: 0 auto;
+    width: 1549px;
+    height: 761px;
+    background-color: #FFB71B;
 }
 
 #main {
+    position: relative;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -200,6 +203,24 @@ body {
     align-content: center;
     font-family: 'Microsoft YaHei';
     background-color: #FFB71B;
+}
+
+#top_bar1 {
+    position: absolute;
+    height: 76px;
+    left: 0;
+    right: 0;
+    background-color: #2A7DE1;
+    z-index: 2;
+}
+
+#top_bar2 {
+    position: absolute;
+    height: 129px;
+    left: 0;
+    right: 0;
+    background-color:white;
+    z-index: 1;
 }
 
 #container1 {
@@ -283,6 +304,7 @@ body {
 }
 
 #heading {
+    position: relative;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
@@ -291,6 +313,7 @@ body {
     width: 100%;
     height: 100%;
     color: white;
+    z-index: 2;
 }
 
 #heading1,#heading2 {
@@ -315,12 +338,14 @@ body {
 }
 
 #heading3 {
+    position: relative;
     height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-around;
     background-color: white;
+    z-index: 2;
 }
 
 #time,#average,#handle {
@@ -356,24 +381,8 @@ body {
     height: 20px;
 }
 
-#back {
-    position: absolute;
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    top: 10px;
-    left: 20px;
-    font-family: 'TW Cen MT Condensed';
-    color: yellow;
-    font-size: 32px;
-    font-weight: bold;
-}
-
-#back :hover {
-    cursor: pointer;
-}
-
 #question_card {
+    position: relative;
     background-color: #FFB71B;
     display: flex;
     justify-content: center;
@@ -383,6 +392,7 @@ body {
 }
 
 #book_container {
+    position: relative;
     background-color: #FF9500;
     border-radius: 20px;
     height: 100%;
@@ -395,9 +405,9 @@ body {
 #book {
     position: absolute;
     z-index: 0;
-    left: 232.4px;
-    width: 1084.3px;
-    height: 473.9px;
+    left: 10%;
+    width: 80%;
+    height: 94%;
 }
 
 #question_area {
@@ -446,10 +456,10 @@ body {
 #question_text {
     align-items: center;
     font-family: 'GothamRoundedMedium';
-    font-size: 28px;
+    font-size: 22px;
     word-wrap: break-word;
     word-break: keep-all;
-    padding: 10px 30px;
+    padding: 0px 30px;
 }
 
 #congrats {
@@ -470,9 +480,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    width: 300px;
+    width: 30%;
     height: 380px;
-    left: 944.9px;
+    left: 58%;
 }
 
 #analysis_background {

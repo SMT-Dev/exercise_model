@@ -12,11 +12,13 @@
 </head>
 <body>
 <div id="app">
+    <div id="top_bar1"></div>
+    <div id="top_bar2"></div>
+    <button type="button" id="back_button" @click="goBack"></button>
     <div id="main">
             <div id="header">
                 <div id="container1">
                     <div id="heading">
-                        <button type="button" id="back_button" @click="goBack"></button>
                         <p id="heading1"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
                         <p id="heading2"><span>智能推送练习</span></p>
                     </div>
@@ -103,7 +105,8 @@
                     <div id="analysis_area">
                         <img id="analysis_background" src="/image/background.png">
                         <div id="analysis_text">
-                            <p><span>本题解析：{{ analysis_list[num - 1] }}</span></p>
+                            <p><span>本题解析：</span></p>
+                            <p id="analysis_content"><span></span></p>
                         </div>
                     </div>
                     <!--<div id="show_more" style="display: none;">
@@ -370,6 +373,8 @@
                         document.getElementById("blank_button").style.display = "none";
                         this.flag = true;
                     }
+                    if(this.correct_list.length === 0 && this.num === this.wrong_list[this.wrong_list.length - 1])
+                        document.getElementById("blank_button").style.display = "";
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -545,6 +550,8 @@
                             document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
                             document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
                         }
+                        if(this.correct_list.length === 0 && this.num === this.wrong_list[this.wrong_list.length - 1])
+                            document.getElementById("blank_button").style.display = "";
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
@@ -761,25 +768,6 @@
                     }
                     this.input_num = [...Array(prob.data.blank_num).keys()];//2记得改为prob.data.blank_num
                     this.prob_text = prob.data.prob_text;
-                    if(this.prob_text.toLowerCase().indexOf("question") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+肯定回答";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+否定回答";
-                        }
-                    }else if(this.prob_text.toLowerCase().indexOf("sentence") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成肯定句";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成否定句";
-                        }
-                    }else if(this.prob_text.toLowerCase().indexOf("answer") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "回答问题：用肯定句回答";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "回答问题：用否定句回答";
-                        }
-                    }
                     document.getElementById("num" + this.num).style.color = "#2A7DE1";
                     document.getElementById("num" + this.num).style.backgroundColor = "#FFFFFF";
                     document.getElementById("num" + this.num).style.border = "2px solid #2A7DE1";
@@ -831,6 +819,12 @@
                         }
                     }
                 }
+                var analysisText = this.analysis_list[this.num - 1].split("\n");
+                var tempString = "";
+                for(var j = 0;j < analysisText.length;j++) {
+                    tempString += (analysisText[j] + "<br />");
+                }
+                document.getElementById("analysis_content").innerHTML = tempString;
                 if(this.wrong_list.indexOf(this.num) > -1 && this.show_analysis[this.num - 1] !== 1) {
                     this.showAnalysis();
                 }else if(this.show_analysis[this.num - 1] === 1) {

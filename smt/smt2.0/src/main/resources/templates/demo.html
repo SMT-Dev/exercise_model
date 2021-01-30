@@ -3,7 +3,6 @@
 <head>
     <title>答题界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
     <link href="/css/demo.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -13,13 +12,16 @@
 </head>
 <body>
 <div id="app">
+    <div id="top_bar"></div>
     <div id="layer" v-show="handin"></div>
-    <img id="popBox" v-show="handin" src="/image/pop_box.png"></img>
-    <div id="pop_msg" v-show="handin">
-        <p><span style="color: #DCDCDC;">你还有 </span><span style="color: #FF8900;">{{ remain }}道题</span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+    <div id="pop_container">
+        <img id="popBox" v-show="handin" src="/image/pop_box.png"></img>
+        <div id="pop_msg" v-show="handin">
+            <p><span style="color: #DCDCDC;">你还有 </span><span style="color: #FF8900;">{{ remain }}道题</span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+        </div>
+        <button type="button" id="handIn_confirm" v-show="handin" @click="handInConfirm"></button>
+        <button type="button" id="handIn_cancel" v-show="handin" @click="handInCancel"></button>
     </div>
-    <button type="button" id="handIn_confirm" v-show="handin" @click="handInConfirm"></button>
-    <button type="button" id="handIn_cancel" v-show="handin" @click="handInCancel"></button>
     <div id="main">
         <div id="header">
             <div id="container1">
@@ -115,17 +117,6 @@
         }
         return "";
     }
-    
-    console.log(document.body.offsetHeight);
-    console.log(document.body.offsetWidth);
-
-    console.log(document.body.scrollHeight);
-    console.log(document.body.scrollWidth);
-
-    console.log(document.body.clientHeight);
-    console.log(document.body.clientWidth);
-
-
 
     /*document.addEventListener('keydown', function (event) {
         if ((event.ctrlKey === true || event.metaKey === true)
@@ -498,25 +489,6 @@
                     }
                     this.input_num = [...Array(prob.data.blank_num).keys()];//2记得改为prob.data.blank_num
                     this.prob_text = prob.data.prob_text;
-                    if(this.prob_text.toLowerCase().indexOf("question") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+肯定回答";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成疑问句+否定回答";
-                        }
-                    }else if(this.prob_text.toLowerCase().indexOf("sentence") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成肯定句";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "改写句子：改写成否定句";
-                        }
-                    }else if(this.prob_text.toLowerCase().indexOf("answer") > -1) {
-                        if(this.prob_text.toLowerCase().indexOf("positive") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "回答问题：用肯定句回答";
-                        }else if(this.prob_text.toLowerCase().indexOf("negative") > -1) {
-                            document.getElementById("prob_tip").innerHTML = "回答问题：用否定句回答";
-                        }
-                    }
                 }
                 for (var j = 1; j <= this.totalNum; j++) {
                     if(j === this.num) {
