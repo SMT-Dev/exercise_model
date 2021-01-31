@@ -17,6 +17,7 @@ public class ProblemDetail {
 
     private Long lesson_id;
     private String point_text;
+    private Long point_id;
     private Long blank_num;
 
     private String answer_text;
@@ -44,6 +45,14 @@ public class ProblemDetail {
 
     public void setProb_text(String prob_text) {
         this.prob_text = prob_text;
+    }
+
+    public Long getPoint_id() {
+        return point_id;
+    }
+
+    public void setPoint_id(Long point_id) {
+        this.point_id = point_id;
     }
 
     public String getProb_attr() {
@@ -121,6 +130,7 @@ public class ProblemDetail {
                 ", prob_diff='" + prob_diff + '\'' +
                 ", lesson_id=" + lesson_id +
                 ", point_text='" + point_text + '\'' +
+                ", point_id=" + point_id +
                 ", blank_num=" + blank_num +
                 ", answer_text='" + answer_text + '\'' +
                 ", analysis='" + analysis + '\'' +
