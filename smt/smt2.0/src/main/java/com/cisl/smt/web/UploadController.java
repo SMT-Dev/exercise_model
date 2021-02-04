@@ -216,6 +216,7 @@ public class UploadController {
                     if(purify(probTxt).equals(purify(prob_text)))
                         return "已有重复题目: "+prob.getProb_id().toString();
                 }
+                //难点：确保这三条语句原子性操作
                 prob_id = problemRepository.getLastProb_id() + 1;  //ID 顺次加一
                 optionsRepository.insertOptions(prob_id, optionA, optionB, optionC, optionD);
                 answerRepository.insertAnswer(prob_id, analysis, answer);

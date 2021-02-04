@@ -132,6 +132,7 @@
             },
 
             select: function () {
+                $.cookie("scrollTop", 0);
                 $.cookie("level", this.level);
                 $.cookie("lesson_id", this.lesson_id);
                 axios.get("/listAllProb?level=" + this.level + "&lesson_id=" + this.lesson_id.toString()

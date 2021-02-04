@@ -11,6 +11,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query(value = "select * from t_answer where answer_id=:id", nativeQuery = true)
     Answer getAnswer(@Param("id") Long id);
 
+    @Query(value = "SELECT answer_id FROM t_answer ORDER BY answer_id DESC LIMIT 1", nativeQuery = true)
+    Long getLastAnswer_id();
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE t_answer SET answer_text=:answer_text, analysis_text=:analysis WHERE answer_id=:id", nativeQuery=true)

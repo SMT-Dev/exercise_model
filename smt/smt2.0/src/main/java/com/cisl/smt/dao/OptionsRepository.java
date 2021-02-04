@@ -12,6 +12,9 @@ public interface OptionsRepository extends JpaRepository<Options, Long>{
     @Query(value = "select * from t_options where options_id=:id", nativeQuery = true)
     Options getOptions(@Param("id") Long id);
 
+    @Query(value = "SELECT options_id FROM t_options ORDER BY options_id DESC LIMIT 1", nativeQuery = true)
+    Long getLastOptions_id();
+
     @Transactional
     @Modifying
     @Query(value = "UPDATE t_options SET option_a=:optionA, option_b=:optionB, option_c=:optionC, option_d=:optionD WHERE options_id=:id", nativeQuery = true)
