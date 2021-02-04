@@ -14,7 +14,7 @@
 <div id="app">
     <div id="top_bar1"></div>
     <div id="top_bar2"></div>
-    <button type="button" id="back_button" @click="goBack"></button>
+    <button type="button" id="back_button" v-show="finishWrong" @click="goBack"></button>
     <div id="main">
             <div id="header">
                 <div id="container1">
@@ -122,7 +122,7 @@
             </div>
             <div id="footer">
                 <div id="container5">
-                    <button type="button" id="recomnd_button" @click="recomndExercise"></button>
+                    <button type="button" id="recomnd_button" v-show="finishWrong" @click="recomndExercise"></button>
                 </div>
             </div>
     </div>
@@ -168,6 +168,7 @@
         el: "#app",
         data: {
             flag: false,
+            finishWrong: false,
             time: '',
             handle: 0,
             average: 0,
@@ -298,8 +299,10 @@
                     if(this.num !== this.wrong_list[this.wrong_list.length - 1]) {
                         this.flag = true;
                     }else if(this.is_show === 0) {
-                        if(this.correct_list.length !== 0)
+                        if(this.correct_list.length !== 0) {
                             document.getElementById("show_more").style.display = "";
+                            this.finishWrong = true;
+                        }
                     }
                     document.getElementById("num" + this.num).style.cursor = "pointer";
                 }, 3000);
@@ -330,8 +333,10 @@
                     this.flag = true;
                 }
                 if(this.show_analysis[this.wrong_list[this.wrong_list.length - 1] - 1] === 1) {
-                    if(this.is_show === 0 && this.correct_list.length !== 0)
+                    if(this.is_show === 0 && this.correct_list.length !== 0) {
                         document.getElementById("show_more").style.display = "flex";
+                        this.finishWrong = true;
+                    }
                 }
                 if(this.is_show === 1 && this.num !== this.correct_list[this.correct_list.length - 1]) {
                     this.flag = true;
@@ -706,7 +711,6 @@
                         this.submit_list.push(cur_problem.choice);
                     }
                 }
-                console.log(this.wrong_list);
                 if(this.wrong_list.length === 0) {
                     if(this.is_show === 0) {
                         this.num = 1;
@@ -749,7 +753,7 @@
                     this.options.A = option.data.option_a;
                     this.options.B = option.data.option_b;
                     this.options.C = option.data.option_c;
-                    if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null)) {
+                    if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null && option.data.option_d !== "")) {
                         this.options.D = option.data.option_d;
                         document.getElementById('option_D').style.display = "";
                     }else {
@@ -800,7 +804,7 @@
                 }else {
                     var subText = this.submit_list[this.num - 1];
                     this.correct_txt = this.ans_list[this.num - 1].split("\n");
-                    this.correct_txt.shift();
+                    //this.correct_txt.shift();
                     if(subText === null){
                         this.is_correct = 'Not Finished';
                         document.getElementById('check_analysis').style.backgroundImage = "url(/image/check_wrong.png)";
@@ -827,7 +831,7 @@
                 document.getElementById("analysis_content").innerHTML = tempString;
                 if(this.wrong_list.indexOf(this.num) > -1 && this.show_analysis[this.num - 1] !== 1) {
                     this.showAnalysis();
-                }else if(this.show_analysis[this.num - 1] === 1) {
+                }else if(this.show_analysis[this.num - 1] === 1 || this.correct_list.indexOf(this.num) > -1) {
                     this.showAlready();
                 }
             },
@@ -846,6 +850,7 @@
                 sessionStorage.setItem('wronglist',this.wrong_list);
                 sessionStorage.setItem('correctlist',this.correct_list);
                 sessionStorage.setItem('flag',this.flag.toString());
+                sessionStorage.setItem('finishWrong',this.finishWrong.toString());
             },
         },
 
@@ -874,6 +879,7 @@
             if(sessionStorage.getItem('questionId') !== null) {
                 this.num = parseInt(sessionStorage.getItem('questionId'));
                 this.flag = sessionStorage.getItem('flag') === "true" ? true : false;
+                this.finishWrong = sessionStorage.getItem('finishWrong') === "true" ? true : false;
                 if(sessionStorage.getItem('showAnalysis') !== "") {
                     this.show_analysis = sessionStorage.getItem('showAnalysis').split(',').map(Number);
                 }

@@ -57,7 +57,7 @@
             <el-button type="primary" plain @click="back">← 返回题目列表</el-button>
             <div class="tip">
                 <div v-if="mode === '编辑'">
-                    <p>当前 Level <span>{{ level }}</span>，当前 Lesson <span>{{ lesson_id }}</span></p>
+                <p>当前 Level <span>{{ level }}</span>，当前 Lesson <span>{{ lesson_id }}</span></p>
                 </div>
 
                 <div v-if="mode === '新增'">
@@ -156,8 +156,7 @@
                         <h3>正确答案: answer</h3>
                         <v-for>
                             <el-form-item label="" prop="answer">
-                                <el-input label-width="800px" type="textarea" :rows="2"
-                                          v-model="formData.answer"></el-input>
+                                <el-input label-width="800px" type="textarea" :rows="2" v-model="formData.answer"></el-input>
                             </el-form-item>
                         </v-for>
                     </div>
@@ -167,59 +166,6 @@
                         <el-input label-width="800px" type="textarea" :rows="4" v-model="formData.analysis"></el-input>
                     </el-form-item>
 
-                    <h3 id="point">考点: {{ view_point_text }}</h3>
-                    <el-button size="mini" @click="addPoint" round style="margin: 10px 0">+ 添加新考点</el-button>
-                    <div style="margin-bottom: 70px" id="pointList">
-                        <template>
-                            <el-table
-                                    ref="multipleTable"
-                                    :data="pointTableData"
-                                    tooltip-effect="dark"
-                                    style="width: 100%"
-                                    max-height="290"
-                                    @selection-change="handleSelectionChange">
-
-<!--                                <el-table-column-->
-<!--                                        type="selection"-->
-<!--                                        width="55">-->
-<!--                                </el-table-column>-->
-                                <el-table-column
-                                        prop="point_text"
-                                        label="考点内容"
-                                        width="300">
-                                    <template slot-scope="scope">{{ scope.row.point_text }}</template>
-                                </el-table-column>
-                                <el-table-column
-                                        prop="point_id"
-                                        label="考点 ID"
-                                        width="120">
-                                </el-table-column>
-                                <el-table-column
-                                        align="right">
-                                    <template slot="header" slot-scope="scope">
-                                        <el-input
-                                                @input="searchChange"
-                                                v-model="search"
-                                                size="mini"
-                                                placeholder="🔍 搜索考点"/>
-                                    </template>
-                                    <template slot-scope="scope">
-                                        <el-button
-                                                size="mini"
-                                                @click="editPoint(scope.row.point_id, scope.row.point_text)">Edit
-                                        </el-button>
-                                        <el-button
-                                                size="mini"
-                                                @click="selectPoint(scope.row.point_id, scope.row.point_text)">✅ 选择
-                                        </el-button>
-                                    </template>
-                                </el-table-column>
-                            </el-table>
-                        </template>
-                        <el-button size="mini" @click="addPoint" round style="margin-top: 10px">+ 添加新考点</el-button>
-                    </div>
-
-
                     <el-form-item>
                         <el-button type="primary" plain @click="back">← 返回列表</el-button>
                         <el-button type="primary" @click="addProb">提交</el-button>
@@ -228,8 +174,7 @@
             </template>
             <div class="tip" style="margin-top: 50px">
                 <p>提示:</p>
-                <p>若题目有多个考点，则选择最主要的一个即可</p>
-                <p>系统中已包含近 100 个考点，可先搜索查看；如果未搜到可以自行添加新考点</p>
+                <p>下划线使用英文下划线 ____ 即可, 无法使用下划线可以用括号代替</p>
                 <p>若答案包括多行，则注意换行</p>
             </div>
             <!-- 添加题目表单结束 -->
@@ -257,7 +202,7 @@
                 prob_diff: '',
                 prob_level: '',
                 lesson_id: 0,
-                point_id: -1,
+                point_text: '',
                 prob_id: 0,
                 answer: '',
                 analysis: '',
@@ -285,13 +230,7 @@
                     trigger: 'blur'
                 },],
             },
-            problem: {},
-            search: '',
-            searchFlag: false,
-            pointTableData: [],
-            originArr: [],
-            multipleSelection: [],
-            view_point_text: '',
+            problem: {}
 
         },
 
@@ -305,12 +244,12 @@
             },
 
             addProb: function () {
-                if (this.mode === "编辑") {
+                if(this.mode === "编辑") {
                     this.formData["prob_level"] = this.level;
                     this.formData["lesson_id"] = this.lesson_id;
                 }
 
-                if (this.formData["prob_level"].length === 0 || this.formData["lesson_id"] === 0 ||
+                if(this.formData["prob_level"].length === 0 || this.formData["lesson_id"] === 0 ||
                     this.formData["prob_text"].length === 0 || this.formData["answer"].length === 0)
                     this.$message({
                         type: 'error',
@@ -329,11 +268,11 @@
 
                     axios.post("/postProblem", $.param(this.formData) //引入jQuery的作用
                     ).then((response) => {
-                        if (response.data === "OK") {
-                            if (this.mode === "编辑")
+                        if(response.data === "OK"){
+                            if(this.mode === "编辑")
                                 this.$message({
                                     type: 'success',
-                                    message: '题目编号' + this.formData["prob_id"].toString() + ' 修改成功！'
+                                    message: '题目编号'+this.formData["prob_id"].toString()+' 修改成功！'
                                 });
                             else
                                 this.$confirm('新增题目成功！请选择操作', '提示', {
@@ -345,12 +284,14 @@
                                 }).catch(() => {
                                     window.location.replace("/upload_list");
                                 });
-                        } else if (response.data === "Fail") {
+                        }
+                        else if (response.data === "Fail") {
                             this.$message({
                                 type: 'error',
                                 message: '修改失败,请联系管理员'
                             });
-                        } else {
+                        }
+                        else {
                             this.$message({
                                 type: 'error',
                                 message: response.data
@@ -358,73 +299,6 @@
                         }
                     });
                 }
-            },
-
-            addPoint: function () {
-                //新添加的考点要置于最上方
-                //考点太多，只显示最近 8 个，但是仍然能全部搜索
-                var grammar_id = parseInt(this.level) * 10 + this.lesson_id;
-                console.log(grammar_id);
-                this.$prompt('请输入考点内容', '新增考点', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消'
-                }).then(({ value }) => {
-                    axios.post("/addPoint", $.param({'grammar_id': grammar_id, 'point_text': value}) //引入jQuery的作用
-                    ).then((response) => {
-                        if (response.data === "OK") {
-                            this.setPointList();
-                            this.$message({
-                                type: 'success',
-                                message: '已新增考点: ' + value
-                            });
-                        } else {
-                            this.$message({
-                                type: 'error',
-                                message: "出错，报错信息如下: " + response.data
-                            });
-                        }
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    });
-                });
-            },
-
-            editPoint: async function (point_id, point_text) {
-                console.log(point_id, point_text);
-                this.$prompt('请输入考点内容', '编辑考点', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    inputValue: point_text
-                }).then(({ value }) => {
-                    axios.post("/editPoint", $.param({'point_id': point_id, 'point_text': value}) //引入jQuery的作用
-                    ).then((response) => {
-                        if (response.data === "OK") {
-                            this.setPointList();
-                            this.$message({
-                                type: 'success',
-                                message: '考点编辑成功: ' + value
-                            });
-                        } else {
-                            this.$message({
-                                type: 'error',
-                                message: "出错，报错信息如下: " + response.data
-                            });
-                        }
-                    });
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消'
-                    });
-                });
-            },
-
-            selectPoint: function (point_id, point_text) {
-                this.formData["point_id"] = point_id;
-                document.getElementById("point").innerText =  "考点: " + point_text;
             },
 
             getProblemDetail: function (prob_id) {
@@ -459,9 +333,7 @@
                     this.lesson_id = this.problem["lesson_id"];
                     this.level = this.problem["prob_level"];
 
-                    this.view_point_text = this.problem["point_text"];
-                    this.formData["point_id"] = this.problem["point_id"];
-
+                    //this.formData["point_text"] = this.problem["point_text"];
                     this.formData["optionA"] = this.problem["options"].split("【A】")[1].split("【B】")[0];
                     this.formData["optionB"] = this.problem["options"].split("【B】")[1].split("【C】")[0];
                     if (this.problem["options"].indexOf("【D】") > 0) {
@@ -470,73 +342,12 @@
                     } else this.formData["optionC"] = this.problem["options"].split("【C】")[1];
                 }
             },
-
-            handleSelectionChange(val) {
-                console.log('改变：', this.searchFlag)
-                if(val.length > 0){
-                    val.reverse();
-                    val = val.slice(0, 1);
-                }
-                console.log('val', val)
-                if (this.searchFlag) { // 手动选中过程中不予响应
-                    return;
-                }
-                this.pointTableData.forEach(item => {
-                    item.checked = false;
-                })
-                val.forEach(row => {
-                    row.checked = true;
-                })
-            },
-
-            searchChange() {
-                if(this.search.length === 0){
-                    this.setPointList();
-                    return;
-                }
-                var arr = this.originArr.filter(data => !this.search || data.point_text.toLowerCase().includes(this.search.toLowerCase()));
-                this.pointTableData.splice(0, this.pointTableData.length);
-                Array.prototype.push.apply(this.pointTableData, arr); // 不改变pointTableData 数组的引用地址。保持其响应式。
-
-                this.$nextTick(() => {
-                    this.searchFlag = true // 手动选中前 禁止多选事件响应
-                    this.pointTableData.forEach(item => {
-                        if (item.checked)
-                            this.$refs.multipleTable.toggleRowSelection(item, true);
-                    })
-                    this.searchFlag = false; // 放开多选事件响应
-                })
-            },
-
-            getPointList: function() {
-                return new Promise(resolve => {
-                    axios.get("/listAllPoint"
-                    ).then((response) => {
-                        var point_list = response.data;
-                        point_list.reverse();
-                        for (let i = 0; i < point_list.length; i++) {
-                            if(i < 100)
-                                this.pointTableData.push({point_text: point_list[i]["point_text"], point_id: point_list[i]["point_id"]});
-                            this.originArr.push({point_text: point_list[i]["point_text"], point_id: point_list[i]["point_id"]});
-                        }
-                        resolve(response.data);
-                    });
-                })
-            },
-
-            setPointList: async function() {
-                this.pointTableData = [];
-                this.originArr = [];
-                await this.getPointList();
-            }
         },
 
         created() {
             this.lesson_id = $.cookie("lesson_id");
             this.level = $.cookie("level");
             this.setProblemDetail();
-            this.setPointList();
-
         }
     });
     window.app = app;
