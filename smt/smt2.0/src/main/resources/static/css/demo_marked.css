@@ -20,6 +20,7 @@ html,body {
 
 p {
     margin: 0;
+    padding: 4px;
 }
 
 body {
@@ -487,17 +488,17 @@ body {
 #analysis_background {
     position: absolute;
     z-index: 1;
-    width: 327px;
-    height: 90%;
+    width: 300px;
+    height: 342px;
 }
 
 #analysis_text {
     position: relative;
     z-index: 2;
-    margin-top: 30px;
+    margin-top: 25px;
     font-size: 16px;
     height: 323px;
-    width: 70%;
+    width: 255px;
 }
 
 #prob_tip {
