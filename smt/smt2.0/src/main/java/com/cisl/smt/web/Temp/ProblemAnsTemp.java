@@ -55,6 +55,8 @@ public class ProblemAnsTemp {
 
     public void setChoice_text(String choice_text) {  // 设置选项的时候就判断正误
         this.choice_text = choice_text;
+        System.out.println("当前作答"+this.choice_text + "削除后" + this.choice_text.trim());
+        System.out.println("答案"+this.ans.trim());
         if (this.type.equals("txt")) {
             if (this.choice_text.trim().equals(this.ans.trim()))
                 this.setEval_res(1);

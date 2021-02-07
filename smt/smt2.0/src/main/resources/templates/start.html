@@ -121,7 +121,7 @@
 
         created: function () {
             if(localStorage.getItem('SMTusername') !== null) {
-                if(getCookie(localStorage.getItem('SMTusername')) === "") {
+                if(localStorage.getItem('SMTusername') === "") {
                     localStorage.clear();
                     window.location.href = '/login';
                 }

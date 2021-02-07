@@ -1,5 +1,6 @@
 package com.cisl.smt.web;
 
+import com.alibaba.fastjson.JSON;
 import com.cisl.smt.po.User;
 import com.cisl.smt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class AuthController {
@@ -22,6 +32,31 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+
+    public static String sendPost(String urlString, String jsonInputString) throws IOException {
+        URL url = new URL (urlString);
+        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json; utf-8");
+        con.setRequestProperty("Accept", "application/json");
+        con.setDoOutput(true);
+
+        try(OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonInputString.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+        try(BufferedReader br = new BufferedReader(
+                new InputStreamReader(con.getInputStream(), "utf-8"))) {
+            StringBuilder response = new StringBuilder();
+            String responseLine = null;
+            while ((responseLine = br.readLine()) != null) {
+                response.append(responseLine.trim());
+            }
+            System.out.println("登录接口返回: " + response.toString());
+            return response.toString();
+        }
+
+    }
 
     @GetMapping("/login")
     public ModelAndView login() {
@@ -59,7 +94,42 @@ public class AuthController {
     }
 
     @PostMapping("/postLogin")
-    public String postLogin(@RequestParam("username") String username,
+    public String postLogin(@RequestParam("institute_seq") String institute_seq,
+                            @RequestParam("user_id") String user_id,
+                             @RequestParam("passwd") String passwd,
+                             HttpServletResponse response) {
+
+        System.out.println(String.format("请求参数: {\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id,passwd,institute_seq));
+        try {
+            String sr = sendPost("https://interface.smartreelearners.com:8442/api/app/auth/student/login/china",
+                    String.format("{\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id,passwd,institute_seq));
+            HashMap hashMap = JSON.parseObject(sr, HashMap.class);
+
+            if(hashMap.containsKey("error")){
+                if(hashMap.get("error").equals(1))
+                    return "Fail";
+                else if(hashMap.get("error").equals(2))
+                    return "OK";
+            }
+            if(hashMap.containsKey("student_info")){
+                String infoString = hashMap.get("student_info").toString();
+                HashMap infoMap = JSON.parseObject(infoString, HashMap.class);
+                String level = infoMap.get("level").toString();
+
+                return "OK " + level;
+            }
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return "Fail";
+        }
+
+        return "Fail";
+
+    }
+
+    @PostMapping("/postLogin0")
+    public String postLogin0(@RequestParam("username") String username,
                             @RequestParam("password") String password,
                             HttpServletResponse response) {
 

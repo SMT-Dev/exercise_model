@@ -19,11 +19,19 @@
                 <el-col :span="8"><p class="heading">用户登录</p></el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
-                <el-col :span="8"><p class="tips">用户名/邮箱(Username/E-mail)</p></el-col>
+                <el-col :span="8"><p class="tips">机构码</p></el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
                 <el-col :span="8">
-                    <el-input placeholder="请输入用户名" v-model="form.username" clearable></el-input>
+                    <el-input placeholder="请输入机构码" v-model="form.institute_seq" clearable></el-input>
+                </el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+                <el-col :span="8"><p class="tips">账号/手机号</p></el-col>
+            </el-row>
+            <el-row type="flex" class="row-bg" justify="center">
+                <el-col :span="8">
+                    <el-input placeholder="请输入账号" v-model="form.user_id" clearable></el-input>
                 </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
@@ -31,7 +39,7 @@
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
                 <el-col :span="8">
-                    <el-input placeholder="请输入密码" v-model="form.password" show-password></el-input>
+                    <el-input placeholder="请输入密码" v-model="form.passwd" show-password></el-input>
                 </el-col>
             </el-row>
             <el-row type="flex" class="row-bg" justify="center">
@@ -65,8 +73,9 @@
         el: "#app",
         data: {
             form: {
-                username: "",
-                password: ""
+                institute_seq: "",
+                user_id: "",
+                passwd: ""
             }
         },
         methods: {
@@ -75,30 +84,36 @@
             },
 
             onSubmit: function () {
-                if(this.form.username.length === 0  || this.form.password.length === 0){
+                if(this.form.institute_seq.length === 0  || this.form.user_id.length === 0  || this.form.passwd.length === 0){
                     this.$message({
                         type: 'error',
-                        message: '请输入用户名/密码'
+                        message: '请输入完整信息'
                     });
                     return;
                 }
 
                 axios.post("/postLogin", $.param(this.form)
                 ).then(response => {
-                    if(response.data === "OK"){
+                    console.log(response.data);
+                    console.log(response.data.indexOf("OK"));
+
+                    if(response.data.indexOf("OK") >= 0){
                         this.$message({
                             type: 'success',
-                            message: '登录成功' + response.data
+                            message: '登录成功'
                         });
-                        localStorage.setItem('SMTusername',this.form.username);
-                        localStorage.setItem('SMTpassword',this.form.password);
-                        setCookie(this.form.username,this.form.password);
+                        localStorage.setItem('SMTusername',this.form.user_id);
+                        localStorage.setItem('SMTpassword',this.form.passwd);
+                        setCookie("user_id", this.form.user_id);
+                        if(response.data !== "OK")  //返回 OK 3  表示 level=3, 没有信息则默认 level=1
+                            setCookie("level", response.data.split(" ")[1]);
+                        else setCookie("level", "1");
                         setTimeout("window.location.href = '/start'", 1000);
                     }
                     else {
                         this.$message({
                             type: 'error',
-                            message: '用户名/密码错误'
+                            message: '机构码/账号/密码错误'
                         });
                     }
                 });
