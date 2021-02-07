@@ -250,3 +250,96 @@ public ArrayList<Problem> getProblemList(@RequestParam("list") String listStr){
     */
 ```
 用法举例: `http://127.0.0.1:8080//getProblemList?list=10199,10200,10201`
+
+#### 登录 API
+前端存在跨域请求问题, 所以由后端实现登录功能
+SMT 提供的登录 URL: https://interface.smartreelearners.com:8442/api/app/auth/student/login/china
+提交表单形式: {"user_id":"13811111111","passwd":"a11111","institute_seq":"30"}
+
+登录成功返回值:
+可以获取 "level": 3, "course_name": "Week1" 这样的信息
+```json
+{
+    "student_info": {
+        "user_seq": 432,
+        "user_id": "13811111111",
+        "passwd": null,
+        "name": "1111",
+        "course_seq": 390,
+        "course_name": "Week1",
+        "course_sdate": "2021-02-02",
+        "course_edate": "",
+        "unlimited_period": "Y",
+        "review_yn": "N",
+        "course_complete_yn": "N",
+        "branch_seq": 25,
+        "branch_name": "SMARTree China",
+        "institute_seq": 30,
+        "institute_name": "SMARTree HangZhou Testing",
+        "class_seq": 0,
+        "class_name": "",
+        "login_date": "2021-02-06 PM 09:12:58",
+        "device_uid": null,
+        "study_date_chk": null,
+        "level": 3,
+        "coaching_seq": 0,
+        "device_ip": null,
+        "seat_number": null,
+        "coach_user_seq": 0,
+        "user_paid": 0,
+        "e_date": "",
+        "is_need_test": true
+    }
+}
+```
+
+如果是新注册的用户, 还没有用户信息, 返回值:
+{
+    "user_seq": 435,
+    "error": 2
+}
+
+
+登录失败返回值:
+{
+    "error": 1
+}
+
+#### 查询学生基本信息 API
+目前好像用不上
+https://interface.smartreelearners.com:8442/api/app/auth/student/studentInfoForShop?user_seq=432
+
+返回值
+```json
+{
+  "_MESSAGE": "success",
+  "studentInfo": {
+    "user_seq": 432,
+    "name": "1111",
+    "branch_seq": 25,
+    "branch_name": "SMARTree China",
+    "institute_seq": 30,
+    "institute_name": "SMARTree HangZhou Testing",
+    "gender": "girl",
+    "address": "山西省-太原市-小店区-1111",
+    "phone": "13811111111",
+    "icon_path": null,
+    "birth": "2021-02-01"
+  }
+}
+```
+
+#### 后端工作备忘录
+研究一下自动化部署！！！
+
+批量删除按钮 
+
+【【3. 最后对所有题目做一次去重，本地先做再上传 sql 】】
+【【4. 多地登录强制下线】】
+【【5. 为什么做错的题没有进入推荐里面？】
+
+【【【7. 文本题批改功能】】】
+【富文本题型：题干的下划线】
+
+增加考点索引功能
+增加难度索引
