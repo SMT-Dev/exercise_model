@@ -1,7 +1,8 @@
 package com.cisl.smt.dao;
 
 import com.cisl.smt.po.Point;
-import org.apache.ibatis.annotations.Param;
+//import org.apache.ibatis.annotations.Param;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +28,6 @@ public interface PointRepository extends JpaRepository<Point, Long> {
     @Modifying
     @Transactional
     @Query(value = "update t_point set point_text=:point_text where point_id=:point_id", nativeQuery = true)
-    void updatePoint(Long point_id, String point_text);
+    void updatePoint(@Param("point_id") Long point_id, @Param("point_text") String point_text);
 
 }

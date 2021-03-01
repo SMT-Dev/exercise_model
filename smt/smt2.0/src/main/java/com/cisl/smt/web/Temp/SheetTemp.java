@@ -16,8 +16,10 @@ public class SheetTemp {
     private Long txt_num;
 
     public SheetTemp(){
-        this.setSheet_list(new ArrayList<>());
-        this.setNum_list(new ArrayList<>());
+        ArrayList<ProblemAnsTemp> empty1 = new ArrayList<>();
+        ArrayList<Long> empty2 = new ArrayList<>();
+        this.setSheet_list(empty1);
+        this.setNum_list(empty2);
     };   //还要初始化自己的列表
 
     public Long getId() {
@@ -62,7 +64,8 @@ public class SheetTemp {
 
     public void addSheet_list(ProblemAnsTemp pt) {
         if(this.sheet_list == null){
-            this.setSheet_list(new ArrayList<>());
+            ArrayList<ProblemAnsTemp> empty1 = new ArrayList<>();
+            this.setSheet_list(empty1);
         }
         this.sheet_list.add(pt);
     }

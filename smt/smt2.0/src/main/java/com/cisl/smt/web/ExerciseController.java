@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.KeyException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 public class ExerciseController {
@@ -389,8 +388,12 @@ public class ExerciseController {
         for (Long wrongId : wrongList) {
             Long pointId = problemService.getProblemByProb_id(wrongId).getProb_id();  //找到对应的知识点
             List<Problem> pointProblemList = problemService.getProblemByPoint_id(pointId); //找到同知识点的所有题
-            List<Long> tmpList = pointProblemList.stream().map(Problem::getProb_id).collect(Collectors.toList());
+//            List<Long> tmpList = pointProblemList.stream().map(Problem::getProb_id).collect(Collectors.toList());
 
+            List<Long> tmpList = new ArrayList<>();
+            for(Problem problem : pointProblemList){
+                tmpList.add(problem.getProb_id());
+            }
             if (curSum + tmpList.size() >= partNum) {
                 //数量已足够
                 probList.addAll(tmpList.subList(0, partNum - curSum));
@@ -467,7 +470,10 @@ public class ExerciseController {
         for (Long pointId : pointList) {
             List<Problem> allProb = problemService.getProblemByPoint_id(pointId);
             //聚集该考点的所有题目-题号
-            outputProblemList.addAll(allProb.stream().map(Problem::getProb_id).collect(Collectors.toList()));
+//            outputProblemList.addAll(allProb.stream().map(Problem::getProb_id).collect(Collectors.toList()));
+            for(Problem problem : allProb){
+                outputProblemList.add(problem.getProb_id());
+            }
         }
         Collections.shuffle(outputProblemList);
         System.out.println("470考点下题目" + outputProblemList.toString());

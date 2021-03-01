@@ -17,7 +17,7 @@ public class SheetMap {
     public static SheetMap getInstance() {
         if(instance == null){
             instance = new SheetMap();
-            instance.setTempHashMap(new HashMap<>());
+            instance.setTempHashMap(new HashMap<Long, SheetTemp>());
         }
         return instance;
     }

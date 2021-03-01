@@ -343,3 +343,12 @@ https://interface.smartreelearners.com:8442/api/app/auth/student/studentInfoForS
 
 增加考点索引功能
 增加难度索引
+
+你们那边自定义一个生成 token 的方法
+1. 链接跳转到刷题模块: http://81.68.176.153:8080/start?token=jikQWQxsad
+2. 同时发送一个 post 请求 URL: http://81.68.176.153:8080/set_cookie
+请求body:
+{'user_seq': 533, 'user_id': 13811111111, 'level': 3, token: 'jikQWQxsad'}
+
+(这个 post 请求前端或后端发送都可以, 保持 token 相同)
+

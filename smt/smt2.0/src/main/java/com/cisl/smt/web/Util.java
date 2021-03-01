@@ -61,12 +61,17 @@ public class Util {
         for (ProblemAnsTemp pt : probList) {
             String pointId = pt.getPoint();
             if (!pointProbMap.containsKey(pointId))
-                pointProbMap.put(pointId, new ArrayList<>());
+                pointProbMap.put(pointId, new ArrayList<ProblemAnsTemp>());
             pointProbMap.get(pointId).add(pt);
         }
         for (String pointId : pointProbMap.keySet()) {
             totalPointNum += 1;
-            int rightNum = (int) pointProbMap.get(pointId).stream().filter(pt -> pt.getEval_res() == 1).count();
+//            int rightNum = (int) pointProbMap.get(pointId).stream().filter(pt -> pt.getEval_res() == 1).count();
+            int rightNum = 0;
+            for(ProblemAnsTemp pat : pointProbMap.get(pointId)) {
+                if(pat.getEval_res() == 1)
+                    rightNum++;
+            }
             if (rightNum / pointProbMap.get(pointId).size() *100 > threshold)
                 handlePointNum += 1;
         }
