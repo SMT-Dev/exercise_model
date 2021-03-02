@@ -329,26 +329,31 @@ https://interface.smartreelearners.com:8442/api/app/auth/student/studentInfoForS
 }
 ```
 
-#### 后端工作备忘录
-研究一下自动化部署！！！
+### 后端工作备忘录
+0. 研究一下自动化部署！！！
 
-批量删除按钮 
+3. 最后对所有题目做一次去重，本地先做再上传 sql
+4. 多地登录强制下线
+5. 为什么做错的题没有进入推荐里面
 
-【【3. 最后对所有题目做一次去重，本地先做再上传 sql 】】
-【【4. 多地登录强制下线】】
-【【5. 为什么做错的题没有进入推荐里面？】
+7. **[文本题批改功能]**
 
-【【【7. 文本题批改功能】】】
-【富文本题型：题干的下划线】
+【8. 富文本题型：题干的下划线】
+【9. 自动选择 level lesson 】还是没实现
+10. 增加考点索引功能
+11. 增加难度索引
 
-增加考点索引功能
-增加难度索引
+SMT 课件模块: 那边自定义一个生成 token 的方法
+1. 首先对 URL: http://106.15.225.46:8881/setCookie 发送一个 post 请求
+请求body: `{'user_seq': '533', 'user_id': '13811111111', 'level': '3', token: 'jikQWQxsad'}`  (所有字段均为字符串)
+2. 链接跳转到刷题模块: http://106.15.225.46:8881/auth?token=jikQWQxsad
 
-你们那边自定义一个生成 token 的方法
-1. 链接跳转到刷题模块: http://81.68.176.153:8080/start?token=jikQWQxsad
-2. 同时发送一个 post 请求 URL: http://81.68.176.153:8080/set_cookie
-请求body:
-{'user_seq': 533, 'user_id': 13811111111, 'level': 3, token: 'jikQWQxsad'}
+(保持 token 相同)
 
-(这个 post 请求前端或后端发送都可以, 保持 token 相同)
+### 前端工作备忘录
+修复一下✨星星进度条显示的问题
+
+### note
+那个application.properties文件也要复制进来，然后注释一下就行。
+新版中判断是否登录的方式变了，没用localstorage只用cookie了，注意下就行。
 

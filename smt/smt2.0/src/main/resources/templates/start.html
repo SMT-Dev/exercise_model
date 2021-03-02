@@ -120,13 +120,16 @@
         },
 
         created: function () {
-            if(localStorage.getItem('SMTusername') !== null) {
-                if(localStorage.getItem('SMTusername') === "") {
+            if(getCookie('user_id') !== null) {
+                if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.href = '/login';
                 }
-            }else {
+            } else {
                 window.location.href = '/login';
+            }
+            if(getCookie('level') !== null && getCookie('level').length > 0){
+                this.setting.lev = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
         }

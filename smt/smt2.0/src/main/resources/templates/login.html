@@ -103,7 +103,7 @@
                             message: '登录成功'
                         });
                         localStorage.setItem('SMTusername',this.form.user_id);
-                        localStorage.setItem('SMTpassword',this.form.passwd);
+                        //localStorage.setItem('SMTpassword',this.form.passwd);
                         setCookie("user_id", this.form.user_id);
                         if(response.data !== "OK")  //返回 OK 3  表示 level=3, 没有信息则默认 level=1
                             setCookie("level", response.data.split(" ")[1]);
@@ -121,8 +121,8 @@
         },
 
         created: function () {
-            if(localStorage.getItem('SMTusername') !== null) {
-                if(localStorage.getItem('SMTusername') === "") {
+            if(getCookie('user_id') !== null) {
+                if(getCookie('user_id') === "") {
                     localStorage.clear();
                 }else {
                     this.$message({

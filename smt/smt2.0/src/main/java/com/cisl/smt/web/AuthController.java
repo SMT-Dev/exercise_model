@@ -3,6 +3,8 @@ package com.cisl.smt.web;
 import com.alibaba.fastjson.JSON;
 import com.cisl.smt.po.User;
 import com.cisl.smt.service.UserService;
+import com.cisl.smt.web.Temp.UserMap;
+import com.cisl.smt.web.Temp.UserTemp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,7 +62,31 @@ public class AuthController {
 
     @GetMapping("/login")
     public ModelAndView login() {
-        ModelAndView modelAndView = new ModelAndView("login");
+        return new ModelAndView("login");
+    }
+
+    @GetMapping("/auth")
+    public ModelAndView auth(@RequestParam("token") String token, HttpServletResponse response) {
+        HashMap<String, UserTemp> map = UserMap.getInstance().getTempHashMap();
+        ModelAndView modelAndView = new ModelAndView("auth");   //成功就跳转到 start
+        try {
+            //每次重启服务器 map 都会清空。所幸只是临时 token
+            UserTemp userTemp = map.get(token);
+            String user_id = userTemp.getUser_id();
+            String user_seq = userTemp.getUser_seq();
+            String level = userTemp.getLevel();
+            Cookie cookie = new Cookie("user_id", user_id);
+            response.addCookie(cookie);
+            cookie = new Cookie("user_seq", user_seq);
+            response.addCookie(cookie);
+            cookie = new Cookie("level", level);
+            response.addCookie(cookie);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            modelAndView = new ModelAndView("login");   //失败就需要登录
+        }
+
         return modelAndView;
     }
 
@@ -141,13 +167,29 @@ public class AuthController {
 
         if(password.equals(tmp.getPassword())){     //比较字符串必须用 equals
             Long user_id = tmp.getUser_id();
-            Cookie cookie = new Cookie("user_id",user_id.toString());
+            Cookie cookie = new Cookie("user_id", user_id.toString());
             response.addCookie(cookie);
             return "OK";
         }
 
         else return "Fail";
 
+    }
+
+    @PostMapping("/setCookie")
+    public String setCookie(@RequestParam("user_seq") String user_seq,
+                            @RequestParam("user_id") String user_id,
+                            @RequestParam("level") String level,
+                            @RequestParam("token") String token) {
+        try {
+            HashMap<String, UserTemp> map = UserMap.getInstance().getTempHashMap();    //全局唯一 user 映射, token 对应 UserTemp
+            map.put(token, new UserTemp(user_id, user_seq, level));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Fail";
+        }
+
+        return "OK";
     }
 
 }

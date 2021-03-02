@@ -549,8 +549,8 @@
         },
 
         created() {
-            if(localStorage.getItem('SMTusername') !== null) {
-                if(localStorage.getItem('SMTusername') === "") {
+            if(getCookie('user_id') !== null) {
+                if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.replace('/login');
                 }

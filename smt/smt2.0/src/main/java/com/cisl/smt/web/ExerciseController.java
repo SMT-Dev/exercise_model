@@ -246,10 +246,10 @@ public class ExerciseController {
                         ex.printStackTrace();
                     }
                     System.out.println(util.getException(e));
-                    return st;
+                    //return st;
                 }
 
-                if (!probList.contains(pt.getIdx())) {  //现在的方法是不重复 才加入
+                if (probList.size() == 0 || !probList.contains(pt.getIdx())) {  //现在的方法是不重复 才加入
                     probEvalList.add(pe.getProb_eval_id());   //核心步骤：加入 eval_id
                     probList.add(pt.getIdx());
                     probEvalListStr = probEvalList.toString();
@@ -272,7 +272,7 @@ public class ExerciseController {
     @GetMapping("/getOneRandom")
     public Long getOneRandom() {
         //没有完全连续
-        int max = 10050, min = 10000;
+        int max = 10300, min = 10000;
         int res = new Random().nextInt(max - min) + min;
         return (long) res;
     }
@@ -441,8 +441,9 @@ public class ExerciseController {
             probList = new ArrayList<>(probList.subList(0, partNum));
         else {
             while (probList.size() < partNum){
-                if(!probList.contains(getOneRandom()))
-                    probList.add(getOneRandom());
+                Long newId = getOneRandom();
+                if(!probList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除"))
+                    probList.add(newId);
             }
         }
 
@@ -476,7 +477,7 @@ public class ExerciseController {
             }
         }
         Collections.shuffle(outputProblemList);
-        System.out.println("470考点下题目" + outputProblemList.toString());
+        System.out.println("Line 479: 考点下题目" + outputProblemList.toString());
         outputProblemList = uniqueProbList(outputProblemList);
         Collections.shuffle(outputProblemList);  //一定要打乱，因为 unique 之后会正序
         HashSet<Long> hashSet = new HashSet<>(outputProblemList);
@@ -489,7 +490,7 @@ public class ExerciseController {
             if(margin > 0) System.out.println("推荐刷题进入去重，补齐" + margin);
             while (margin > 0) {
                 long newId = getOneRandom();
-                if(!outputProblemList.contains(newId)){
+                if(!outputProblemList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
                     outputProblemList.add(newId);
                     margin--;
                 }
@@ -741,7 +742,10 @@ public class ExerciseController {
     }
 
     public ArrayList<Long> uniqueProbList(ArrayList<Long> tmpList) {
-        //列表去重，然后通过随机抽取题目进行补齐. 注意一点，unique 中 hashset 会自动排序，后序需要再 shuffle
+        /**
+         * @description: 列表去重 & 检查被删除的题，然后通过随机抽取题目进行补齐. 注意一点，unique 中 hashset 会自动排序，后序需要再 shuffle
+         * @return: Long 的列表
+         */
         int origin = tmpList.size();
         HashSet<Long> set = new HashSet<>(tmpList);
         tmpList.clear();
@@ -750,12 +754,35 @@ public class ExerciseController {
         if(margin > 0) System.out.println("uniq进入去重，补齐" + margin);
         while (margin > 0) {  //题目不够会陷入死循环
             long newId = getOneRandom();
-            if(!tmpList.contains(newId)){
+            if(!tmpList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
                 tmpList.add(newId);
                 margin--;
             }
         }
-        return tmpList;
+        return checkDelete(tmpList);   //去重后还要检查一遍有没有被删除的题
+    }
+
+    public ArrayList<Long> checkDelete(ArrayList<Long> tmpList) {
+        /**
+         * @description: 剔除被删除的题目
+         * @return: Long 的列表
+         */
+        int origin = tmpList.size();
+        ArrayList<Long> newList = new ArrayList<>();
+        for (Long prob_id : tmpList) {
+            if(!problemService.getProblemByProb_id(prob_id).getProb_text().contains("题目已被删除"))
+                newList.add(prob_id);
+        }
+        int margin = origin - newList.size();
+        if(margin > 0) System.out.println("有被删除的题目，补齐" + margin);
+        while (margin > 0) {  //题目不够会陷入死循环
+            long newId = getOneRandom();
+            if(!newList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
+                newList.add(newId);
+                margin--;
+            }
+        }
+        return newList;
     }
 
     @GetMapping("/getProblemList")
