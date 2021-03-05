@@ -345,7 +345,7 @@ https://interface.smartreelearners.com:8442/api/app/auth/student/studentInfoForS
 
 SMT 课件模块: 那边自定义一个生成 token 的方法
 1. 首先对 URL: http://106.15.225.46:8881/setCookie 发送一个 post 请求
-请求body: `{'user_seq': '533', 'user_id': '13811111111', 'level': '3', token: 'jikQWQxsad'}`  (所有字段均为字符串)
+请求body: {'user_seq': '533', 'user_id': '13811111111', 'level': '3', token: 'jikQWQxsad'}  (所有字段均为字符串)
 2. 链接跳转到刷题模块: http://106.15.225.46:8881/auth?token=jikQWQxsad
 
 (保持 token 相同)

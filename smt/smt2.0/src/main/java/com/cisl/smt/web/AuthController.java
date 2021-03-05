@@ -3,16 +3,15 @@ package com.cisl.smt.web;
 import com.alibaba.fastjson.JSON;
 import com.cisl.smt.po.User;
 import com.cisl.smt.service.UserService;
+import com.cisl.smt.web.Temp.AuthInfo;
 import com.cisl.smt.web.Temp.UserMap;
 import com.cisl.smt.web.Temp.UserTemp;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,18 +35,18 @@ public class AuthController {
     private UserService userService;
 
     public static String sendPost(String urlString, String jsonInputString) throws IOException {
-        URL url = new URL (urlString);
-        HttpURLConnection con = (HttpURLConnection)url.openConnection();
+        URL url = new URL(urlString);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json; utf-8");
         con.setRequestProperty("Accept", "application/json");
         con.setDoOutput(true);
 
-        try(OutputStream os = con.getOutputStream()) {
+        try (OutputStream os = con.getOutputStream()) {
             byte[] input = jsonInputString.getBytes("utf-8");
             os.write(input, 0, input.length);
         }
-        try(BufferedReader br = new BufferedReader(
+        try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(con.getInputStream(), "utf-8"))) {
             StringBuilder response = new StringBuilder();
             String responseLine = null;
@@ -58,6 +57,11 @@ public class AuthController {
             return response.toString();
         }
 
+    }
+
+    @GetMapping("/test")
+    public ModelAndView test() {
+        return new ModelAndView("test");
     }
 
     @GetMapping("/login")
@@ -103,7 +107,7 @@ public class AuthController {
                                HttpServletResponse response) {
 
         System.out.println(userService.getUserByUsername(username));
-        if(userService.getUserByUsername(username) != null){
+        if (userService.getUserByUsername(username) != null) {
             System.out.println("exist");
             return "Exist";
         }
@@ -113,7 +117,7 @@ public class AuthController {
         userService.saveUser(user);
         User tmp = userService.getUserByUsername(username);
         Long user_id = tmp.getUser_id();
-        Cookie cookie = new Cookie("user_id",user_id.toString());
+        Cookie cookie = new Cookie("user_id", user_id.toString());
         response.addCookie(cookie);
 
         return user.toString();
@@ -122,30 +126,29 @@ public class AuthController {
     @PostMapping("/postLogin")
     public String postLogin(@RequestParam("institute_seq") String institute_seq,
                             @RequestParam("user_id") String user_id,
-                             @RequestParam("passwd") String passwd,
-                             HttpServletResponse response) {
+                            @RequestParam("passwd") String passwd,
+                            HttpServletResponse response) {
 
-        System.out.println(String.format("请求参数: {\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id,passwd,institute_seq));
+        System.out.println(String.format("请求参数: {\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id, passwd, institute_seq));
         try {
             String sr = sendPost("https://interface.smartreelearners.com:8442/api/app/auth/student/login/china",
-                    String.format("{\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id,passwd,institute_seq));
+                    String.format("{\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id, passwd, institute_seq));
             HashMap hashMap = JSON.parseObject(sr, HashMap.class);
 
-            if(hashMap.containsKey("error")){
-                if(hashMap.get("error").equals(1))
+            if (hashMap.containsKey("error")) {
+                if (hashMap.get("error").equals(1))
                     return "Fail";
-                else if(hashMap.get("error").equals(2))
+                else if (hashMap.get("error").equals(2))
                     return "OK";
             }
-            if(hashMap.containsKey("student_info")){
+            if (hashMap.containsKey("student_info")) {
                 String infoString = hashMap.get("student_info").toString();
                 HashMap infoMap = JSON.parseObject(infoString, HashMap.class);
                 String level = infoMap.get("level").toString();
 
                 return "OK " + level;
             }
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return "Fail";
         }
@@ -156,34 +159,34 @@ public class AuthController {
 
     @PostMapping("/postLogin0")
     public String postLogin0(@RequestParam("username") String username,
-                            @RequestParam("password") String password,
-                            HttpServletResponse response) {
+                             @RequestParam("password") String password,
+                             HttpServletResponse response) {
 
         User tmp = userService.getUserByUsername(username);
 
-        if(tmp == null){
+        if (tmp == null) {
             return "Fail";
         }
 
-        if(password.equals(tmp.getPassword())){     //比较字符串必须用 equals
+        if (password.equals(tmp.getPassword())) {     //比较字符串必须用 equals
             Long user_id = tmp.getUser_id();
             Cookie cookie = new Cookie("user_id", user_id.toString());
             response.addCookie(cookie);
             return "OK";
-        }
-
-        else return "Fail";
+        } else return "Fail";
 
     }
 
-    @PostMapping("/setCookie")
-    public String setCookie(@RequestParam("user_seq") String user_seq,
-                            @RequestParam("user_id") String user_id,
-                            @RequestParam("level") String level,
-                            @RequestParam("token") String token) {
+    @PostMapping(value = "/setCookie", produces = "application/json;charset=UTF-8")
+    public String setCookie(@RequestBody AuthInfo authInfo,
+                            HttpServletRequest request,
+                            HttpServletResponse response) {
         try {
+            // 不允许有多个头
+//            response.addHeader("Access-Control-Allow-Origin", "https://www.smartreelearners.com");
+//            response.addHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
             HashMap<String, UserTemp> map = UserMap.getInstance().getTempHashMap();    //全局唯一 user 映射, token 对应 UserTemp
-            map.put(token, new UserTemp(user_id, user_seq, level));
+            map.put(authInfo.getToken(), new UserTemp(authInfo.getUser_id(), authInfo.getUser_seq(), authInfo.getLevel()));
         } catch (Exception e) {
             e.printStackTrace();
             return "Fail";
