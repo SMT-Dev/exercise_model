@@ -13,25 +13,46 @@
 </head>
 <body>
     <div id="app">
-        <div id="choose_lev" class="">
-            <el-slider
-              v-model="chosen_level"
-              :step="20"
-              :marks="marks1"
-              :format-tooltip="formatTooltip1"
-              show-stops>
-            </el-slider>
+        <img id="background" src="/image/start_bg.png">
+        <button type="button" id="back_button" @click="goBack"></button>
+        <img id="level" src="/image/level.png">\
+        <div id="level_info">
+            <p><span>等级/L{{ level }}</span></p>
         </div>
-        <div id="choose_lesson" class="">
-            <el-slider
-              v-model="chosen_lesson"
-              :step="11"
-              :marks="marks2"
-              :format-tooltip="formatTooltip2"
-              show-stops>
-            </el-slider>
+        <img id="ribbon" src="/image/ribbon.png">
+        <div id="level_box">
+            <div class="star_container">
+                <img id="star1" class="star" src="/image/star1.png" @click="choose(1)">
+            </div>
+            <div class="star_container">
+                <img id="star2" class="star" src="/image/star2.png" @click="choose(2)">
+            </div>
+            <div class="star_container">
+                <img id="star3" class="star" src="/image/star3.png" @click="choose(3)">
+            </div>
+            <div class="star_container">
+                <img id="star4" class="star" src="/image/star4.png" @click="choose(4)">
+            </div>
+            <div class="star_container">
+                <img id="star5" class="star" src="/image/star5.png" @click="choose(5)">
+            </div>
+            <div class="star_container">
+                <img id="star6" class="star" src="/image/star6.png" @click="choose(6)">
+            </div>
+            <div class="star_container">
+                <img id="star7" class="star" src="/image/star7.png" @click="choose(7)">
+            </div>
+            <div class="star_container">
+                <img id="star8" class="star" src="/image/star8.png" @click="choose(8)">
+            </div>
+            <div class="star_container">
+                <img id="star9" class="star" src="/image/star9.png" @click="choose(9)">
+            </div>
+            <div class="star_container">
+                <img id="star10" class="star" src="/image/star10.png" @click="choose(10)">
+            </div>
         </div>
-        <el-button id="start_button" type="primary" @click="start">课课练入口</el-button>
+        <button type="button" id="start_button" @click="start"></button>
     </div>
 </body>
 <script>
@@ -54,10 +75,8 @@
     var app = new Vue({
         el: "#app",
         data: {
-            chosen_level: 0,
+            level: 0,
             chosen_lesson: 0,
-            marks1: {0:'Lev.1',20:'Lev.2',40:'Lev.3',60:'Lev.4',80:'Lev.5',100:'Lev.6'},
-            marks2: {0:'Lesson.1',11:'Lesson.2',22:'Lesson.3',33:'Lesson.4',44:'Lesson.5',55:'Lesson.6',66:'Lesson.7',77:'Lesson.8',88:'Lesson.9',99:'Lesson.10'},
             setting: {
                 src: "lesson",
                 sys: '1',
@@ -67,47 +86,23 @@
         },
 
         methods: {
-            formatTooltip1: function () {
-                if(this.chosen_level === 0)
-                    return 'Lev.1';
-                if(this.chosen_level === 20)
-                    return 'Lev.2';
-                if(this.chosen_level === 40)
-                    return 'Lev.3';
-                if(this.chosen_level === 60)
-                    return 'Lev.4';
-                if(this.chosen_level === 80)
-                    return 'Lev.5';
-                if(this.chosen_level === 100)
-                    return 'Lev.6';
+            goBack: function () {
+                window.location.href = "https://www.smartreelearners.com/#/home";
             },
 
-            formatTooltip2: function () {
-                if(this.chosen_lesson === 0)
-                    return 'Lesson.1';
-                if(this.chosen_lesson === 11)
-                    return 'Lesson.2';
-                if(this.chosen_lesson === 22)
-                    return 'Lesson.3';
-                if(this.chosen_lesson === 33)
-                    return 'Lesson.4';
-                if(this.chosen_lesson === 44)
-                    return 'Lesson.5';
-                if(this.chosen_lesson === 55)
-                    return 'Lesson.6';
-                if(this.chosen_lesson === 66)
-                    return 'Lesson.7';
-                if(this.chosen_lesson === 77)
-                    return 'Lesson.8';
-                if(this.chosen_lesson === 88)
-                    return 'Lesson.9';
-                if(this.chosen_lesson === 99)
-                    return 'Lesson.10';
+            choose: function (option) {
+                if(this.chosen_lesson != 0) {
+                    document.getElementById("star" + this.chosen_lesson.toString()).style.height = "90%";
+                    document.getElementById("star" + this.chosen_lesson.toString()).style.width = "90%";
+                }
+                this.chosen_lesson = option;
+                document.getElementById("star" + this.chosen_lesson.toString()).style.height = "100%";
+                document.getElementById("star" + this.chosen_lesson.toString()).style.width = "100%";
             },
 
             start: function () {
-                this.setting.sys = (this.chosen_lesson / 11 + 1).toString();
-                this.setting.lev = (this.chosen_level / 20) + 1;
+                this.setting.sys = this.chosen_lesson.toString();
+                this.setting.lev = this.level;
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
                     console.log("已设置参数: ", response.data);
@@ -125,11 +120,11 @@
                     localStorage.clear();
                     window.location.href = '/login';
                 }
-            } else {
+            }else {
                 window.location.href = '/login';
             }
             if(getCookie('level') !== null && getCookie('level').length > 0){
-                this.setting.lev = parseInt(getCookie('level'));
+                this.level = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
         }

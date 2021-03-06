@@ -61,7 +61,7 @@
                         <div id="question_info">
                             <div id="container4">
                                 <p><span>Q{{ num }}</span></p>
-                                <p id="show_result">{{ is_correct }}</p>
+                                <p id="show_result">&nbsp;{{ is_correct }}</p>
                                 <button style="display:none" type="button" id="check_analysis" @click="showAnalysis"></button>
                             </div>
                         </div>
@@ -105,6 +105,8 @@
                     <div id="analysis_area">
                         <img id="analysis_background" src="/image/background.png">
                         <div id="analysis_text">
+                            <img id="play_button" src="/image/play.png"  @click="playAnalysis">
+                            <audio id="audio" :src="audio_src"></audio>
                             <p><span>本题解析：</span></p>
                             <p id="analysis_content"><span></span></p>
                         </div>
@@ -185,6 +187,7 @@
             txt_box: [],
             src: "",
             is_correct: '',
+            audio_src: "/audio/sample.mp3",
             prob_text: "test",
             options_id: 0,
             options: {A: "A", B: "B", C: "C", D: "D"},
@@ -289,6 +292,10 @@
 
             getBox: function (option) {
                 return "box" + option;
+            },
+
+            playAnalysis: function () {
+                document.getElementById("audio").play();
             },
 
             showAnalysis: function () {
@@ -748,6 +755,7 @@
                 if(this.num <= this.opt_num) {
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
+                    this.audio_src = "/audio/" + this.prob_list[this.num-1].toString() + ".mp3";
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
                     this.options.A = option.data.option_a;
@@ -851,12 +859,13 @@
                 sessionStorage.setItem('correctlist',this.correct_list);
                 sessionStorage.setItem('flag',this.flag.toString());
                 sessionStorage.setItem('finishWrong',this.finishWrong.toString());
+                sessionStorage.setItem('audioSrc',this.audio_src);
             },
         },
 
         created() {
-            if(getCookie('user_id') !== null) {
-                if(getCookie('user_id') === "") {
+            if(getCookie('user_id') !== null) { 
+                if(getCookie('user_id') === "") { 
                     localStorage.clear();
                     window.location.href = '/login';
                 }
@@ -890,6 +899,7 @@
                     this.correct_list = sessionStorage.getItem('correctlist').split(',').map(Number);
                 }
                 this.is_show = parseInt(sessionStorage.getItem("isShow"));
+                this.audio_src = sessionStorage.getItem('audioSrc');
                 this.showAlready();
             }
             this.src = window.location.search.substring(5,window.location.search.indexOf('&'));

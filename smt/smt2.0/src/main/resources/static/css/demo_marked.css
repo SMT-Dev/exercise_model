@@ -481,23 +481,38 @@ body {
     align-items: flex-start;
     width: 30%;
     height: 380px;
-    left: 58%;
+    left: 57%;
 }
 
 #analysis_background {
     position: absolute;
     z-index: 1;
-    width: 327px;
+    width: 333px;
     height: 90%;
 }
 
 #analysis_text {
     position: relative;
     z-index: 2;
+    left: 6px;
     margin-top: 30px;
     font-size: 16px;
     height: 323px;
     width: 70%;
+}
+
+#analysis_content {
+    margin-top: 2px;
+}
+
+#play_button {
+    position: absolute;
+    z-index: 2;
+    width: 30px;
+    height: 30px;
+    left: 76px;
+    top: -4px;
+    cursor: pointer;
 }
 
 #prob_tip {
