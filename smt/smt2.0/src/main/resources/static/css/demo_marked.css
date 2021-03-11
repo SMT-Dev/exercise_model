@@ -29,39 +29,41 @@ body {
 
 #back_button {
     position: absolute;
-    height: 45px;
-    width: 45px;
-    left: 60px;
-    top: 13px;
+    height: 4%;
+    width: 2.7%;
+    left: 4%;
+    top: 1.5%;
     border: none;
-    background-size: 180px 110px;
-    background-position: -70px -32px;
-    background-image: url(/image/back_before.png);
+    background-image: url(/image/back.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     cursor: pointer;
     outline: none;
     z-index: 3;
 }
 
-#back_button:after,#back_button:active {
+/*#back_button:after,#back_button:active {
     cursor: auto;
     background-image: url(/image/back_after.png);
-}
+}*/
 
 #last_button {
     position: absolute;
     left: 64%;
     top: 83%;
     z-index: 2;
-    height: 40px;
-    width: 100px;
+    height: 6%;
+    width: 8.5%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/last_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -72,14 +74,15 @@ body {
     left: 75%;
     top: 83%;
     z-index: 3;
-    height: 40px;
-    width: 100px;
+    height: 6%;
+    width: 8.5%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/next_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -90,14 +93,15 @@ body {
     left: 75%;
     top: 83%;
     z-index: 2;
-    height: 40px;
-    width: 100px;
+    height: 6%;
+    width: 8.5%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/next_disable.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: auto;
     outline: none;
@@ -107,15 +111,16 @@ body {
     position: absolute;
     left: 75%;
     top: 83%;
-    z-index: 3;
-    height: 35px;
-    width: 100px;
+    z-index: 4;
+    height: 6%;
+    width: 8.5%;
     border: none;
-    background-size: 160px 80px;
-    background-position: -26px -22px;
     background-image: url(/image/show_more.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -126,8 +131,8 @@ body {
     left: 75%;
     top: 83%;
     z-index: 3;
-    height: 40px;
-    width: 100px;
+    height: 6%;
+    width: 8.5%;
     border: none;
     background-color: white;
     border-radius: 30px;
@@ -145,42 +150,19 @@ body {
     background-image: url(/image/next_after.png);
 }
 
-.drawer_button {
-    position: relative;
-    left: 25px;
-    margin: 7px;
-}
-.circle_button {
-    border: none;
-    width: 50px;
-    height: 50px;
-}
-.ellipse {
-    position: relative;
-    width:55px;
-    height:55px;
-    display:flex;
-    cursor: pointer;
-}
-.image {
-    width: 100%;
-    margin: 8px;
-}
-.ellipse_text {
-    position:absolute;
-    text-align: center;
-    width:100%;
-}
-
 #app {
+    position: relative;
     margin: 0 auto;
     width: 1549px;
-    height: 761px;
+    height: 1142px;
     background-color: #FFB71B;
 }
 
 #main {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -189,18 +171,20 @@ body {
 #header {
     justify-content: center;
     text-align: center;
-    font-size: 28px;
+    font-size: 1.5rem;
     display: flex;
     flex-wrap: wrap;
-    height: 25%;
+    width: 100%;
+    height: 16.67%;
     align-content: space-between;
     color: #F8F8F8;
 }
 
 #footer {
-    height: 10%;
-    align-content: center;
-    font-family: 'Microsoft YaHei';
+    height: 6.67%;
+    width: 100%;
+    align-content: flex-start;
+    font-family: 'Microsoft JhengHei';
     background-color: #FFB71B;
 }
 
@@ -210,7 +194,7 @@ body {
     left: 0;
     right: 0;
     background-color: #2A7DE1;
-    z-index: 2;
+    z-index: 0;
 }
 
 #top_bar2 {
@@ -219,7 +203,7 @@ body {
     left: 0;
     right: 0;
     background-color:white;
-    z-index: 1;
+    z-index: 0;
 }
 
 #container1 {
@@ -231,7 +215,7 @@ body {
 #container2 {
     width: 100%;
     height: 28%;
-    font-size: 22px;
+    font-size: 1.3rem;
     background-color: white;
 }
 
@@ -263,7 +247,7 @@ body {
     justify-content: center;
     flex-wrap: nowrap;
     align-items: center;
-    padding: 0px 0px 0px 20px;
+    padding: 0px 0px 0px 1.25rem;
     height: 100%;
     width: 100%;
     background-color: #FFB71B;
@@ -274,7 +258,7 @@ body {
     padding: 0;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-wrap: nowrap;
     align-items: center;
 }
@@ -282,7 +266,7 @@ body {
 #box1,#box2,#box3,#box4,#box5,#box6,#box7,#box8,#box9,#box10
 ,#box11,#box12,#box13,#box14,#box15,#box16,#box17,#box18,#box19,#box20{
     height: 100%;
-    width: 70px;
+    width: 4.52%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -290,12 +274,12 @@ body {
 
 #num1,#num2,#num3,#num4,#num5,#num6,#num7,#num8,#num9,#num10
 ,#num11,#num12,#num13,#num14,#num15,#num16,#num17,#num18,#num19,#num20 {
-    font-size: 22px;
+    font-size: 1.3rem;
     font-family: 'GothamRoundedMedium';
     color: white;
-    border: 2px solid white;
-    height: 42px;
-    width: 42px;
+    border: 0.125rem solid white;
+    height: 69%;
+    width: 60%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -324,13 +308,13 @@ body {
 }
 
 #heading1 {
-    width: 18%;
+    width: 40%;
     font-family: 'GothamRoundedBold';
     justify-content: flex-end;
 }
 
 #heading2 {
-    width: 15%;
+    width: 40%;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: bold;
     justify-content: flex-start;
@@ -376,8 +360,8 @@ body {
     z-index: 2;
     left: -20%;
     top: 25%;
-    width: 19px;
-    height: 20px;
+    width: 27.14%;
+    height: 32.85%;
 }
 
 #question_card {
@@ -397,46 +381,45 @@ body {
     height: 100%;
     width: 87%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
 }
 
 #book {
     position: absolute;
     z-index: 0;
-    left: 10%;
-    width: 80%;
+    left: 2%;
+    width: 96%;
     height: 94%;
 }
 
 #question_area {
     position: relative;
     z-index: 2;
-    width: 50%;
-    height: 80%;
-    left: -12%;
+    width: 40%;
+    height: 70%;
+    left: 10%;
 }
 
 #question_info,#question_text {
     position: relative;
     z-index: 2;
     display: flex;
-    padding: 0px 30px;
-    height: 15%;
+    padding: 0 3%;
 }
 
 #question_info {
     font-family: 'GothamRoundedMedium';
-    font-size: 36px;
+    font-weight: 200;
+    height: 10%;
+    font-size: 2.5rem;
     align-items: flex-end;
     font-weight: 200;
-    height: 15%;
-    padding: 0px 30px;
 }
 
 #show_result {
     color: #FF5554;
-    font-size: 28px;
+    font-size: 1.75rem;
 }
 
 #check_analysis {
@@ -453,21 +436,22 @@ body {
 }
 
 #question_text {
-    align-items: center;
+    align-items: start;
     font-family: 'GothamRoundedMedium';
-    font-size: 22px;
+    font-size: 1.5rem;
+    height: 35%;
     word-wrap: break-word;
     word-break: keep-all;
-    padding: 0px 30px;
+    margin-top: 1rem;
 }
 
 #congrats {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 200%;
     height: 100%;
-    font-size: 36px;
+    font-size: 2.5rem;
     font-family: 'Microsoft YaHei';
     font-weight: 700;
     color: #000000;
@@ -479,39 +463,42 @@ body {
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    width: 30%;
-    height: 380px;
-    left: 57%;
+    width: 43%;
+    height: 80%;
+    left: 50%;
 }
 
 #analysis_background {
     position: absolute;
+    top: 0;
     z-index: 1;
-    width: 333px;
+    width: 100%;
     height: 90%;
 }
 
 #analysis_text {
     position: relative;
+    font-size: 1rem;
+    height: 75%;
+    width: 90%;
+    padding-top: 1rem;
     z-index: 2;
-    left: 6px;
-    margin-top: 30px;
-    font-size: 16px;
-    height: 323px;
-    width: 70%;
 }
 
 #analysis_content {
-    margin-top: 2px;
+    font-family: 'GothamRoundedMedium','Microsoft YaHei';
+    font-weight: 600;
+    font-size: 1.2rem;
+    font-weight: 600;
 }
 
 #play_button {
     position: absolute;
     z-index: 2;
-    width: 30px;
-    height: 30px;
-    left: 76px;
-    top: -4px;
+    width: 8%;
+    height: 9%;
+    left: 59.5%;
+    top: 2.5%;
     cursor: pointer;
 }
 
@@ -525,49 +512,44 @@ body {
     width: 100%;
 }
 
-#opt_part,#txt_part {
-    display: flex;
-    align-content: space-around;
-    flex-wrap: wrap;
-    width: 80%;
+#opt_part {
+    position: relative;
+    z-index: 1;
+    height: 70%;
+    width: 100%;
+}
+
+#txt_part {
+    position: relative;
+    z-index: 1;
+    height: 70%;
+    width: 100%;
 }
 
 .option {
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    left: 30px;
-    width: 400px;
-    padding: 0px 10px;
-    margin: 10px 0px;
+    align-items: center;
+    left: 3%;
+    width: 70%;
+    height: 13.3%;
+    padding: 0px 2%;
+    margin: 2% 0;
     border-radius: 30px;
     font-family: 'GothamRoundedMedium';
-    font-size: 28px;
     background-color: #F0F0F0;
 }
 
 .choice {
-    font-size: 26px;
-    padding: 5px 20px;
-}
-
-#img-a,#img-b,#img-c,#img-d {
-    height: 40px;
-    width: 40px;
-    font-size: 28px;
-    font-family: 'TW Cen MT';
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: black;
-    border: none;
+    font-size: 1.5rem;
 }
 
 #input_box {
     position: relative;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 400;
-    padding: 0 30px;
+    padding: 0 3%;
     width: 100%;
 }
 
@@ -576,7 +558,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    font-size: 20px;
+    font-size: 1.25rem;
 }
 
 .submit_ans,.correct_ans {
@@ -584,14 +566,15 @@ body {
 }
 
 #recomnd_button {
-    height: 40px;
-    width: 100px;
+    height: 55%;
+    width: 8%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/recomnd_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;

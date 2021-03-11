@@ -3,6 +3,7 @@
 <head>
     <title>答题界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
     <link href="/css/demo.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -11,8 +12,8 @@
     <script src="/js/jquery.min.js"></script>
 </head>
 <body>
+<div id="top_bar"></div>
 <div id="app">
-    <div id="top_bar"></div>
     <div id="layer" v-show="handin"></div>
     <div id="pop_container">
         <img id="popBox" v-show="handin" src="/image/pop_box.png"></img>
@@ -22,6 +23,7 @@
         <button type="button" id="handIn_confirm" v-show="handin" @click="handInConfirm"></button>
         <button type="button" id="handIn_cancel" v-show="handin" @click="handInCancel"></button>
     </div>
+    <button type="button" id="back_button" @click="goBack"></button>
     <div id="main">
         <div id="header">
             <div id="container1">
@@ -32,25 +34,25 @@
             </div>
             <div id="container2">
                 <div id="heading3">
+                    <div id="line"></div>
                     <ul class="time">
-                        <el-divider id="line"></el-divider>
                         <li v-for="activity in activities">
-                            <img :src="activity.src" :id="getId(activity.index)"></i>
+                            <img :src="activity.src" :id="getId(activity.index)">
                             <p :id="getNum(activity.index)"><span>{{ activity.content }}</span></p>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
-        <img id="link_left" src="/image/link.png">
-        <img id="link_right" src="/image/link.png">
+        <img id="link_left" src="/image/link1.png">
+        <img id="link_right" src="/image/link1.png">
         <div id="question_card">
             <div id="book_container">
                 <img src="/image/book.png" id="book">
                 <div id="question_area">
                     <div id="question_info">
-                        <p style="font-family: 'GothamRoundedMedium';color: #2A7DE1;font-size: 42px;"><span>Q{{ num }}</span></p>
-                        <div style="border-radius: 40px;background-color: #2A7DE1;font-family: 'Microsoft YaHei';color: white;font-weight: bold;font-size: 20px;margin-left: 10px;padding-left: 5px;padding-right: 5px;">
+                        <p style="font-family: 'GothamRoundedMedium';color: #2A7DE1;font-size: 2.5rem;"><span>Q{{ num }}</span></p>
+                        <div style="border-radius: 40px;background-color: #2A7DE1;font-family: 'Microsoft YaHei';color: white;font-weight: bold;font-size: 1.25rem;margin-left: 0.6rem;padding-left: 0.25rem;padding-right: 0.25rem;">
                             <p><span>{{ prob_attr }}题</span></p>
                         </div>
                     </div>
@@ -102,6 +104,7 @@
 </div>
 </body>
 <script>
+
     function setCookie(cname,cvalue) {
         document.cookie = cname + "=" + cvalue + "; ";
     }
@@ -136,6 +139,33 @@
         capture: false,
         passive: false
     });*/
+
+    $(document).ready(function(){
+        $(window).resize(function() {
+            if(navigator.userAgent.match(/Android/i)
+		        || navigator.userAgent.match(/webOS/i)
+		        || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)) {
+                ;
+            }else {
+                var cliWidth = document.body.scrollWidth;
+                var cliHeight = document.body.scrollHeight;
+                $('#layer').css("width",cliWidth + "px");
+                $('#layer').css("height",cliHeight + "px");
+            }
+        });
+    });
+
+    window.addEventListener("orientationchange",function(){
+        var cliWidth = window.screen.width;
+        var cliHeight = window.screen.height;
+        $('#layer').css("width","1549px");
+        $('#layer').css("height",(1549 * cliHeight / cliWidth) + "px");
+    });
+
 
     var app = new Vue({
         el: "#app",
@@ -176,6 +206,11 @@
             activities: [],
         },
         methods: {
+            goBack: function () {
+                sessionStorage.clear();
+                window.location.replace("https://www.smartreelearners.com/#/home");
+            },
+
             chooseOption: function (option) {
                 this.refreshAnswer();
                 document.getElementById('option_' + option.toUpperCase()).style.background = "#00D87E";
@@ -492,15 +527,18 @@
                 }
                 for (var j = 1; j <= this.totalNum; j++) {
                     if(j === this.num) {
-                        document.getElementById("icon_" + j).style.width = "30px";
-                        document.getElementById("icon_" + j).style.height = "30px";
-                        document.getElementById("icon_" + j).style.margin = "0px 0px 0px 0px";
-                        document.getElementById("num_" + j).style.fontSize = "20px";
+                        document.getElementById("icon_" + j).style.width = "47.4%";
+                        document.getElementById("icon_" + j).style.height = "46.9%";
+                        document.getElementById("icon_" + j).style.margin = "0";
+                        //if()
+                        console.log(window.screen.width);
+                        console.log(window.getComputedStyle(document.body).getPropertyValue('font-size'));
+                        document.getElementById("num_" + j).style.fontSize = "1.25rem";
                     }else {
-                        document.getElementById("icon_" + j).style.width = "21px";
-                        document.getElementById("icon_" + j).style.height = "21px";
-                        document.getElementById("icon_" + j).style.margin = "4px 0px 0px 0px"
-                        document.getElementById("num_" + j).style.fontSize = "16px";
+                        document.getElementById("icon_" + j).style.width = "33.1%";
+                        document.getElementById("icon_" + j).style.height = "32.9%";
+                        document.getElementById("icon_" + j).style.margin = "5% 0 0 0"
+                        document.getElementById("num_" + j).style.fontSize = "1rem";
                     }
                 }
             },
@@ -586,8 +624,8 @@
                     this.src = "lesson";
                     this.level = parseInt(sessionStorage.getItem("level"));
                     this.lesson = parseInt(sessionStorage.getItem("lesson"));
-                }else if(window.location.search.indexOf("recomnd") > -1) {
-                    this.src = "recomnd";
+                }else if(window.location.search.indexOf("strengthen") > -1) {
+                    this.src = "strengthen";
                     this.level = parseInt(sessionStorage.getItem("level"));
                     this.lesson = parseInt(sessionStorage.getItem("lesson"));
                     document.getElementById("heading2").innerHTML = "推荐练习";
@@ -602,6 +640,37 @@
             window.onbeforeunload = function (event) {
                 var url = sessionStorage.getItem('lastUrl');
                 history.replaceState('change',null,url);
+            }
+            if(navigator.userAgent.match(/Android/i)
+		        || navigator.userAgent.match(/webOS/i)
+		        || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)) {
+                var cliWidth = window.screen.width;
+                var cliHeight = window.screen.height;
+                /*document.documentElement.style.fontSize = (cliWidth / 90) + "px";
+                $('#app').css("width",cliWidth);
+                $('#app').css("height",(1142 * cliWidth / 1549) + "px");
+                $('#top_bar').css("height",(761 * cliWidth / 15490) + "px");
+                $('#pop_container').css("width",cliWidth);
+                $('#pop_container').css("height",(1142 * cliWidth / 1549) + "px");*/
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (cliWidth / 1549) + ")");
+                $('#top_bar').css("transform-origin","0 0");
+                $('#top_bar').css("transform","scaleY(" + (cliWidth / 1549) + ")");
+                $('#layer').css("width","1549px");
+                $('#layer').css("height",(1549 * cliHeight / cliWidth) + "px");
+            }else {
+                var cliWidth = document.body.scrollWidth;
+                var cliHeight = document.body.scrollHeight;
+                /*$('#app').css("width",cliWidth + "px");
+                $('#app').css("height",cliHeight + "px");
+                $('#pop_container').css("width",cliWidth + "px");
+                $('#pop_container').css("height",cliHeight + "px");
+                $('#layer').css("width",cliWidth + "px");
+                $('#layer').css("height",cliHeight + "px");*/
             }
         },
 

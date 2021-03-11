@@ -29,7 +29,7 @@ body {
 }
 
 #layer {
-    position: absolute;
+    position: fixed;
     z-index: 3;
     background-color: #000000;
     left: 0;
@@ -42,7 +42,7 @@ body {
 #popBox {
     position: absolute;
     z-index: 4;
-    height: 70%;
+    height: 46.67%;
     width: 54%;
     top: 15%;
     left: 23%;
@@ -51,9 +51,9 @@ body {
 #pop_msg {
     position: absolute;
     z-index: 5;
-    height: 10%;
-    width: 40%;
-    top: 49%;
+    height: 6.67%;
+    width: 25%;
+    top: 39%;
     left: 38%;
     font-size: 24px;
     font-family: 'Microsoft YaHei Regular';
@@ -63,15 +63,16 @@ body {
     position: absolute;
     z-index: 5;
     left: 39.5%;
-    top: 57%;
-    height: 55px;
-    width: 145px;
+    top: 45%;
+    height: 4.82%;
+    width: 9.36%;
     border: none;
-    background-size: 160px 90px;
-    background-position: 0px -20px;
     background-image: url(/image/confirm_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -86,15 +87,16 @@ body {
     position: absolute;
     z-index: 5;
     left: 50%;
-    top: 57%;
-    height: 55px;
-    width: 145px;
+    top: 45%;
+    height: 4.82%;
+    width: 9.36%;
     border: none;
-    background-size: 160px 90px;
-    background-position: 0px -20px;
     background-image: url(/image/cancel_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -109,14 +111,15 @@ body {
     position: absolute;
     left: 70%;
     top: 75%;
-    height: 40px;
-    width: 100px;
+    height: 9.62%;
+    width: 10.6%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/last_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -126,14 +129,15 @@ body {
     position: absolute;
     left: 85%;
     top: 75%;
-    height: 40px;
-    width: 100px;
+    height: 9.62%;
+    width: 10.6%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/next_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -149,41 +153,11 @@ body {
     background-image: url(/image/next_after.png);
 }
 
-.drawer_button {
-    position: relative;
-    left: 25px;
-    margin: 7px;
-}
-
-.circle_button {
-    border: none;
-    width: 50px;
-    height: 50px;
-}
-
-.ellipse {
-    position: relative;
-    width:55px;
-    height:55px;
-    display:flex;
-    cursor: pointer;
-}
-
-.image {
-    width: 100%;
-    margin: 8px;
-}
-
-.ellipse_text {
-    position:absolute;
-    text-align: center;
-    width:100%;
-}
-
 #app {
+    position: relative;
     margin: 0 auto;
     width: 1549px;
-    height: 761px;
+    height: 1142px;
     background-color: #FFB71B;
 }
 
@@ -191,11 +165,14 @@ body {
     position: absolute;
     margin: 0 auto;
     width: 1549px;
-    height: 761px;
+    height: 1142px;
 }
 
 #main {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: space-between;
     width: 100%;
     height: 100%;
     margin: 0;
@@ -204,17 +181,19 @@ body {
 #header {
     justify-content: center;
     text-align: center;
-    font-size: 28px;
+    font-size: 1.5rem;
     display: flex;
     flex-wrap: wrap;
-    height: 25%;
+    width: 100%;
+    height: 16.67%;
     align-content: space-between;
     color: #F8F8F8;
 }
 
 #footer {
-    height: 10%;
-    align-content: center;
+    height: 6.67%;
+    width: 100%;
+    align-content: flex-start;
     font-family: 'Microsoft JhengHei';
     background-color: #FFB71B;
 }
@@ -225,7 +204,7 @@ body {
     left: 0;
     right: 0;
     background-color: #2A7DE1;
-    z-index: 1;
+    z-index: 0;
 }
 
 #container1 {
@@ -275,19 +254,20 @@ body {
 }
 
 #heading1 {
-    width: 20%;
+    width: 40%;
     font-family: 'GothamRoundedBold';
     justify-content: flex-end;
 }
 
 #heading2 {
-    width: 20%;
+    width: 40%;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: bold;
     justify-content: flex-start;
 }
 
 #heading3 {
+    position: relative;
     height: 70%;
     width: 87%;
     display: flex;
@@ -303,26 +283,29 @@ body {
 
 #line {
     position: absolute;
-    top: -6.5px;
-    left: 31.7px;
-    width: 95%;
-    z-index: 0;
-    height: 7px;
-    background-color: #2A7DE1;
+    margin: 0;
+    padding: 0;
+    left: 5.5%;
+    width: 89.3%;
+    z-index: 1;
+    height: 28.76%;
+    border-top-color: #2A7DE1;
+    border-top-width: 0.4rem;
+    border-top-style: solid;
 }
 
 #icon_1,#icon_2,#icon_3,#icon_4,#icon_5,#icon_6,#icon_7,#icon_8,#icon_9,#icon_10 {
     position: relative;
     z-index: 1;
-    width: 21px;
-    height: 21px;
+    width: 32.86%;
+    height: 32.9%;
 }
 
 #icon_11,#icon_12,#icon_13,#icon_14,#icon_15,#icon_16,#icon_17,#icon_18,#icon_19,#icon_20 {
     position: relative;
     z-index: 1;
-    width: 21px;
-    height: 21px;
+    width: 32.86%;
+    height: 32.9%;
 }
 
 ul {
@@ -346,7 +329,6 @@ li {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    font-size: 30px;
     font-family: 'TW Cen MT Condensed';
     z-index: 1;
 }
@@ -355,18 +337,17 @@ li > p {
     position: relative;
     width: 100%;
     font-family: 'GothamRoundedMedium';
-    font-size: 16px;
     color: #DCDCDC;
     padding: 0;
-    top: -3px;
+    top: -4.69%;
 }
 
 #link_left,#link_right {
     position: absolute;
     z-index: 2;
-    width: 55px;
-    height: 65px;
-    top: 19%;
+    width: 3.55%;
+    height: 15%;
+    top: 11.5%;
 }
 
 #link_left {
@@ -401,8 +382,8 @@ li > p {
 #book {
     position: absolute;
     z-index: 0;
-    left: 10%;
-    width: 80%;
+    left: 2%;
+    width: 96%;
     height: 94%;
 }
 
@@ -415,77 +396,78 @@ li > p {
     position: relative;
     z-index: 1;
     display: flex;
-    padding: 0px 30px;
-    height: 15%;
+    padding: 0 3%;
 }
 
 #question_info {
     font-family: 'GothamRoundedMedium';
     align-items: center;
     font-weight: 200;
+    height: 10%;
 }
 
 #question_text {
-    align-items: center;
+    align-items: flex-start;
     font-family: 'GothamRoundedMedium';
-    font-size: 28px;
+    font-size: 2em;
+    height: 25%;
+    margin-top: 1rem;
 }
 
 #opt_part,#txt_part {
     position: relative;
     z-index: 1;
     height: 70%;
+    width: 100%;
 }
 
 .option {
     position: relative;
     display: flex;
     flex-wrap: wrap;
-    left: 30px;
-    width: 50%;
-    padding: 0px 10px;
-    margin: 20px 0px;
+    align-items: center;
+    left: 3.18%;
+    width: 55%;
+    height: 13.3%;
+    padding: 0 1%;
+    margin: 1% 0;
     border-radius: 30px;
     font-family: 'GothamRoundedMedium';
-    font-size: 28px;
     background-color: #F0F0F0;
     cursor: pointer;
 }
 
 .choice {
-    font-size: 28px;
-    padding: 5px 20px;
+    font-size: 1.5rem;
 }
 
-#img-a,#img-b,#img-c,#img-d {
-    height: 45px;
-    width: 45px;
-    font-size: 30px;
-    font-family: 'TW Cen MT';
+
+#question_a_text,#question_b_text,#question_c_text,#question_d_text {
+    position: relative;
     display: flex;
+    flex-wrap: nowrap;
     align-items: center;
-    justify-content: center;
-    border: none;
-}
-
-#prob_tip {
-    padding-left: 30px;
-    font-size: 22px;
-    font-family: 'Microsoft YaHei';
-    font-weight: 600;
+    width: 100%;
+    height: 100%;
 }
 
 #input_box {
     position: relative;
-    top: 30px;
-    font-size: 24px;
+    font-size: 1.5rem;
     font-weight: 400;
-    padding: 0 30px;
-    width: 400px;
+    padding: 0 2rem;
+    width: 42.4%;
 }
 
 .input_bar {
-    margin: 10px 0px;
+    margin: 0.625rem 0;
+    border: 0.2rem solid black;
+    border-radius: 0.375rem;
+    font-size: 1.5rem !important;
+}
+
+.el-input__inner {
+    border: none !important;
 }
 
 #answer_card {
@@ -499,14 +481,15 @@ li > p {
 }
 
 #finish_button {
-    height: 40px;
-    width: 100px;
+    height: 52.63%;
+    width: 6.45%;
     border: none;
-    background-size: 160px 100px;
-    background-position: -31px -31px;
     background-image: url(/image/finish_before.png);
     background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
     background-color: transparent;
+    background-size: 100% 100%;
     border-radius: 30px;
     cursor: pointer;
     outline: none;
@@ -517,4 +500,20 @@ li > p {
     background-image: url(/image/finish_after.png);
 }
 
-
+#back_button {
+    position: absolute;
+    height: 4.5%;
+    width: 3%;
+    left: 1.93%;
+    top: 1.4%;
+    border: none;
+    background-image: url(/image/back.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-color: transparent;
+    background-size: 100% 100%;
+    cursor: pointer;
+    outline: none;
+    z-index: 3;
+}
