@@ -503,7 +503,6 @@
                     this.prob_attr = "选择";
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
-                    console.log(option.data)
                     this.options.A = option.data.option_a;
                     this.options.B = option.data.option_b;
                     this.options.C = option.data.option_c;
@@ -518,7 +517,15 @@
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
-                    this.prob_attr = "改写";
+                    if(prob.data.prob_attr === "Correct") {
+                        this.prob_attr = "改错";
+                    }else if(prob.data.prob_attr === "Fill") {
+                        this.prob_attr = "填空";
+                    }else if(prob.data.prob_attr === "Rewrite") {
+                        this.prob_attr = "改写";
+                    }else if(prob.data.prob_attr === "Translation") {
+                        this.prob_attr = "翻译";
+                    }
                     for(var i = 0;i < prob.data.blank_num;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }
@@ -530,9 +537,6 @@
                         document.getElementById("icon_" + j).style.width = "47.4%";
                         document.getElementById("icon_" + j).style.height = "46.9%";
                         document.getElementById("icon_" + j).style.margin = "0";
-                        //if()
-                        console.log(window.screen.width);
-                        console.log(window.getComputedStyle(document.body).getPropertyValue('font-size'));
                         document.getElementById("num_" + j).style.fontSize = "1.25rem";
                     }else {
                         document.getElementById("icon_" + j).style.width = "33.1%";
