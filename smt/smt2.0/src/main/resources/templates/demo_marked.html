@@ -304,15 +304,15 @@
                 this.show_analysis[this.num - 1] = 1;
                 sessionStorage.setItem('showAnalysis',this.show_analysis);
                 setTimeout(() => {
-                    if(this.num !== this.wrong_list[this.wrong_list.length - 1]) {
-                        this.flag = true;
-                    }else {
+                    if(this.num === this.wrong_list[this.wrong_list.length - 1]) {
                         this.finishWrong = true;
                         if(this.is_show === 0) {
                             if(this.correct_list.length !== 0) {
                                 this.show = 1;
                             }
                         }
+                    }else {
+                        this.flag = true;
                     }
                     document.getElementById("num" + this.num).style.cursor = "pointer";
                 this.store();
@@ -322,10 +322,13 @@
             showMore: function () {
                 this.show = 0;
                 this.is_show = 1;
-                document.getElementById("congrats").style.display = "none";
-                document.getElementById("question_info").style.display = "";
-                document.getElementById("question_text").style.display = "";
-                document.getElementById("opt_part").style.display = "";
+                if(this.wrong_list.length === 0) {
+                    document.getElementById("congrats").style.display = "none";
+                    document.getElementById("analysis_area").style.display = "";
+                    document.getElementById("question_info").style.display = "";
+                    document.getElementById("question_text").style.display = "";
+                    document.getElementById("opt_part").style.display = "";
+                }
                 sessionStorage.setItem("isShow",this.is_show);
                 this.flag = true;
                 this.jumpProblem(this.correct_list[0]);
@@ -389,11 +392,11 @@
                     }
                     if(this.correct_list.length === 0 && this.num === this.wrong_list[this.wrong_list.length - 1])
                         this.no_next = true;
-                    if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
+                    /*if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
                         this.show = 1;
                     else {
                         this.show = 0;
-                    }
+                    }*/
                     this.store();
                     this.$nextTick(() => {
                         this.fetchProblem();
@@ -474,11 +477,11 @@
                         if(this.num === this.wrong_list[0])
                             document.getElementById("last_button").style.display = "none";
                         this.no_next = false;
-                        if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
+                        /*if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
                             this.show = 1;
                         else {
                             this.show = 0;
-                        }
+                        }*/
                         this.flag = true;
                         this.store();
                         this.$nextTick(() => {
@@ -577,11 +580,11 @@
                         }
                         if(this.correct_list.length === 0 && this.num === this.wrong_list[this.wrong_list.length - 1])
                             this.no_next = true;
-                        if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
+                        /*if(this.num === this.wrong_list[this.wrong_list.length - 1] && this.is_show === 0 && this.correct_list.length !== 0)
                             this.show = 1;
                         else {
                             this.show = 0;
-                        }
+                        }*/
                         this.store();
                         this.$nextTick(() => {
                             this.fetchProblem();
@@ -744,6 +747,8 @@
                         document.getElementById("opt_part").style.display = "none";
                         document.getElementById("congrats").style.display = "flex";
                         this.show = 1;
+                        this.finishWrong = true;
+                        this.store();
                     }else {
                         this.fetchProblem();
                         this.showResult();
