@@ -153,7 +153,7 @@ public class ExerciseController {
         ArrayList<ProblemAnsTemp> tmpList = st.getSheet_list();
         for (ProblemAnsTemp pt : tmpList) {
             if (pt.getIdx().equals(idx)) {
-                System.out.println(idx);
+                System.out.println(idx.toString() + "choice_text: " + choice_text);
                 pt.setChoice(choice);
                 pt.setFinish(finish);
                 pt.setChoice_text(choice_text);
@@ -371,7 +371,14 @@ public class ExerciseController {
         ArrayList<Long> probList = new ArrayList<>();
         Integer curLevel = SettingTemp.getInstance().getLev();
         for (Long num : probEvalList) {
-            Long probId = problemEvalService.getProblemEvalById(num).getProb_id();
+            Long probId;
+            try {
+                probId = problemEvalService.getProblemEvalById(num).getProb_id();
+            } catch (NullPointerException e){
+                probId = getOneRandom();
+                while (wrongList.contains(probId))
+                    probId = getOneRandom();
+            }
             //只选取level 等于 当前level的题
             if (Integer.valueOf(problemService.getProblemByProb_id(probId).getProb_level()).equals(curLevel))
                 wrongList.add(probId);
@@ -460,11 +467,19 @@ public class ExerciseController {
         ArrayList<ProblemEvaluation> wrongList = getWrong(USER_ID);
         ArrayList<Long> pointList = new ArrayList<>();
         ArrayList<Long> outputProblemList = new ArrayList<>();
-        for (ProblemEvaluation pe : wrongList) {
+        for (int i = 0; i < wrongList.size(); i++) {
             //收集所有错题的考点
-            Long point_id = problemService.getProblemByProb_id(pe.getProb_id()).getPoint_id();
-            if (!pointList.contains(point_id))
-                pointList.add(point_id);
+            ProblemEvaluation pe = wrongList.get(i);
+            System.out.println("473");
+            System.out.println(pe);
+            try {
+                Long point_id = problemService.getProblemByProb_id(pe.getProb_id()).getPoint_id();
+                if (!pointList.contains(point_id))
+                    pointList.add(point_id);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                i++;
+            }
         }
         Collections.shuffle(pointList);
         System.out.println("考点列表" + pointList.toString());
@@ -488,8 +503,10 @@ public class ExerciseController {
         else {   //题目太少则补充随机
             int margin = partNum - outputProblemList.size();
             if(margin > 0) System.out.println("推荐刷题进入去重，补齐" + margin);
-            while (margin > 0) {
+            int loop = 30;
+            while (margin > 0 && loop > 0) {
                 long newId = getOneRandom();
+                loop--;
                 if(!outputProblemList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
                     outputProblemList.add(newId);
                     margin--;
@@ -752,8 +769,10 @@ public class ExerciseController {
         tmpList.addAll(set);
         int margin = origin - tmpList.size();
         if(margin > 0) System.out.println("uniq进入去重，补齐" + margin);
-        while (margin > 0) {  //题目不够会陷入死循环
+        int loop = 30;
+        while (margin > 0 && loop > 0) {  //题目不够会陷入死循环
             long newId = getOneRandom();
+            loop--;
             if(!tmpList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
                 tmpList.add(newId);
                 margin--;
@@ -774,9 +793,13 @@ public class ExerciseController {
                 newList.add(prob_id);
         }
         int margin = origin - newList.size();
+        System.out.println(tmpList);
+        System.out.println(newList);
         if(margin > 0) System.out.println("有被删除的题目，补齐" + margin);
-        while (margin > 0) {  //题目不够会陷入死循环
+        int loop = 30;
+        while (margin > 0 && loop > 0) {  //题目不够会陷入死循环
             long newId = getOneRandom();
+            loop--;
             if(!newList.contains(newId) && !problemService.getProblemByProb_id(newId).getProb_text().contains("题目已被删除")){
                 newList.add(newId);
                 margin--;
