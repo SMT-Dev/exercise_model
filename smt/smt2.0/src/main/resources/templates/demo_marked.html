@@ -71,28 +71,34 @@
                             <p><span>恭喜你，全部做对啦！</span></p>
                         </div>
                         <div id="opt_part">
+                            <div id="img_container">
+                                <img :src="imgSrc" id="image">
+                            </div>
                             <div id="option_A" class="option">
                                 <div id="question_a_text">
-                                    <p class="choice"><span>A. {{ options.A }}</span></p>
+                                    A. {{ options.A }}
                                 </div>
                             </div>
                             <div id="option_B" class="option">
                                 <div id="question_b_text">
-                                    <p class="choice"><span>B. {{ options.B }}</span></p>
+                                    B. {{ options.B }}
                                 </div>
                             </div>
-                            <div id="option_C" class="option">
+                            <div id="option_C" class="option" style="display: none;">
                                 <div id="question_c_text">
-                                    <p class="choice"><span>C. {{ options.C }}</span></p>
+                                    C. {{ options.C }}
                                 </div>
                             </div>
                             <div id="option_D" class="option" style="display: none;">
                                 <div id="question_d_text">
-                                    <p class="choice"><span>D. {{ options.D }}</span></p>
+                                    D. {{ options.D }}
                                 </div>
                             </div>
                         </div>
                         <div id="txt_part" style="display: none;">
+                            <div id="img_container">
+                                <img :src="imgSrc" id="image">
+                            </div>
                             <div id="input_box">
                                 <div v-for="input in input_num" class="input_result">
                                     <p class="submit_ans"><span style="color: #330099;font-family: 'GothamRoundedMedium';font-weight: 900;font-size: 1.5rem;">Your Answer {{ input + 1 }}: </span><span style="font-family: 'GothamRoundedMedium';font-weight: 900;font-size: 1.5rem;"> {{ txt[input] }}</span></p>
@@ -187,6 +193,7 @@
             opt_box: [],
             txt_box: [],
             src: "",
+            imgSrc: "",
             is_correct: '',
             audio_src: "/audio/sample.mp3",
             prob_text: "test",
@@ -779,10 +786,18 @@
                     this.prob_text = prob.data.prob_text;
                     this.audio_src = "/audio/" + this.prob_list[this.num-1].toString() + ".mp3";
                     this.options_id = prob.data.options_id;
+                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
                     var option = await axios.get("/getOptions?id="+this.options_id);
                     this.options.A = option.data.option_a;
                     this.options.B = option.data.option_b;
                     this.options.C = option.data.option_c;
+                    if(option.data.hasOwnProperty('option_c') && (option.data.option_c !== null && option.data.option_c !== "")) {
+                        this.options.C = option.data.option_c;
+                        document.getElementById('option_C').style.display = "";
+                    }else {
+                        this.options.C = "";
+                        document.getElementById('option_C').style.display = "none";
+                    }
                     if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null && option.data.option_d !== "")) {
                         this.options.D = option.data.option_d;
                         document.getElementById('option_D').style.display = "";
@@ -797,6 +812,7 @@
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
+                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
                     for(var i = 0;i < prob.data.blank_num;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }

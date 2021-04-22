@@ -60,6 +60,9 @@
                         <p><span>{{ prob_text }}</span></p>
                     </div>
                     <div id="opt_part">
+                        <div id="img_container">
+                            <img :src="imgSrc" id="image">
+                        </div>
                         <div id="option_A" class="option" @click="chooseOption('a')">
                             <div id="question_a_text">
                                 <p class="choice"><span>A. {{ options.A }}</span></p>
@@ -70,7 +73,7 @@
                                 <p class="choice"><span>B. {{ options.B }}</span></p>
                             </div>
                         </div>
-                        <div id="option_C" class="option" @click="chooseOption('c')">
+                        <div id="option_C" class="option" style="display: none;" @click="chooseOption('c')">
                             <div id="question_c_text">
                                 <p class="choice"><span>C. {{ options.C }}</span></p>
                             </div>
@@ -84,6 +87,9 @@
                         <button type="button" id="next_button" @click="nextProblem"></button>
                     </div>
                     <div id="txt_part" style="display: none;">
+                        <div id="img_container">
+                            <img :src="imgSrc" id="image">
+                        </div>
                         <div id="input_box">
                             <div v-for="input in input_num">
                                 <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
@@ -183,6 +189,7 @@
             opt_box: [],
             txt_box: [],
             src: "",
+            imgSrc: "",
             prob_text: "test",
             prob_attr: "",
             options_id: 0,
@@ -501,11 +508,19 @@
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
                     this.prob_attr = "选择";
+                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
                     this.options.A = option.data.option_a;
                     this.options.B = option.data.option_b;
                     this.options.C = option.data.option_c;
+                    if(option.data.hasOwnProperty('option_c') && (option.data.option_c !== null) && (option.data.option_c.length > 0)) {
+                        this.options.C = option.data.option_c;
+                        document.getElementById('option_C').style.display = "";
+                    }else {
+                        this.options.C = "";
+                        document.getElementById('option_C').style.display = "none";
+                    }
                     if(option.data.hasOwnProperty('option_d') && (option.data.option_d !== null) && (option.data.option_d.length > 0)) {
                         this.options.D = option.data.option_d;
                         document.getElementById('option_D').style.display = "";
@@ -517,6 +532,7 @@
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
+                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
                     if(prob.data.prob_attr === "Correct") {
                         this.prob_attr = "改错";
                     }else if(prob.data.prob_attr === "Fill") {
