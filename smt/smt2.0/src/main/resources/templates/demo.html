@@ -503,12 +503,31 @@
                 this.fetchProblem();
             },
 
+            getImage: function (str) {
+                var img = new Image();
+                img.src = "/image/" + str + ".png";
+                if(img.complete){
+                    if(img.width > img.height)
+                        document.getElementById("image").style.width = "100%";
+                    else
+                        document.getElementById("image").style.height = "100%";
+                }else{
+                    img.onload = function(){
+                        if(img.width > img.height)
+                            document.getElementById("image").style.width = "100%";
+                        else
+                            document.getElementById("image").style.height = "100%";
+                    };
+                }
+                this.imgSrc = img.src;
+            },
+
             fetchProblem: async function () {
                 if(this.num <= this.opt_num) {
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
                     this.prob_attr = "选择";
-                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
+                    this.getImage(this.prob_list[this.num-1].toString());
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
                     this.options.A = option.data.option_a;
@@ -532,7 +551,7 @@
                     this.txt = [];
                     var prob = await axios.get("/getProblem?num="+this.prob_list[this.num-1].toString());
                     this.prob_text = prob.data.prob_text;
-                    this.imgSrc = "/image/" + this.prob_list[this.num-1].toString() + ".png";
+                    this.getImage(this.prob_list[this.num-1].toString());
                     if(prob.data.prob_attr === "Correct") {
                         this.prob_attr = "改错";
                     }else if(prob.data.prob_attr === "Fill") {
