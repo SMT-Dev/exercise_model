@@ -528,6 +528,9 @@ body {
 
 #img_container {
     position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     left: 57%;
     width: 40%;
     height: 60%;

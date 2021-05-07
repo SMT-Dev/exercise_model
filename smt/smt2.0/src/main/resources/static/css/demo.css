@@ -423,6 +423,9 @@ li > p {
 
 #img_container {
     position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     left: 70%;
     width: 25%;
     height: 57%;
