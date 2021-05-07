@@ -57,6 +57,9 @@
                         <p><span>{{ prob_text }}</span></p>
                     </div>
                     <div id="opt_part">
+                        <div id="img_container">
+                            <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
+                        </div>
                         <div id="option_A" class="option" @click="chooseOption('a')">
                             <div id="question_a_text">
                                 <p class="choice"><span>A. {{ options.A }}</span></p>
@@ -81,6 +84,9 @@
                         <button type="button" id="next_button" ></button>
                     </div>
                     <div id="txt_part" style="display: none;">
+                        <div id="img_container">
+                            <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
+                        </div>
                         <div id="input_box">
                             <div v-for="input in input_num">
                                 <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
@@ -104,6 +110,7 @@
     var app = new Vue({
         el: "#app",
         data: {
+            imgSrc: "",
             handin: false,
             num: 1,
             totalNum: 0,
@@ -184,6 +191,25 @@
                 return "num_" + option;
             },
 
+            getImage: function (str) {
+                var img = new Image();
+                img.src = "/image/_prob/" + str + ".png";
+                if(img.complete){
+                    if(img.width > img.height)
+                        document.getElementById("image").style.width = "100%";
+                    else
+                        document.getElementById("image").style.height = "100%";
+                }else{
+                    img.onload = function(){
+                        if(img.width > img.height)
+                            document.getElementById("image").style.width = "100%";
+                        else
+                            document.getElementById("image").style.height = "100%";
+                    };
+                }
+                this.imgSrc = img.src;
+            },
+
             fetchProblem: async function () {
                 var prob_id = $.cookie("prob_id");
                 var prob = await axios.get("/getProblem?num="+prob_id.toString());
@@ -193,6 +219,7 @@
                 this.prob_text = prob.data.prob_text;
                 if(prob.data.prob_attr === "Choice") {
                     this.prob_attr = "选择";
+                    this.getImage(this.prob_list[this.num-1].toString());
                     this.options_id = prob.data.options_id;
                     var option = await axios.get("/getOptions?id="+this.options_id);
                     this.options.A = option.data.option_a;
@@ -210,6 +237,7 @@
                     document.getElementById('opt_part').style.display = "none";
                     document.getElementById('txt_part').style.display = "block";
                     this.prob_attr = "改写";
+                    this.getImage(this.prob_list[this.num-1].toString());
                     for(var i = 0;i < prob.data.blank_num;i++) {//2记得改为prob.data.blank_num
                         this.txt.push("");
                     }

@@ -12,12 +12,18 @@ import com.cisl.smt.web.Temp.SheetTemp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -241,6 +247,30 @@ public class UploadController {
             return "Fail";
         }
         return "OK";
+    }
+
+    @PostMapping("/fileUpload")
+    public String singleImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws FileNotFoundException {  //参数名需与前端文件标签名一样
+        //获取项目classes/static的地址
+        String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();  //static
+        String fileName = file.getOriginalFilename();  //获取文件名  xxx.jpg
+        //图片访问URI(即除了协议、地址和端口号的URL)
+        String url_path = "image/_prob"+ File.separator+fileName;
+        System.out.println(("图片访问uri："+url_path));
+        String savePath = path+File.separator+url_path;  //图片保存路径
+        System.out.println(("图片保存地址："+savePath));
+        File saveFile = new File(savePath);
+//        if (!saveFile.exists()){
+//            saveFile.mkdirs();
+//        }
+        try {
+            file.transferTo(saveFile);  //将临时存储的文件移动到真实存储路径下
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //返回图片访问地址
+        System.out.println(url_path);
+        return url_path;
     }
 
 

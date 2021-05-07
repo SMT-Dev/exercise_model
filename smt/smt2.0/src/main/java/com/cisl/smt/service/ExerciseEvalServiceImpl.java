@@ -21,7 +21,9 @@ public class ExerciseEvalServiceImpl implements ExerciseEvalService{
     @Override
     public void insertExerciseEval(ExerciseEvaluation exerciseEvaluation) {
         exerciseEvalRepository.insertExerciseEval(exerciseEvaluation.getExercise_id(), exerciseEvaluation.getConsume_time(),
-                exerciseEvaluation.getExer_eval_score(), exerciseEvaluation.getExer_eval_time(), exerciseEvaluation.getExercise_id(), exerciseEvaluation.getUser_id());
+                exerciseEvaluation.getExer_eval_score(), exerciseEvaluation.getExer_eval_time(),
+                exerciseEvaluation.getExercise_id(), exerciseEvaluation.getUser_id(),
+                exerciseEvaluation.getExer_level());
     }
 
     @Override

@@ -61,7 +61,7 @@
                     </div>
                     <div id="opt_part">
                         <div id="img_container">
-                            <img :src="imgSrc" id="image">
+                            <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
                         </div>
                         <div id="option_A" class="option" @click="chooseOption('a')">
                             <div id="question_a_text">
@@ -88,7 +88,7 @@
                     </div>
                     <div id="txt_part" style="display: none;">
                         <div id="img_container">
-                            <img :src="imgSrc" id="image">
+                            <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
                         </div>
                         <div id="input_box">
                             <div v-for="input in input_num">
@@ -505,7 +505,7 @@
 
             getImage: function (str) {
                 var img = new Image();
-                img.src = "/image/" + str + ".png";
+                img.src = "/image/_prob/" + str + ".png";
                 if(img.complete){
                     if(img.width > img.height)
                         document.getElementById("image").style.width = "100%";

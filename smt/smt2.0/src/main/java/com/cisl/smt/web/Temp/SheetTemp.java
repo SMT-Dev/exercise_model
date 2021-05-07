@@ -14,12 +14,17 @@ public class SheetTemp {
     private ArrayList<Long> num_list;
     private Long opt_num;
     private Long txt_num;
+    private String exer_level;
+    private String start_time;
+    private String end_time;
+    private boolean evaluated;
 
     public SheetTemp(){
         ArrayList<ProblemAnsTemp> empty1 = new ArrayList<>();
         ArrayList<Long> empty2 = new ArrayList<>();
         this.setSheet_list(empty1);
         this.setNum_list(empty2);
+        this.evaluated = false;
     };   //还要初始化自己的列表
 
     public Long getId() {
@@ -54,6 +59,14 @@ public class SheetTemp {
         this.txt_num = txt_num;
     }
 
+    public String getExer_level() {
+        return exer_level;
+    }
+
+    public void setExer_level(String exer_level) {
+        this.exer_level = exer_level;
+    }
+
     public ArrayList<Long> getNum_list() {
         return num_list;
     }
@@ -75,6 +88,30 @@ public class SheetTemp {
         this.num_list.clear();
     }
 
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public String getEnd_time() {
+        return end_time;
+    }
+
+    public void setEnd_time(String end_time) {
+        this.end_time = end_time;
+    }
+
+    public boolean isEvaluated() {
+        return evaluated;
+    }
+
+    public void setEvaluated(boolean evaluated) {
+        this.evaluated = evaluated;
+    }
+
     @Override
     public String toString() {
         return "SheetTemp{" +
@@ -83,6 +120,10 @@ public class SheetTemp {
                 ", num_list=" + num_list +
                 ", opt_num=" + opt_num +
                 ", txt_num=" + txt_num +
+                ", exer_level='" + exer_level + '\'' +
+                ", start_time='" + start_time + '\'' +
+                ", end_time='" + end_time + '\'' +
+                ", evaluated=" + evaluated +
                 '}';
     }
 }

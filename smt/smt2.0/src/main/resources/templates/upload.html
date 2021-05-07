@@ -217,6 +217,36 @@
                             </el-table>
                         </template>
                         <el-button size="mini" @click="addPoint" round style="margin-top: 10px">+ 添加新考点</el-button>
+
+                        <h3 style="margin: 10px 0">图片:（可选）</h3>
+<!--                        <el-upload class="upload-demo"-->
+<!--                                   ref="upload"-->
+<!--                                   drag-->
+<!--                                   action="http://localhost:8080/fileUpload"-->
+<!--                                   multiple-->
+<!--                                   :auto-upload="false"-->
+<!--                                   with-credentials="true"-->
+<!--                                   :limit="1"-->
+<!--                                   :before-upload="handleBefore"-->
+<!--                                   :on-success="handleFilUploadSuccess"-->
+<!--                                   :on-remove="handleRemove"-->
+<!--                                   :data="uploadData"-->
+<!--                        >-->
+<!--                            <i class="el-icon-upload"></i>-->
+<!--                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
+<!--                        </el-upload>-->
+                        <el-upload
+                                class="upload-demo"
+                                drag
+                                action="https://interface.smartreelearners.com:8442/fileUpload"
+                                :limit="1"
+                                :before-upload="handleBefore"
+                                :data="imageData"
+                                multiple>
+                            <i class="el-icon-upload"></i>
+                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+                            <div class="el-upload__tip" slot="tip">只能上传单个jpg/png文件</div>
+                        </el-upload>
                     </div>
 
 
@@ -292,13 +322,20 @@
             originArr: [],
             multipleSelection: [],
             view_point_text: '',
-
+            imageData: {
+                prob_id: 0
+            }
         },
 
         methods: {
             handleChange: function (value) {
                 this.formData.blank_num = value;
             },
+
+            handleBefore(file) {
+                // this.imageData.prob_id =
+            },
+
 
             back: function () {
                 window.location.replace("/upload_list");
@@ -528,7 +565,9 @@
                 this.pointTableData = [];
                 this.originArr = [];
                 await this.getPointList();
-            }
+            },
+
+
         },
 
         created() {

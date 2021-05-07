@@ -17,6 +17,7 @@ public class ExerciseEvaluation {
     private Long consume_time;
 
     private String exer_eval_time;
+    private String exer_level;
 
     public ExerciseEvaluation() {};
 
@@ -68,6 +69,14 @@ public class ExerciseEvaluation {
         this.exer_eval_time = exer_eval_time;
     }
 
+    public String getExer_level() {
+        return exer_level;
+    }
+
+    public void setExer_level(String exer_level) {
+        this.exer_level = exer_level;
+    }
+
     @Override
     public String toString() {
         return "ExerciseEvaluation{" +
@@ -76,7 +85,8 @@ public class ExerciseEvaluation {
                 ", user_id=" + user_id +
                 ", exer_eval_score=" + exer_eval_score +
                 ", consume_time=" + consume_time +
-                ", exer_eval_time=" + exer_eval_time +
+                ", exer_eval_time='" + exer_eval_time + '\'' +
+                ", exer_level='" + exer_level + '\'' +
                 '}';
     }
 }

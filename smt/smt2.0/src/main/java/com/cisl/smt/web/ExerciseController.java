@@ -5,12 +5,19 @@ import com.cisl.smt.service.*;
 import com.cisl.smt.web.Temp.*;
 import com.cisl.smt.web.Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ClassUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.KeyException;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -65,6 +72,13 @@ public class ExerciseController {
     public ModelAndView start() {
         ModelAndView mav;
         mav = new ModelAndView("start");
+        return mav;
+    }
+
+    @GetMapping("/analysis")
+    public ModelAndView analysis() {
+        ModelAndView mav;
+        mav = new ModelAndView("analysis");
         return mav;
     }
 
@@ -170,9 +184,10 @@ public class ExerciseController {
          * @description: 获得数据库中某个 SheetTemp 记录, 属于评估后的记录
          */
         SheetTemp st = getSheet(request);   //获得对应的 SheetTemp
+        if (st.isEvaluated()) return st;    //已经评分过，不重复插入
+
         Long USER_ID = getUserFromCookies(request);  // 获得当前用户
         //TODO 进行分数、掌握知识点等等的评价，写入 CommentTemp 和 t_exer_eval 数据库
-
 
         //最新的 SheetTemp 存入 t_exer_eval
         // exercise 的 ID 自增, exer_eval_id 为自增。主键 id 都不要去人为设置
@@ -184,13 +199,21 @@ public class ExerciseController {
         commentTemp.setScore(evalScore);
         commentTemp.setHandle_rate(util.countHandleRate(st.getSheet_list()));
 
-        ee.setConsume_time((long) 120);  //TODO 做题用时
-
         String curTime = sdf.format(new Date());
         ee.setExer_eval_time(curTime);
         commentTemp.setTime(curTime);
 
+        long inter = 0;
+        try {
+            inter = sdf.parse(curTime).getTime() - sdf.parse(st.getStart_time()).getTime();
+            inter /= 1000;  //秒数
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        ee.setConsume_time(inter);  //TODO √ 做题用时
+
         ee.setUser_id(USER_ID);
+        ee.setExer_level(st.getExer_level());  //TODO √ 试卷 level
         exerciseEvalService.insertExerciseEval(ee);
 
         //每一题都存一个 prob_eval
@@ -249,22 +272,23 @@ public class ExerciseController {
                     //return st;
                 }
 
-                if (probList.size() == 0 || !probList.contains(pt.getIdx())) {  //现在的方法是不重复 才加入
-                    probEvalList.add(pe.getProb_eval_id());   //核心步骤：加入 eval_id
-                    probList.add(pt.getIdx());
-                    probEvalListStr = probEvalList.toString();
-                    probListStr = probList.toString();
-                    if(probEvalListStr.contains(" "))
-                        probEvalListStr = probEvalListStr.replaceAll(" ", "");
-                    if(probListStr.contains(" "))
-                        probListStr = probListStr.replaceAll(" ", "");
-                    reviewCollecService.updateCollec(USER_ID, probEvalListStr, probListStr);   //更新该用户的错题集
-                }
+//                if (probList.size() == 0 || !probList.contains(pt.getIdx())) {
+                //TODO √ 重复的题目也加入
+                probEvalList.add(pe.getProb_eval_id());   //核心步骤：加入 eval_id
+                probList.add(pt.getIdx());   //核心步骤：加入 prob_id
+                probEvalListStr = probEvalList.toString();
+                probListStr = probList.toString();
+                if(probEvalListStr.contains(" "))
+                    probEvalListStr = probEvalListStr.replaceAll(" ", "");
+                if(probListStr.contains(" "))
+                    probListStr = probListStr.replaceAll(" ", "");
+                reviewCollecService.updateCollec(USER_ID, probEvalListStr, probListStr);   //更新该用户的错题集
+
             }
         }
 
         //TODO 对题存入 t_pass_collec
-
+        st.setEvaluated(true);  //已经评分过，不再重复插入数据库
         return st;
     }
 
@@ -608,12 +632,16 @@ public class ExerciseController {
 
 //        probList = getFromNaive(totalNum)
 
-        SheetTemp st = getSheet(request);
-        if (st.getSheet_list().size() > 0)  //如果当前 sheet 没有清空，则进行一次清空
+        SheetTemp st = getSheet(request);   //getSheet 如果该用户没有 sheet 就会返回新的空 sheet
+        if (st.getSheet_list().size() > 0)  //如果 user 存在，但是当前 sheet 没有清空，则进行一次清空
             st.clearSheet_list();
-        st.setNum_list(probList);  // 一个坑，这里是同一个对象，影响了下面的 probList
+        st.setEvaluated(false);     //此时试卷是没有评分的状态
+        st.setNum_list(probList);   //一个坑，这里是同一个对象，影响了下面的 probList
 
         st.setId(System.currentTimeMillis());  //试卷 id 的生成: 当前时间的毫秒数
+
+        Date date = new Date();
+        st.setStart_time(sdf.format(date));  //试卷开始时间
 
         int optNum = 0, txtNum = 0;
         for (Long probNum : probList) {  //将题目填入 sheet_list
@@ -638,6 +666,7 @@ public class ExerciseController {
 
         st.setOpt_num((long) optNum);
         st.setTxt_num((long) txtNum);
+        st.setExer_level(level.toString());
 
         //TODO 本次出题组卷，插入数据库（目前好像没什么作用）
 
@@ -738,6 +767,8 @@ public class ExerciseController {
 
         return wrongList;
     }
+
+
 
     public ArrayList<Long> reorganizeProbList(ArrayList<Long> tmpList) {
         ArrayList<Long> orderList = new ArrayList<>();
