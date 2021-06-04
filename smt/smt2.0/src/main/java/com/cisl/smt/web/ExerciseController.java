@@ -54,19 +54,6 @@ public class ExerciseController {
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    @GetMapping("/exercise_opt")
-    public ModelAndView exercise_opt() {
-        ModelAndView mav;
-        mav = new ModelAndView("prob_opt");
-        return mav;
-    }
-
-    @GetMapping("/exercise_txt")
-    public ModelAndView exercise_txt() {
-        ModelAndView mav;
-        mav = new ModelAndView("prob_txt");
-        return mav;
-    }
 
     @GetMapping("/start")
     public ModelAndView start() {
@@ -98,17 +85,10 @@ public class ExerciseController {
         return mav;
     }
 
-    @GetMapping("/prob_opt_marked")
-    public ModelAndView prob_opt_marked() {
+    @GetMapping("/weekly1")
+    public ModelAndView weekly1() {
         ModelAndView mav;
-        mav = new ModelAndView("prob_opt_marked");
-        return mav;
-    }
-
-    @GetMapping("/prob_txt_marked")
-    public ModelAndView prob_txt_marked() {
-        ModelAndView mav;
-        mav = new ModelAndView("prob_txt_marked");
+        mav = new ModelAndView("weekly1");
         return mav;
     }
 

@@ -1,0 +1,591 @@
+@font-face{
+    font-family: 'GothamRoundedMedium';
+    src: url('/css/fonts/Gotham-rounded-medium.woff.ttf') format('truetype'),
+    url('/css/fonts/Gotham-rounded-medium.woff.ttf') format('woff');
+}
+
+html,body {
+    height: 100%;
+    width: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+.image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+#app {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 450px;
+    height: 2386.5px;
+}
+
+#layer {
+    position: absolute;
+    z-index: 4;
+    background-color: #000000;
+    width: 100%;
+    height: 100%;
+    opacity: 0.15;
+}
+
+#bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#basicInfo {
+    position: relative;
+    top: 5%;
+    margin: 0 auto;
+    width: 70%;
+    height: 2.8%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 2;
+}
+
+#levelInfo,#classInfo {
+    position: relative;
+    width: 41%;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    color: white;
+}
+
+#checkLevel {
+    position: absolute;
+    z-index: 5;
+    right: 4%;
+    bottom: 6%;
+    height: 15%;
+    width: 10%;
+    border: none;
+    background-image: url(/image/arrow.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-color: transparent;
+    background-size: 100% 100%;
+    cursor: pointer;
+    outline: none;
+}
+
+#fullLevel {
+    position: absolute;
+    width: 100%;
+    height: 8.5%;
+    top: 6%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 4;
+}
+
+#record {
+    position: relative;
+    width: 80%;
+    height: 1%;
+    margin: 0 auto;
+    top: 7%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    color: white;
+    z-index: 2;
+    font-size: 1.3rem;
+}
+
+#SMTmain {
+    position: relative;
+    top: 8%;
+    margin: 0 auto;
+    width: 72%;
+    height: 9%;
+    display: flex;
+    align-items: center;
+    z-index: 2;
+}
+
+#SMARTREE,#IPTV {
+    position: absolute;
+    height: 10%;
+    top: 6%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    
+}
+
+#SMARTREE {
+    width: 35%;
+    left: 3%;
+    font-family: 'Microsoft YaHei',微软雅黑;
+    font-weight: 600;
+}
+
+#IPTV {
+    right: 12%;
+    width: 20%;
+    font-family: 'GothamRoundedMedium';
+    font-weight: 600;
+}
+
+#main_report {
+    position: relative;
+    width: 100%;
+    height: 48%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'GothamRoundedMedium';
+}
+
+.rect {
+    position: relative;
+    width: 32%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    color: crimson;
+}
+
+#checkTrail {
+    position: absolute;
+    z-index: 5;
+    left: 36.5%;
+    bottom: 5%;
+    height: 8%;
+    width: 27%;
+    border: none;
+    background-image: url(/image/checktrail.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-color: transparent;
+    background-size: 100% 100%;
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+}
+
+#library {
+    position: relative;
+    top: 10%;
+    margin: 0 auto;
+    width: 72%;
+    height: 12%;
+    display: flex;
+    flex-wrap: wrap;
+    z-index: 2;
+}
+
+#lib_report {
+    position: relative;
+    top: 14%;
+    margin: 0 auto;
+    width: 70%;
+    height: 36%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: 'GothamRoundedMedium';
+}
+
+#libBook,#libHour {
+    position: relative;
+    width: 46%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    color: crimson;
+}
+
+#book {
+    position: relative;
+    top: 9%;
+    margin: 0 auto;
+    width: 85%;
+    height: 40%;
+    font-size: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    font-family: 'Microsoft YaHei',微软雅黑;
+    font-weight: 600;
+}
+
+#showBook {
+    position: relative;
+    bottom: 0%;
+    background-color: aqua;
+    width: 100%;
+    height: 75%;
+}
+
+#readlevel {
+    position: relative;
+    top: 10%;
+    margin: 0 auto;
+    width: 72%;
+    height: 10%;
+    display: flex;
+    z-index: 2;
+}
+
+#level {
+    position: relative;
+    top: 9%;
+    margin: 0 auto;
+    width: 85%;
+    height: 100%;
+    font-size: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+#read_info {
+    position: absolute;
+    margin: 0 auto;
+    top: 6%;
+    font-size: 0.1rem;
+    font-family: 'GothamRoundedMedium';
+}
+
+#read_table {
+    position: relative;
+    top: 21%;
+    height: 68%;
+    width: 100%;
+}
+
+#lv1,#lv2,#red1,#red2 {
+    position: absolute;
+    z-index: 3;
+    height: 15%;
+    width: 14%;
+}
+
+#lv1,#lv2 {
+    height: 9%;
+    width: 13%;
+}
+
+#lv2 {
+    bottom: -11%;
+}
+
+#red1 {
+    bottom: 34%;
+    width: 12%;
+}
+
+#red2 {
+    height: 34%;
+    bottom: 0%;
+    width: 12%;
+}
+
+#analysis {
+    position: relative;
+    width: 80%;
+    height: 1%;
+    margin: 0 auto;
+    top: 15.1%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    color: white;
+    z-index: 2;
+    font-size: 1.3rem;
+}
+
+#word_part,#paper_part {
+    position: relative;
+    margin: 0 auto;
+    width: 72%;
+    height: 18%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 2;
+}
+
+#pop_word,#pop_paper {
+    position: absolute;
+    margin: 0 auto;
+    width: 83%;
+    height: 27%;
+    left: 8.8%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 4;
+}
+
+#word_part {
+    top: 16%;
+}
+
+#pop_word {
+    top: 48.7%;
+}
+
+#paper_part {
+    top: 17%;
+}
+
+#pop_paper {
+    top: 70.9%;
+}
+
+#graph1,#graph2 {
+    position: relative;
+    top: 5%;
+}
+
+#AI {
+    position: absolute;
+    height: 6%;
+    width: 8%;
+    top: 2%;
+    left: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+#AI_analysis {
+    position: absolute;
+    height: 4%;
+    width: 19%;
+    top: 3%;
+    left: 9%;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+#pic_part,#pic_part2 {
+    position: relative;
+    top: 20%;
+    margin: 0 auto;
+    width: 75%;
+    height: 20%;
+    display: flex;
+    z-index: 2;
+}
+
+#word {
+    position: absolute;
+    width: 15%;
+    height: 41%;
+    top: 30%;
+    left: 38%;
+}
+
+#paper {
+    position: absolute;
+    width: 13%;
+    height: 45%;
+    top: 28%;
+    left: 40%;
+}
+
+#time_avg,#time_avg2 {
+    position: absolute;
+    width: 26%;
+    height: 44%;
+    top: -57%;
+    left: 6%;
+}
+
+#score_word_avg,#score_paper_avg {
+    position: absolute;
+    width: 30%;
+    height: 43%;
+    top: -19%;
+    left: 67%;
+}
+
+#word_handle {
+    position: absolute;
+    width: 37%;
+    height: 43%;
+    top: 119%;
+    left: 31%;
+}
+
+#point_handle {
+    position: absolute;
+    width: 43%;
+    height: 47%;
+    top: 119%;
+    left: 26%;
+}
+
+#text_part,#text_part2 {
+    position: relative;
+    top: 7%;
+    margin: 0 auto;
+    width: 100%;
+    height: 43%;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: flex-end;
+    z-index: 2;
+}
+
+#text,#text2 {
+    font-size: 0.5rem;
+    width: 150%;
+    height: 21%;
+    transform: scale(0.8);
+    transform-origin: 0;
+    position: relative;
+    top: -7%;
+    left: 6%;
+    font-family: 'Microsoft YaHei',微软雅黑;
+    font-weight: 400;
+    line-height: 200%;
+}
+
+.pop_text1 {
+    font-size: 0.5rem;
+    width: 150%;
+    height: 10%;
+    left: 7.5%;
+    top: -5%;
+    font-weight: bold;
+    transform: scale(0.9);
+    transform-origin: 0;
+    position: relative;
+    font-family: 'Microsoft YaHei',微软雅黑;
+    font-weight: 600;
+    line-height: 200%;
+}
+
+.pop_text2 {
+    font-size: 0.5rem;
+    width: 85%;
+    height: 7%;
+    top: -14.5%;
+    left: 2.5%;
+    transform: scale(0.8);
+    transform-origin: 0;
+    position: relative;
+    font-family: 'Microsoft YaHei',微软雅黑;
+    font-weight: 500;
+    line-height: 200%;
+}
+
+#show_word_score,#show_paper_score {
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 90%;
+    height: 50%;
+    font-family: 'GothamRoundedMedium';
+    color: crimson;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#pop_show_word_score,#pop_show_paper_score {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    top: -24%;
+    left: 1%;
+    width: 81%;
+    height: 15%;
+    z-index: 4;
+    font-family: 'GothamRoundedMedium';
+    color: crimson;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#handle_word_pic,#handle_paper_pic {
+    position: absolute;
+    width: 15%;
+    height: 4%;
+    top: 67%;
+    left: 43.5%;
+    z-index: 4;
+}
+
+#handle_word_table,#handle_paper_table {
+    position: absolute;
+    width: 81%;
+    height: 31%;
+    left: 10.5%;
+    top: 66%;
+}
+
+.el-table tbody tr>td {
+    border-radius: 10px;
+}
+
+.el-table td,.el-table th.is-leaf {
+    border:none !important;
+  }
+
+.el-table tbody tr:hover>td {
+    background-color: transparent !important;
+}
+
+.el-table .white_row{
+    background-color: white;
+}
+
+.el-table .grey_row {
+    background-color: rgb(238, 238, 239);
+}
+
+#handle_num,#score_avg,#effect,#handle_num2,#score_avg2,#effect2,#handle_num3,#score_avg3,#effect3,#handle_num4,#score_avg4,#effect4 {
+    width: 30%;
+    position: relative;
+    top: -8%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3;
+}
+
+#word_detail,#paper_detail {
+    position: absolute;
+    left: 15%;
+    top: 92%;
+    height: 4%;
+    width: 70%;
+    border: none;
+    background-image: url(/image/detail.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-color: transparent;
+    background-size: 100% 100%;
+    border-radius: 30px;
+    cursor: pointer;
+    outline: none;
+}
