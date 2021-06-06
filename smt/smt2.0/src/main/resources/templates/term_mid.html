@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
 <head>
-    <title>双周评测</title>
+    <title>期中评测</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
-    <link href="/css/weekly1.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/term_mid.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="http://mockjs.com/dist/mock.js"></script>
-    <script src="http://cdn.highcharts.com.cn/highcharts/9.1.0/highcharts.js"></script>
+    <script src="/js/highcharts.js"></script>
     <script src="/js/highcharts-vue.js"></script>
 </head>
 <body>
@@ -159,8 +159,8 @@
                 <highcharts :options="chartOptions1" style="width:310px;height:180px;"></highcharts>
             </div>
             <div class="pop_text1">
-                尊敬的 XX 家长：<br>
-                经过两周的学习和训练，XX 小朋友在SMARTree的学习情况<span style="color: red;">XXXX</span>。<br>
+                尊敬的{{ stuName }}家长：<br>
+                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
                 具体信息如下：
             </div>
             <div class="pop_text2">
@@ -220,8 +220,8 @@
                 <highcharts :options="chartOptions2" style="width:310px;height:180px;"></highcharts>
             </div>
             <div class="pop_text1">
-                尊敬的 XX 家长：<br>
-                经过两周的学习和训练，XX 小朋友在SMARTree的学习情况<span style="color: red;">XXXX</span>。<br>
+                尊敬的{{ stuName }}家长：<br>
+                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
                 具体信息如下：
             </div>
             <div class="pop_text2">
@@ -292,6 +292,9 @@
             isWordPop: false,
             isPaperPop: false,
             isLevelPop: false,
+            stuName: '小王',
+            prnName: '老王',
+            effect: '略有提升',
             wordData: {
                 time: 10,
                 avgScore: 90,

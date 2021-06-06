@@ -468,14 +468,14 @@ body {
 
 .pop_text1 {
     font-size: 0.5rem;
-    width: 150%;
+    width: 115%;
     height: 10%;
     left: 7.5%;
-    top: -5%;
+    top: 33%;
     font-weight: bold;
-    transform: scale(0.9);
+    transform: scale(0.8);
     transform-origin: 0;
-    position: relative;
+    position: absolute;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 600;
     line-height: 200%;
@@ -485,11 +485,11 @@ body {
     font-size: 0.5rem;
     width: 85%;
     height: 7%;
-    top: -14.5%;
-    left: 2.5%;
+    top: 42%;
+    left: 7.5%;
     transform: scale(0.8);
     transform-origin: 0;
-    position: relative;
+    position: absolute;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 500;
     line-height: 200%;
@@ -514,7 +514,7 @@ body {
     display: flex;
     justify-content: space-between;
     flex-wrap: nowrap;
-    top: -24%;
+    top: -6%;
     left: 1%;
     width: 81%;
     height: 15%;
@@ -528,7 +528,7 @@ body {
 #handle_word_pic,#handle_paper_pic {
     position: absolute;
     width: 15%;
-    height: 4%;
+    height: 4.2%;
     top: 67%;
     left: 43.5%;
     z-index: 4;

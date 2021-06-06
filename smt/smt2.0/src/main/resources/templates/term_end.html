@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:v-bind="http://www.w3.org/1999/xhtml">
+<head>
+    <title>期末评测</title>
+    <meta http-equiv="content-type" content="text/html charset=utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <link href="/css/term_end.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <script src="/js/vue@2.6.10.js"></script>
+    <script src="/js/axios@0.18.0.min.js"></script>
+    <script src="/js/index.js"></script>
+    <script src="/js/jquery.min.js"></script>
+    <script src="http://mockjs.com/dist/mock.js"></script>
+    <script src="/js/highcharts.js"></script>
+    <script src="/js/highcharts-vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div id="layer" v-show="isPop"></div>
+        <div id="bg">
+            <img class="image" src="/image/bg.png">
+        </div>
+        <div id="basicInfo">
+            <div id="levelInfo">
+                <img class="image" src="/image/yellow-bg.png">
+                <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;等级/</div>
+                <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';">Level {{ level }}</div>
+                <button type="button" id="checkLevel" @click="checkLevel"></button>
+            </div>
+            <div id="classInfo">
+                <img class="image" src="/image/purple-bg.png">
+                <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;课时/</div>
+                <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';font-size: 0.8rem;">Week {{ week }} / Lesson {{ lesson }}</div>
+            </div>
+        </div>
+        <div id="fullLevel" v-show="isLevelPop">
+            <img class="image" src="/image/fullLev.png">
+        </div>
+        <div id="record">
+            <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
+            <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">录</div>
+        </div>
+        <div id="SMTmain">
+            <div id="SMARTREE">
+                <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/SMARTREE.png">
+                <div>&nbsp;SMT主课件</div>
+            </div>
+            <div id="IPTV">
+                <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/IPTV.png">
+                <div>&nbsp;IPTV</div>
+            </div>
+            <div id="main_report">
+                <div class="rect">
+                    <img class="image" src="/image/SMTword.png">
+                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_word }}&nbsp;</div>
+                </div>
+                <div class="rect">
+                    <img class="image" src="/image/SMTsentence.png">
+                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_sentence }}&nbsp;</div>
+                </div>
+                <div class="rect">
+                    <img class="image" src="/image/SMTmovie.png">
+                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_movie }}&nbsp;</div>
+                </div>
+            </div>
+            <button type="button" id="checkTrail" @click="checkTrail"></button>
+        </div>
+        <div id="library">
+            <div style="width: 17%;left: 1.5%;height: 6%;position: absolute;">
+                <img class="image" src="/image/library.png">
+            </div>
+            <div id="lib_report">
+                <div id="libBook">
+                    <img class="image" src="/image/LIBbook.png">
+                    <div style="position: relative;margin-top: -0.1rem;">{{ lib_book }}&nbsp;</div>
+                </div>
+                <div id="libHour">
+                    <img class="image" src="/image/LIBhour.png">
+                    <div style="position: relative;margin-top: -0.1rem;">{{ lib_hour }}&nbsp;</div>
+                </div>
+            </div>
+            <div id="book">
+                <div>当前阅读书本</div>
+                <div id="showBook"></div>
+            </div>
+        </div>
+        <div id="readlevel">
+            <div style="width: 20%;left: 1.5%;height: 7%;position: absolute;">
+                <img class="image" src="/image/readlevel.png">
+            </div>
+            <div id="level">
+                <img class="image" src="/image/readinfo.png">
+                <div id="read_info">Level 1/100L</div>
+                <div style="width: 25%;height: 6%;;position: absolute;top: 0;left: 0;">
+                    <img class="image" src="/image/readLv.png">
+                </div>
+                <div id="read_table">
+                    <img class="image" src="/image/table.png">
+                    <div id="lv1" v-bind:style="Lv1">
+                        <img class="image" src="/image/lv1.png">
+                    </div>
+                    <div id="lv2" v-bind:style="Lv2">
+                        <img class="image" src="/image/lv2.png">
+                    </div>
+                    <div id="red1" v-bind:style="Red1">
+                        <img class="image" :src="red1Src">
+                    </div>
+                    <div id="red2" v-bind:style="Red2">
+                        <img class="image" src="/image/red2.png">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="analysis">
+            <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">分</div>
+            <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">析</div>
+        </div>
+        <div id="word_part">
+            <div id="AI">
+                <img class="image" src="/image/AI.png">
+            </div>
+            <div id="AI_analysis">
+                <img class="image" src="/image/AI_analysis.png">
+            </div>
+            <div id="pic_part">
+                <img class="image" src="/image/pic_bg.png">
+                <div id="word">
+                    <img class="image" src="/image/word.png">
+                </div>
+                <div id="time_avg">
+                    <img class="image" src="/image/time_avg.png">
+                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
+                </div>
+                <div id="score_word_avg">
+                    <img class="image" src="/image/score_word_avg.png">
+                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(165,88,255)">{{ wordData.avgScore }}</div>
+                </div>
+                <div id="word_handle">
+                    <img class="image" src="/image/word_handle.png">
+                </div>
+            </div>
+            <div id="text_part">
+                <div id="text">
+                    在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
+                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ wordData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.progress }}</span> %。
+                </div>
+                <div id="show_word_score">
+                    <div id="handle_num">&nbsp;{{ wordData.point_handle }}</div>
+                    <div id="score_avg">&nbsp;{{ wordData.avgScore }}</div>
+                    <div id="effect">{{ wordData.progress }}%&nbsp;</div>
+                    <img class="image" src="/image/show_score.png">
+                </div>
+            </div>
+            <button type="button" id="word_detail" @click="wordDetail"></button>
+        </div>
+        <div id="pop_word" v-show="isWordPop">
+            <img class="image" src="/image/pop_window.png">
+            <div id="graph1">
+                <highcharts :options="chartOptions1" style="width:310px;height:180px;"></highcharts>
+            </div>
+            <div class="pop_text1">
+                尊敬的{{ stuName }}家长：<br>
+                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
+                具体信息如下：
+            </div>
+            <div class="pop_text2">
+                在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
+                本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ wordData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.progress }}</span> %。
+            </div>
+            <div id="pop_show_word_score">
+                <div id="handle_num3">&nbsp;{{ wordData.point_handle }}</div>
+                <div id="score_avg3">&nbsp;{{ wordData.avgScore }}</div>
+                <div id="effect3">{{ wordData.progress }}%&nbsp;</div>
+                <img class="image" src="/image/show_score.png">
+            </div>
+            <div id="handle_word_pic">
+                <img class="image" src="/image/handle_word.png">
+            </div>
+            <div id="handle_word_table">
+                <el-table :data="wordHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
+                    <el-table-column prop="handle_word" align="center"></el-table-column>
+                </el-table>
+            </div>
+        </div>
+        <div id="paper_part">
+            <div id="pic_part2">
+                <img class="image" src="/image/pic_bg.png">
+                <div id="paper">
+                    <img class="image" src="/image/paper.png">
+                </div>
+                <div id="time_avg2">
+                    <img class="image" src="/image/time_avg.png">
+                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
+                </div>
+                <div id="score_paper_avg">
+                    <img class="image" src="/image/score_paper_avg.png">
+                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(165,88,255)">{{ paperData.avgScore }}</div>
+                </div>
+                <div id="point_handle">
+                    <img class="image" src="/image/point_handle.png">
+                </div>
+            </div>
+            <div id="text_part2">
+                <div id="text2">
+                    在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
+                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ paperData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.progress }}</span> %。
+                </div>
+                <div id="show_paper_score">
+                    <div id="handle_num2">&nbsp;{{ paperData.point_handle }}</div>
+                    <div id="score_avg2">&nbsp;{{ paperData.avgScore }}</div>
+                    <div id="effect2">{{ paperData.progress }}%&nbsp;</div>
+                    <img class="image" src="/image/show_score.png">
+                </div>
+            </div>
+            <button type="button" id="paper_detail" @click="paperDetail"></button>
+        </div>
+        <div id="pop_paper" v-show="isPaperPop">
+            <img class="image" src="/image/pop_window.png">
+            <div id="graph2">
+                <highcharts :options="chartOptions2" style="width:310px;height:180px;"></highcharts>
+            </div>
+            <div class="pop_text1">
+                尊敬的{{ stuName }}家长：<br>
+                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
+                具体信息如下：
+            </div>
+            <div class="pop_text2">
+                在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
+                本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ paperData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.progress }}</span> %。
+            </div>
+            <div id="pop_show_paper_score">
+                <div id="handle_num4">&nbsp;{{ paperData.point_handle }}</div>
+                <div id="score_avg4">&nbsp;{{ paperData.avgScore }}</div>
+                <div id="effect4">{{ paperData.progress }}%&nbsp;</div>
+                <img class="image" src="/image/show_score.png">
+            </div>
+            <div id="handle_paper_pic">
+                <img class="image" src="/image/handle_paper.png">
+            </div>
+            <div id="handle_paper_table">
+                <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
+                    <el-table-column prop="handle_paper" align="center"></el-table-column>
+                </el-table>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    Vue.use(HighchartsVue.default);
+    $(document).ready(function(){
+        $(window).resize(function() {
+            var cliWidth = document.body.scrollWidth;
+            var cliHeight = document.body.scrollHeight;
+            $('#app').css("transform-origin","0 0");
+            $('#app').css("transform","scale(" + (cliHeight / 2386.5) + ")");
+            $('#app').css("margin-left",( document.body.scrollWidth - 450) / 2 );
+        });
+    });
+
+    $(document).mouseup(function(e){
+        var popPaper = $('#pop_paper');  
+        var popWord = $('#pop_word'); 
+        var fullLev = $('#fullLevel'); 
+        if((!popPaper.is(e.target) && popPaper.has(e.target).length === 0) && app.isPaperPop === true){
+            app.isPaperPop = false;
+            app.isPop = false; 
+        }
+        if((!popWord.is(e.target) && popWord.has(e.target).length === 0) && app.isWordPop === true) {
+            app.isWordPop = false;
+            app.isPop = false; 
+        }
+        if((!fullLev.is(e.target) && fullLev.has(e.target).length === 0) && app.isLevelPop === true) {
+            app.isLevelPop = false;
+            app.isPop = false; 
+        }
+    });
+
+    var app = new Vue({
+        el: "#app",
+        data: {
+            level: 1,
+            week: 1,
+            lesson: 1,
+            readLev: 7,
+            readNum: 100,
+            smt_word: 20,
+            smt_sentence: 20,
+            smt_movie: 20,
+            lib_book: 20,
+            lib_hour: 20,
+            isPop: false,
+            isWordPop: false,
+            isPaperPop: false,
+            isLevelPop: false,
+            stuName: '小王',
+            prnName: '老王',
+            effect: '略有提升',
+            wordData: {
+                time: 10,
+                avgScore: 90,
+                avgTime: 20,
+                point_handle: 3,
+                progress: 30,
+                chinese: '提升'
+            },
+            paperData: {
+                time: 15,
+                avgScore: 85,
+                avgTime: 25,
+                point_handle: 5,
+                progress: 40,
+                chinese: '提升'
+            },
+            wordHandle: [{handle_word: 'AA'},{handle_word: 'BB'},{handle_word: 'CC'},{handle_word: 'DD'},{handle_word: 'EE'},{handle_word: 'FF'}],
+            paperHandle: [{handle_paper: 'DD'},{handle_paper: 'EE'},{handle_paper: 'FF'}],
+            chartOptions1: {
+                chart: {
+                    type: 'areaspline'
+                },
+                title: {
+                    text: null
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                
+                xAxis: {
+                    categories: [1,2,3,4,5,6,7,8,9,10]
+                },
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    tickAmount: 6,
+                    title: {
+                        text: null
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    shared: true,
+                    padding: 8,
+                    formatter: function () {
+                        return '<span style="color: {series.color}">Score:' + this.y + '</span>';
+                    },
+                },
+                plotOptions: {
+                    areaspline: {
+                        marker: {
+                            radius: 7,
+                            fillColor: 'white',
+                            lineColor: 'purple',
+                            lineWidth: 4
+                        },
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        },
+                        fillColor: {
+                            linearGradient: [0, 0, 0, 150],
+                            stops: [
+                                [0, 'rgba(143, 4, 143, 0.664)'],
+                                [1, 'white']
+                            ]
+                        }
+                    }
+                },
+                series: [{
+                    name: '',
+                    color: 'purple',
+                    marker: {
+                        symbol: 'circle'
+                    },
+                    lineWidth: 5,
+                    data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
+                }]
+            },
+            chartOptions2: {
+                chart: {
+                    type: 'areaspline'
+                },
+                title: {
+                    text: null
+                },
+                credits: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                
+                xAxis: {
+                    categories: [1,2,3,4,5,6,7,8,9,10]
+                },
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    tickAmount: 6,
+                    title: {
+                        text: null
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                    shared: true,
+                    padding: 8,
+                    formatter: function () {
+                        return '<span style="color: {series.color}">Score:' + this.y + '</span>';
+                    },
+                },
+                plotOptions: {
+                    areaspline: {
+                        marker: {
+                            radius: 7,
+                            fillColor: 'white',
+                            lineColor: 'purple',
+                            lineWidth: 4
+                        },
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        },
+                        fillColor: {
+                            linearGradient: [0, 0, 0, 150],
+                            stops: [
+                                [0, 'rgba(143, 4, 143, 0.664)'],
+                                [1, 'white']
+                            ]
+                        }
+                    }
+                },
+                series: [{
+                    name: '',
+                    color: 'purple',
+                    marker: {
+                        symbol: 'circle'
+                    },
+                    lineWidth: 5,
+                    data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
+                }]
+            }
+        },
+        computed: {
+            Lv1() {
+                var cls = {};
+                if(this.readLev === 1) {
+                    cls.top = '15%';
+                    cls.left = '12.1%';
+                }else if(this.readLev === 2) {
+                    cls.top = '18.5%';
+                    cls.left = '24.6%';
+                }else if(this.readLev === 3) {
+                    cls.top = '13%';
+                    cls.left = '37.2%';
+                }else if(this.readLev === 4) {
+                    cls.top = '8.5%';
+                    cls.left = '49.6%';
+                }else if(this.readLev === 5) {
+                    cls.top = '2%';
+                    cls.left = '62.2%';
+                }else if(this.readLev === 6) {
+                    cls.top = '-3.5%';
+                    cls.left = '74.7%';
+                }else if(this.readLev === 7) {
+                    cls.top = '-10.5%';
+                    cls.left = '87.2%';
+                }
+                return cls;
+            },
+            Lv2() {
+                var cls = {};
+                if(this.readLev === 1) {
+                    cls.left = '12.1%';
+                }else if(this.readLev === 2) {
+                    cls.left = '24.6%';
+                }else if(this.readLev === 3) {
+                    cls.left = '37.2%';
+                }else if(this.readLev === 4) {
+                    cls.left = '49.5%';
+                }else if(this.readLev === 5) {
+                    cls.left = '62%';
+                }else if(this.readLev === 6) {
+                    cls.left = '74.7%';
+                }else if(this.readLev === 7) {
+                    cls.left = '87.2%';
+                }
+                return cls;
+            },
+            red1Src() {
+                if(this.readLev === 1) {
+                    return "/image/red1_1.png";
+                }else if(this.readLev === 2) {
+                    return "/image/red1_2.png";
+                }else if(this.readLev === 3) {
+                    return "/image/red1_3.png";
+                }else if(this.readLev === 4) {
+                    return "/image/red1_4.png";
+                }else if(this.readLev === 5) {
+                    return "/image/red1_5.png";
+                }else if(this.readLev === 6) {
+                    return "/image/red1_6.png";
+                }else if(this.readLev === 7) {
+                    return "/image/red1_7.png";
+                }
+            },
+            Red1() {
+                var cls = {};
+                if(this.readLev === 1) {
+                    cls.height = '31%';
+                    cls.left = '12.6%';
+                }else if(this.readLev === 2) {
+                    cls.height = '37%';
+                    cls.left = '25.1%';
+                }else if(this.readLev === 3) {
+                    cls.height = '42%';
+                    cls.left = '37.6%';
+                }else if(this.readLev === 4) {
+                    cls.height = '47%';
+                    cls.left = '50.1%';
+                }else if(this.readLev === 5) {
+                    cls.height = '54%';
+                    cls.left = '62.6%';
+                }else if(this.readLev === 6) {
+                    cls.height = '59%';
+                    cls.left = '75.1%';
+                }else if(this.readLev === 7) {
+                    cls.height = '66%';
+                    cls.left = '87.6%';
+                }
+                return cls;
+            },
+            Red2() {
+                var cls = {};
+                if(this.readLev === 1) {
+                    cls.left = '12.6%';
+                }else if(this.readLev === 2) {
+                    cls.left = '25.1%';
+                }else if(this.readLev === 3) {
+                    cls.left = '37.6%';
+                }else if(this.readLev === 4) {
+                    cls.left = '50.1%';
+                }else if(this.readLev === 5) {
+                    cls.left = '62.6%';
+                }else if(this.readLev === 6) {
+                    cls.left = '75.1%';
+                }else if(this.readLev === 7) {
+                    cls.left = '87.6%';
+                }
+                return cls;
+            },
+        },
+        methods: {
+            tableRowClassName: function ({row, rowIndex}) {
+                if ((rowIndex % 2) !== 0) {
+                    return 'white_row';
+                } else {
+                    return 'grey_row';
+                }
+            },
+
+            checkTrail: function () {
+                this.isPop = true;
+            },
+
+            checkLevel: function () {
+                this.isLevelPop = true;
+                this.isPop = true;
+            },
+
+            wordDetail: function () {
+                this.isWordPop = true;
+                this.isPop = true;
+            },
+
+            paperDetail: function () {
+                this.isPaperPop = true;
+                this.isPop = true;
+            },
+
+            getInit: function () {
+                return new Promise(resolve => {
+                    axios.get("/init"
+                    ).then((response) => {
+                        resolve(response.data.info);
+                    })
+                })
+            },
+            
+            getWeeklyInfo: function () {
+                return new Promise(resolve => {
+                    axios.get("/getInfo"
+                    ).then((response) => {
+                        resolve(response.data.info);
+                    })
+                })
+            },
+
+            getWeeklyScore: function () {
+                return new Promise(resolve => {
+                    axios.get("/getScore"
+                    ).then((response) => {
+                        resolve(response.data.info);
+                    })
+                })
+            },
+        },
+        created: function () {
+            if(navigator.userAgent.match(/Android/i)
+		        || navigator.userAgent.match(/webOS/i)
+		        || navigator.userAgent.match(/iPhone/i)
+                || navigator.userAgent.match(/iPad/i)
+                || navigator.userAgent.match(/iPod/i)
+                || navigator.userAgent.match(/BlackBerry/i)
+                || navigator.userAgent.match(/Windows Phone/i)) {
+                var cliWidth = window.screen.width;
+                var cliHeight = window.screen.height;
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (cliWidth / 450) + ")");
+            }else {
+                var cliWidth = document.body.scrollWidth;
+                var cliHeight = document.body.scrollHeight;
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (cliHeight / 2386.5) + ")");
+                $('#app').css("margin-left",( document.body.scrollWidth - 450) / 2 );
+            }
+            
+        }
+    })
+</script>
