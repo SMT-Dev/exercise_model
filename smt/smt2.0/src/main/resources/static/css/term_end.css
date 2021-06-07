@@ -45,7 +45,7 @@ body {
 
 #basicInfo {
     position: relative;
-    top: 5%;
+    top: 6%;
     margin: 0 auto;
     width: 70%;
     height: 2.8%;
@@ -63,6 +63,14 @@ body {
     display: flex;
     flex-wrap: wrap;
     color: white;
+}
+
+#levelInfo {
+    left: 4.5%;
+}
+
+#classInfo {
+    right: 3.5%;
 }
 
 #checkLevel {
@@ -99,7 +107,7 @@ body {
     width: 80%;
     height: 1%;
     margin: 0 auto;
-    top: 7%;
+    top: 14.7%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -110,7 +118,7 @@ body {
 
 #SMTmain {
     position: relative;
-    top: 8%;
+    top: 15.5%;
     margin: 0 auto;
     width: 72%;
     height: 9%;
@@ -185,7 +193,7 @@ body {
 
 #library {
     position: relative;
-    top: 10%;
+    top: 16.5%;
     margin: 0 auto;
     width: 72%;
     height: 12%;
@@ -194,9 +202,25 @@ body {
     z-index: 2;
 }
 
+#blue_circle1 {
+    position: relative;
+    width: 15%;
+    height: 47%;
+    top: 28%;
+    left: 7%;
+}
+
+#blue_circle2 {
+    position: relative;
+    width: 12.5%;
+    height: 47%;
+    top: 27%;
+    left: 4%;
+}
+
 #lib_report {
     position: relative;
-    top: 14%;
+    top: 11%;
     margin: 0 auto;
     width: 70%;
     height: 36%;
@@ -219,7 +243,7 @@ body {
 
 #book {
     position: relative;
-    top: 9%;
+    top: 2%;
     margin: 0 auto;
     width: 85%;
     height: 40%;
@@ -241,7 +265,7 @@ body {
 
 #readlevel {
     position: relative;
-    top: 10%;
+    top: 15.5%;
     margin: 0 auto;
     width: 72%;
     height: 10%;
@@ -251,19 +275,25 @@ body {
 
 #level {
     position: relative;
-    top: 9%;
+    top: 8%;
     margin: 0 auto;
-    width: 85%;
-    height: 100%;
+    width: 86%;
+    height: 94%;
     font-size: 0.5rem;
     display: flex;
     justify-content: center;
 }
 
+
 #read_info {
     position: absolute;
     margin: 0 auto;
-    top: 6%;
+    width: 32%;
+    display: flex;
+    align-items: center;
+    height: 9%;
+    justify-content: center;
+    top: 5%;
     font-size: 0.1rem;
     font-family: 'GothamRoundedMedium';
 }
@@ -283,7 +313,7 @@ body {
 }
 
 #lv1,#lv2 {
-    height: 9%;
+    height: 9.5%;
     width: 13%;
 }
 
@@ -307,7 +337,7 @@ body {
     width: 80%;
     height: 1%;
     margin: 0 auto;
-    top: 15.1%;
+    top: 19.45%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -340,7 +370,7 @@ body {
 }
 
 #word_part {
-    top: 16%;
+    top: 20%;
 }
 
 #pop_word {
@@ -348,7 +378,7 @@ body {
 }
 
 #paper_part {
-    top: 17%;
+    top: 19.5%;
 }
 
 #pop_paper {
@@ -386,8 +416,8 @@ body {
     position: relative;
     top: 20%;
     margin: 0 auto;
-    width: 75%;
-    height: 20%;
+    width: 72%;
+    height: 19%;
     display: flex;
     z-index: 2;
 }
@@ -427,7 +457,7 @@ body {
 #word_handle {
     position: absolute;
     width: 37%;
-    height: 43%;
+    height: 40%;
     top: 119%;
     left: 31%;
 }
@@ -435,14 +465,14 @@ body {
 #point_handle {
     position: absolute;
     width: 43%;
-    height: 47%;
+    height: 45%;
     top: 119%;
     left: 26%;
 }
 
 #text_part,#text_part2 {
     position: relative;
-    top: 7%;
+    top: 4%;
     margin: 0 auto;
     width: 100%;
     height: 43%;
@@ -456,7 +486,7 @@ body {
     font-size: 0.5rem;
     width: 150%;
     height: 21%;
-    transform: scale(0.8);
+    transform: scale(0.65);
     transform-origin: 0;
     position: relative;
     top: -7%;
@@ -575,11 +605,11 @@ body {
 #word_detail,#paper_detail {
     position: absolute;
     left: 15%;
-    top: 92%;
+    top: 87%;
     height: 4%;
     width: 70%;
     border: none;
-    background-image: url(/image/detail.png);
+    background-image: url(/image/detail2.png);
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;

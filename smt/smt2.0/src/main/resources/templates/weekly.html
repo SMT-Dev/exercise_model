@@ -18,7 +18,7 @@
     <div id="app">
         <div id="layer" v-show="isPop"></div>
         <div id="bg">
-            <img class="image" src="/image/bg.png">
+            <img class="image" src="/image/bg1.png">
         </div>
         <div id="basicInfo">
             <div id="levelInfo">
@@ -123,20 +123,20 @@
                 <img class="image" src="/image/AI_analysis.png">
             </div>
             <div id="pic_part">
-                <img class="image" src="/image/pic_bg.png">
+                <img class="image" src="/image/pic_bg1.png">
                 <div id="word">
-                    <img class="image" src="/image/word.png">
+                    <img class="image" src="/image/word1.png">
                 </div>
                 <div id="time_avg">
-                    <img class="image" src="/image/time_avg.png">
+                    <img class="image" src="/image/time_avg1.png">
                     <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
                 </div>
                 <div id="score_word_avg">
-                    <img class="image" src="/image/score_word_avg.png">
+                    <img class="image" src="/image/score_word_avg1.png">
                     <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(165,88,255)">{{ wordData.avgScore }}</div>
                 </div>
                 <div id="word_handle">
-                    <img class="image" src="/image/word_handle.png">
+                    <img class="image" src="/image/word_handle1.png">
                 </div>
             </div>
             <div id="text_part">
@@ -154,7 +154,7 @@
             <button type="button" id="word_detail" @click="wordDetail"></button>
         </div>
         <div id="pop_word" v-show="isWordPop">
-            <img class="image" src="/image/pop_window.png">
+            <img class="image" src="/image/pop_window1.png">
             <div id="graph1">
                 <highcharts :options="chartOptions1" style="width:310px;height:180px;"></highcharts>
             </div>
@@ -174,7 +174,7 @@
                 <img class="image" src="/image/show_score.png">
             </div>
             <div id="handle_word_pic">
-                <img class="image" src="/image/handle_word.png">
+                <img class="image" src="/image/handle_word1.png">
             </div>
             <div id="handle_word_table">
                 <el-table :data="wordHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
@@ -184,20 +184,20 @@
         </div>
         <div id="paper_part">
             <div id="pic_part2">
-                <img class="image" src="/image/pic_bg.png">
+                <img class="image" src="/image/pic_bg1.png">
                 <div id="paper">
-                    <img class="image" src="/image/paper.png">
+                    <img class="image" src="/image/paper1.png">
                 </div>
                 <div id="time_avg2">
-                    <img class="image" src="/image/time_avg.png">
+                    <img class="image" src="/image/time_avg1.png">
                     <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
                 </div>
                 <div id="score_paper_avg">
-                    <img class="image" src="/image/score_paper_avg.png">
+                    <img class="image" src="/image/score_paper_avg1.png">
                     <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(165,88,255)">{{ paperData.avgScore }}</div>
                 </div>
                 <div id="point_handle">
-                    <img class="image" src="/image/point_handle.png">
+                    <img class="image" src="/image/point_handle1.png">
                 </div>
             </div>
             <div id="text_part2">
@@ -215,7 +215,7 @@
             <button type="button" id="paper_detail" @click="paperDetail"></button>
         </div>
         <div id="pop_paper" v-show="isPaperPop">
-            <img class="image" src="/image/pop_window.png">
+            <img class="image" src="/image/pop_window1.png">
             <div id="graph2">
                 <highcharts :options="chartOptions2" style="width:310px;height:180px;"></highcharts>
             </div>
@@ -235,7 +235,7 @@
                 <img class="image" src="/image/show_score.png">
             </div>
             <div id="handle_paper_pic">
-                <img class="image" src="/image/handle_paper.png">
+                <img class="image" src="/image/handle_paper1.png">
             </div>
             <div id="handle_paper_table">
                 <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
