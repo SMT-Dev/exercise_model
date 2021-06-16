@@ -1,6 +1,6 @@
 package com.cisl.smt.web.Temp;
 
-public class ProblemDetail {
+public class ProblemDetail implements Comparable<ProblemDetail>{
     /**
      * @description: 详细题目类型
      * @author: Hopenx
@@ -135,5 +135,19 @@ public class ProblemDetail {
                 ", answer_text='" + answer_text + '\'' +
                 ", analysis='" + analysis + '\'' +
                 '}';
+    }
+
+    @Override
+    public int compareTo(ProblemDetail o) {
+        if (Integer.parseInt(this.prob_level) > Integer.parseInt(o.getProb_level()))
+            return 1;
+        else if (Integer.parseInt(this.prob_level) < Integer.parseInt(o.getProb_level()))
+            return 0;
+        else {
+            if (this.lesson_id > o.getLesson_id())
+                return 1;
+            else
+                return 0;
+        }
     }
 }

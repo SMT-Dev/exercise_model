@@ -435,6 +435,24 @@ public class ExerciseController {
         return probList;
     }
 
+    @GetMapping("getFromEasy")
+    public ArrayList<Long> getFromEasy(@RequestParam("num") Integer partNum) {
+        /**
+         * @description: 公测的初期阶段，出一些简单题
+         * @return: 题目序号列表
+         */
+        List<Long> probList = new ArrayList<>();
+        List<Problem> allProbList = problemService.getAllProblem();
+        for (Problem problem : allProbList) {
+            if (problem.getProb_diff().equals("Easy")) {
+                probList.add(problem.getProb_id());
+            }
+        }
+        Collections.shuffle(probList);
+        probList = probList.subList(0, partNum);
+        return new ArrayList<>(probList);
+    }
+
     @GetMapping("/getHighFrequency")
     public ArrayList<Long> getHighFrequency(@RequestParam("num") Integer partNum) {
         /**
@@ -571,7 +589,8 @@ public class ExerciseController {
             ArrayList<Long> tmpList = new ArrayList<>();
 
             Long lesson_id = Long.valueOf(settingTemp.getSys());
-            tmpList.addAll(getFromNew(lesson_id, 10));  //如果该 lesson 缺题目，则返回空，无新知识点
+//            tmpList.addAll(getFromNew(lesson_id, 10));  //如果该 lesson 缺题目，则返回空，无新知识点
+            tmpList.addAll(getFromEasy(10));
             tmpList.addAll(getFromSimilar(5, USER_ID));
             tmpList.addAll(getHighFrequency(3));
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
@@ -637,6 +656,7 @@ public class ExerciseController {
             }
             pt.setIdx(probNum);
             pt.setFinish((long) 0);   //默认未完成状态
+
             pt.setPoint(pointService.getPoint(p.getPoint_id()).getPoint_text());
             pt.setProb_text(p.getProb_text());
             pt.setAnalysis(answerService.getAnswer(probNum).getAnalysis_text());

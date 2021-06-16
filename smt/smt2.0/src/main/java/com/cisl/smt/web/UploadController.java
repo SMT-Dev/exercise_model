@@ -25,7 +25,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RestController
 public class UploadController {
@@ -130,19 +133,33 @@ public class UploadController {
     }
 
     @GetMapping("/searchProb")
-    public ArrayList<ProblemDetail> searchProb(@RequestParam("text") String input_text) {  //要用 RequestParam
+    public ArrayList<ProblemDetail> searchProb(@RequestParam("text") String input_text, @RequestParam("mode") String mode) {  //要用 RequestParam
         ArrayList<ProblemDetail> probDetList = new ArrayList<>();
         if(input_text == null || input_text.length() == 0) {
             return probDetList;
         }
         List<Problem> probList = problemRepository.getAllProblem();
         try {
-            for (Problem prob : probList) {  //检查是否有匹配的题干
-                String probTxt = prob.getProb_text();
-                if (purify(probTxt).contains(purify(input_text)))
-                    probDetList.add(getProblemDetail(prob.getProb_id()));
+            if(mode.equals("题干")) {
+                for (Problem prob : probList) {  //检查是否有匹配的题干
+                    String probTxt = prob.getProb_text();
+                    if (purify(probTxt).contains(purify(input_text)))
+                        probDetList.add(getProblemDetail(prob.getProb_id()));
 
+                }
+            } else if(mode.equals("考点")) {
+                for (Problem prob : probList) {  //检查是否有匹配的考点
+                    try {
+                        Long pointId = prob.getPoint_id();
+                        String pointTxt = pointRepository.getPoint(pointId).getPoint_text();
+                        if (pointTxt.contains(input_text))
+                            probDetList.add(getProblemDetail(prob.getProb_id()));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
             }
+            Collections.sort(probDetList);
         } catch(Exception e){
                 e.printStackTrace();
         }
@@ -194,6 +211,12 @@ public class UploadController {
         return sb.toString();
     }
 
+    public static boolean isContainChinese(String str) {
+        Pattern p = Pattern.compile("[\u4e00-\u9fa5]");
+        Matcher m = p.matcher(str);
+        return m.find();
+    }
+
     @PostMapping("/postProblem")
     public String postProblem(@RequestParam("prob_id") Long prob_id,
                               @RequestParam("optionA") String optionA,
@@ -216,11 +239,13 @@ public class UploadController {
                 answerRepository.updateAnswer(prob_id, analysis, answer);
                 problemRepository.updateProblemByPoint_id(prob_id, prob_text, prob_attr, prob_diff, prob_level, lesson_id, point_id, blank_num);
             } else if (mode == 1) {   //新增模式
-                List<Problem> probList = problemRepository.getAllProblem();
-                for (Problem prob: probList) {  //检查是否有重复题目
-                    String probTxt = prob.getProb_text();
-                    if(purify(probTxt).equals(purify(prob_text)))
-                        return "已有重复题目: "+prob.getProb_id().toString();
+                if (!isContainChinese(prob_text)) {  //检查是否有重复题目, 有中文就不检测
+                    List<Problem> probList = problemRepository.getAllProblem();
+                    for (Problem prob: probList) {
+                        String probTxt = prob.getProb_text();
+                        if(purify(probTxt).equals(purify(prob_text)))
+                            return "已有重复题目: "+prob.getProb_id().toString();
+                    }
                 }
                 //难点：确保这三条语句原子性操作
                 prob_id = problemRepository.getLastProb_id() + 1;  //ID 顺次加一
