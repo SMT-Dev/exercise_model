@@ -85,10 +85,24 @@ public class ExerciseController {
         return mav;
     }
 
-    @GetMapping("/weekly1")
-    public ModelAndView weekly1() {
+    @GetMapping("/weekly")
+    public ModelAndView weekly() {
         ModelAndView mav;
-        mav = new ModelAndView("weekly1");
+        mav = new ModelAndView("weekly");
+        return mav;
+    }
+
+    @GetMapping("/term_mid")
+    public ModelAndView term_mid() {
+        ModelAndView mav;
+        mav = new ModelAndView("term_mid");
+        return mav;
+    }
+
+    @GetMapping("/term_end")
+    public ModelAndView term_end() {
+        ModelAndView mav;
+        mav = new ModelAndView("term_end");
         return mav;
     }
 

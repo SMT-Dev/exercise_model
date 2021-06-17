@@ -3,7 +3,7 @@
 <head>
     <title>初始界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <meta name="viewport" content="width=device-width">
     <link href="/css/start.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -74,6 +74,12 @@
         return "";
     }
 
+    window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
+        var deviceWidth = window.screen.width;
+        document.getElementById("app").style.transformOrigin = "0 0";
+        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+    }, false);
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -133,33 +139,9 @@
                 this.level = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
-            if(navigator.userAgent.match(/Android/i)
-		        || navigator.userAgent.match(/webOS/i)
-		        || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i)) {
-                var cliWidth = window.screen.width;
-                var cliHeight = window.screen.height;
-                /*document.documentElement.style.fontSize = (cliWidth / 90) + "px";
-                $('#app').css("width",cliWidth);
-                $('#app').css("height",(1142 * cliWidth / 1549) + "px");
-                $('#top_bar').css("height",(761 * cliWidth / 15490) + "px");
-                $('#pop_container').css("width",cliWidth);
-                $('#pop_container').css("height",(1142 * cliWidth / 1549) + "px");*/
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (cliWidth / 1549) + ")");
-            }else {
-                var cliWidth = document.body.scrollWidth;
-                var cliHeight = document.body.scrollHeight;
-                /*$('#app').css("width",cliWidth + "px");
-                $('#app').css("height",cliHeight + "px");
-                $('#pop_container').css("width",cliWidth + "px");
-                $('#pop_container').css("height",cliHeight + "px");
-                $('#layer').css("width",cliWidth + "px");
-                $('#layer').css("height",cliHeight + "px");*/
-            }
+            var deviceWidth = window.screen.width;
+            document.getElementById("app").style.transformOrigin = "0 0";
+            document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
         }
     })
 </script>

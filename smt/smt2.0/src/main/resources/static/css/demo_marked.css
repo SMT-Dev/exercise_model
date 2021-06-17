@@ -301,7 +301,7 @@ body {
 
 #heading1,#heading2 {
     margin: 0;
-    height: 60%;
+    height: 80%;
     display: flex;
     align-items: center;
     font-weight: bold;
@@ -311,6 +311,7 @@ body {
     width: 40%;
     font-family: 'GothamRoundedBold';
     justify-content: flex-end;
+    padding-right: 0.5rem;
 }
 
 #heading2 {
@@ -318,6 +319,7 @@ body {
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: bold;
     justify-content: flex-start;
+    padding-left: 0.5rem;
 }
 
 #heading3 {

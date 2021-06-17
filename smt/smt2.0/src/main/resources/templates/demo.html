@@ -3,7 +3,7 @@
 <head>
     <title>答题界面</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <meta name="viewport" content="width=device-width">
     <link href="/css/demo.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -12,106 +12,99 @@
     <script src="/js/jquery.min.js"></script>
 </head>
 <body>
-<div id="top_bar"></div>
-<div id="app">
-    <div id="layer" v-show="handin"></div>
     <div id="pop_container">
-        <img id="popBox" v-show="handin" src="/image/pop_box.png"></img>
-        <div id="pop_msg" v-show="handin">
-            <p><span style="color: #DCDCDC;">你还有 </span><span style="color: #FF8900;">{{ remain }}道题</span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+        <img id="popBox" src="/image/pop_box.png"></img>
+        <div id="pop_msg">
+            <p><span style="color: #DCDCDC;">你还有 </span><span id="remain_text" style="color: #FF8900;"></span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
         </div>
-        <button type="button" id="handIn_confirm" v-show="handin" @click="handInConfirm"></button>
-        <button type="button" id="handIn_cancel" v-show="handin" @click="handInCancel"></button>
+        <button type="button" id="handIn_confirm" onclick="handInConfirm()"></button>
+        <button type="button" id="handIn_cancel" onclick="handInCancel()"></button>
     </div>
-    <button type="button" id="back_button" @click="goBack"></button>
-    <div id="main">
-        <div id="header">
-            <div id="container1">
-                <div id="heading">
-                    <p id="heading1"><span>Level {{ level }} Lesson {{ lesson }}</span></p>
-                    <p id="heading2"><span>智能推送练习</span></p>
-                </div>
-            </div>
-            <div id="container2">
-                <div id="heading3">
-                    <div id="line"></div>
-                    <ul class="time">
-                        <li v-for="activity in activities">
-                            <img :src="activity.src" :id="getId(activity.index)">
-                            <p :id="getNum(activity.index)"><span>{{ activity.content }}</span></p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <img id="link_left" src="/image/link1.png">
-        <img id="link_right" src="/image/link1.png">
-        <div id="question_card">
-            <div id="book_container">
-                <img src="/image/book.png" id="book">
-                <div id="question_area">
-                    <div id="question_info">
-                        <p style="font-family: 'GothamRoundedMedium';color: #2A7DE1;font-size: 2.5rem;"><span>Q{{ num }}</span></p>
-                        <div style="border-radius: 40px;background-color: #2A7DE1;font-family: 'Microsoft YaHei';color: white;font-weight: bold;font-size: 1.25rem;margin-left: 0.6rem;padding-left: 0.25rem;padding-right: 0.25rem;">
-                            <p><span>{{ prob_attr }}题</span></p>
+    <div id="whole">
+        <div id="top_bar"></div>
+        <div id="app">
+            <button type="button" id="back_button" @click="goBack"></button>
+            <div id="main">
+                <div id="header">
+                    <div id="container1">
+                        <div id="heading">
+                            <div id="heading1">Level {{ level }} Lesson {{ lesson }}</div>
+                            <div id="heading2">智能推送练习</div>
                         </div>
                     </div>
-                    <div id="question_text">
-                        <p><span>{{ prob_text }}</span></p>
-                    </div>
-                    <div id="opt_part">
-                        <div id="img_container">
-                            <div id="img_size">
-                                <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
-                            </div>
+                    <div id="container2">
+                        <div id="heading3">
+                            <div id="line"></div>
+                            <ul class="time">
+                                <li v-for="activity in activities">
+                                    <img :src="activity.src" :id="getId(activity.index)">
+                                    <p :id="getNum(activity.index)"><span>{{ activity.content }}</span></p>
+                                </li>
+                            </ul>
                         </div>
-                        <div id="option_A" class="option" @click="chooseOption('a')">
-                            <div id="question_a_text">
-                                <p class="choice"><span>A. {{ options.A }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_B" class="option" @click="chooseOption('b')">
-                            <div id="question_b_text">
-                                <p class="choice"><span>B. {{ options.B }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_C" class="option" style="display: none;" @click="chooseOption('c')">
-                            <div id="question_c_text">
-                                <p class="choice"><span>C. {{ options.C }}</span></p>
-                            </div>
-                        </div>
-                        <div id="option_D" class="option" style="display: none;" @click="chooseOption('d')">
-                            <div id="question_d_text">
-                                <p class="choice"><span>D. {{ options.D }}</span></p>
-                            </div>
-                        </div>
-                        <button type="button" id="last_button" @click="lastProblem"></button>
-                        <button type="button" id="next_button" @click="nextProblem"></button>
-                    </div>
-                    <div id="txt_part" style="display: none;">
-                        <div id="img_container">
-                            <div id="img_size">
-                                <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
-                            </div>
-                        </div>
-                        <div id="input_box">
-                            <div v-for="input in input_num">
-                                <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
-                            </div>
-                        </div>
-                        <button type="button" id="last_button" @click="lastProblem"></button>
-                        <button type="button" id="next_button" @click="nextProblem"></button>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div id="footer">
-            <div id="container3">
-                <button type="button" id="finish_button" @click="handIn"></button>
+                <img id="link_left" src="/image/link1.png">
+                <img id="link_right" src="/image/link1.png">
+                <div id="question_card">
+                    <div id="book_container">
+                        <img src="/image/book.png" id="book">
+                        <div id="question_area">
+                            <div id="question_info">
+                                <p style="font-family: 'GothamRoundedMedium';color: #2A7DE1;font-size: 2.5rem;"><span>Q{{ num }}</span></p>
+                                <div style="border-radius: 40px;background-color: #2A7DE1;font-family: 'Microsoft YaHei';color: white;font-weight: bold;font-size: 1.25rem;margin-left: 0.6rem;padding-left: 0.25rem;padding-right: 0.25rem;">
+                                    <p><span>{{ prob_attr }}题</span></p>
+                                </div>
+                            </div>
+                            <div id="question_text">
+                                <p><span>{{ prob_text }}</span></p>
+                            </div>
+                            <div id="opt_part">
+                                <div id="img_container">
+                                    <div id="img_size">
+                                        <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
+                                    </div>
+                                </div>
+                                <div id="option_A" class="option" @click="chooseOption('a')">
+                                    <div id="question_a_text">A. {{ options.A }}</div>
+                                </div>
+                                <div id="option_B" class="option" @click="chooseOption('b')">
+                                    <div id="question_b_text">B. {{ options.B }}</div>
+                                </div>
+                                <div id="option_C" class="option" style="display: none;" @click="chooseOption('c')">
+                                    <div id="question_c_text">C. {{ options.C }}</div>
+                                </div>
+                                <div id="option_D" class="option" style="display: none;" @click="chooseOption('d')">
+                                    <div id="question_d_text">D. {{ options.D }}</div>
+                                </div>
+                                <button type="button" id="last_button" @click="lastProblem"></button>
+                                <button type="button" id="next_button" @click="nextProblem"></button>
+                            </div>
+                            <div id="txt_part" style="display: none;">
+                                <div id="img_container">
+                                    <div id="img_size">
+                                        <img :src="imgSrc" id="image" onerror="this.src='/image/logo.png'">
+                                    </div>
+                                </div>
+                                <div id="input_box">
+                                    <div v-for="input in input_num">
+                                        <el-input v-model=txt[input] :id="getIndex(input)" :disabled="false" prefix-icon="" class="input_bar"></el-input>
+                                    </div>
+                                </div>
+                                <button type="button" id="last_button" @click="lastProblem"></button>
+                                <button type="button" id="next_button" @click="nextProblem"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="footer">
+                    <div id="container3">
+                        <button type="button" id="finish_button" @click="handIn"></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </body>
 <script>
 
@@ -131,52 +124,26 @@
         return "";
     }
 
-    /*document.addEventListener('keydown', function (event) {
-        if ((event.ctrlKey === true || event.metaKey === true)
-            && (event.keyCode === 61 || event.keyCode === 107
-                || event.keyCode === 173 || event.keyCode === 109
-                || event.keyCode === 187 || event.keyCode === 189)) {
-            event.preventDefault();
-        }
+    function handInConfirm() {
+        sessionStorage.clear();
+        window.location.replace("/demo_marked?src=" + app.src + "&mode=finish&id=" + app.id);
+    };
+
+    function handInCancel() {
+        document.getElementById("whole").style.filter = "brightness(1)";
+        document.getElementById("pop_container").style.zIndex = "0";
+    };
+
+    window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
+        var deviceWidth = window.screen.width;
+        $('#app').css("transform-origin","0 0");
+        $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+        $('#pop_container').css("transform-origin","0 0");
+        $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
+        $('#top_bar').css("transform-origin","0 0");
+        $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
     }, false);
-
-    document.addEventListener('mousewheel', function (e) {
-        e = e || window.event;
-        if ((e.wheelDelta && event.ctrlKey) || e.detail) {
-            event.preventDefault();
-        }
-    }, {
-        capture: false,
-        passive: false
-    });*/
-
-    $(document).ready(function(){
-        $(window).resize(function() {
-            if(navigator.userAgent.match(/Android/i)
-		        || navigator.userAgent.match(/webOS/i)
-		        || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i)) {
-                ;
-            }else {
-                var cliWidth = document.body.scrollWidth;
-                var cliHeight = document.body.scrollHeight;
-                $('#layer').css("width",cliWidth + "px");
-                $('#layer').css("height",cliHeight + "px");
-            }
-        });
-    });
-
-    window.addEventListener("orientationchange",function(){
-        var cliWidth = window.screen.width;
-        var cliHeight = window.screen.height;
-        $('#layer').css("width","1549px");
-        $('#layer').css("height",(1549 * cliHeight / cliWidth) + "px");
-    });
-
-
+    
     var app = new Vue({
         el: "#app",
         data: {
@@ -415,21 +382,15 @@
                 }
                 if(this.remain > 0){
                     this.handin = true;
+                    document.getElementById("whole").style.filter = "brightness(0.85)";
+                    document.getElementById("pop_container").style.zIndex = "1";
+                    document.getElementById("remain_text").innerHTML = this.remain + "道题";
                 }else {
                     //var url = sessionStorage.getItem('lastUrl');
                     //history.replaceState(null,null,url);
                     sessionStorage.clear();
                     window.location.replace("/demo_marked?src=" + this.src + "&mode=finish&id=" + this.id);
                 }
-            },
-
-            handInConfirm: function () {
-                sessionStorage.clear();
-                window.location.replace("/demo_marked?src=" + this.src + "&mode=finish&id=" + this.id);
-            },
-
-            handInCancel: function () {
-                this.handin = false;
             },
 
             getSheet: function () {
@@ -690,37 +651,59 @@
                 var url = sessionStorage.getItem('lastUrl');
                 history.replaceState('change',null,url);
             }
-            if(navigator.userAgent.match(/Android/i)
-		        || navigator.userAgent.match(/webOS/i)
-		        || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i)) {
+/*
+            var cliWidth;
+            var cliHeight;
+            if(是手机) {
+                cliWidth = window.screen.width;
+                cliHeight = window.screen.height;
+            }else {
+                cliWidth = document.body.scrollWidth;
+                cliHeight = document.body.scrollHeight;
+            }
+            //无论如何
+            $('#app').css("transform-origin","0 0");
+            $('#app').css("transform","scale(" + (cliWidth / 1549) + ")");
+            $('#top_bar').css("transform-origin","0 0");
+            $('#top_bar').css("transform","scaleY(" + (cliWidth / 1549) + ")");
+            if(是手机) {
+                if(cliWidth > cliHeight)
+
+            }else {
+                $('#layer').css("width",cliWidth + "px");
+                $('#layer').css("height",cliHeight + "px");
+            }*/
+
+            var deviceWidth = window.screen.width;
+            $('#app').css("transform-origin","0 0");
+            $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+            $('#pop_container').css("transform-origin","0 0");
+            $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
+            $('#top_bar').css("transform-origin","0 0");
+            $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+
+
+            /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var cliWidth = window.screen.width;
                 var cliHeight = window.screen.height;
-                /*document.documentElement.style.fontSize = (cliWidth / 90) + "px";
-                $('#app').css("width",cliWidth);
-                $('#app').css("height",(1142 * cliWidth / 1549) + "px");
-                $('#top_bar').css("height",(761 * cliWidth / 15490) + "px");
-                $('#pop_container').css("width",cliWidth);
-                $('#pop_container').css("height",(1142 * cliWidth / 1549) + "px");*/
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (cliWidth / 1549) + ")");
-                $('#top_bar').css("transform-origin","0 0");
-                $('#top_bar').css("transform","scaleY(" + (cliWidth / 1549) + ")");
-                $('#layer').css("width","1549px");
-                $('#layer').css("height",(1549 * cliHeight / cliWidth) + "px");
+                console.log(cliWidth + "  " + cliHeight);
+                //if(cliHeight > cliWidth) {
+                    $('#app').css("transform-origin","0 0");
+                    $('#app').css("transform","scale(" + (cliWidth / 1549) + ")"); //必有
+                    $('#top_bar').css("transform-origin","0 0");
+                    $('#top_bar').css("transform","scaleY(" + (cliWidth / 1549) + ")");
+                    $('#layer').css("width","1549px");
+                    $('#layer').css("height",(1549 * cliHeight / cliWidth) + "px");
+                    console.log(document.body.scrollWidth);
+                    console.log(document.body.scrollHeight);
+                //}else {
+                //    ;
+                //}
             }else {
                 var cliWidth = document.body.scrollWidth;
                 var cliHeight = document.body.scrollHeight;
-                /*$('#app').css("width",cliWidth + "px");
-                $('#app').css("height",cliHeight + "px");
-                $('#pop_container').css("width",cliWidth + "px");
-                $('#pop_container').css("height",cliHeight + "px");
-                $('#layer').css("width",cliWidth + "px");
-                $('#layer').css("height",cliHeight + "px");*/
-            }
+                console.log("still PC");
+            }*/
         },
 
         mounted() {
