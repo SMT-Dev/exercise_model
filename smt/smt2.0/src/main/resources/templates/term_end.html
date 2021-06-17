@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
     <link href="/css/term_end.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
+    <link href="/css/antd.css" type="text/css" rel="stylesheet">
     <script src="/js/vue@2.6.10.js"></script>
     <script src="/js/axios@0.18.0.min.js"></script>
     <script src="/js/index.js"></script>
     <script src="/js/jquery.min.js"></script>
     <script src="http://mockjs.com/dist/mock.js"></script>
     <script src="/js/highcharts.js"></script>
-    <script src="/js/highcharts-vue.js"></script>
+    <script src="/js/highcharts-vue.js"></script>、
+    <script src="/js/antd.js"></script>
 </head>
 <body>
     <div id="app">
@@ -34,7 +36,66 @@
             </div>
         </div>
         <div id="fullLevel" v-show="isLevelPop">
-            <img class="image" src="/image/fullLev.png">
+            <img class="image" :src="fullLev">
+        </div>
+        <div id="score_detail">
+            <div id="myScore">
+                <img class="image" src="/image/myScore.jpg">
+            </div>
+            <div id="total_dashbd">
+                <div style="position: absolute;width: 80%;height: 80%;">
+                    <img class="image" src="/image/dashbd_end.png">
+                </div>
+                <div style="font-family: GothamRoundedMedium;font-size: 2rem;font-weight: 600;position: relative;top: 1.5%;left: 1%;">{{ end_score.total }}</div>
+                <div id="red_score">
+                    <img class="image" src="/image/red_score.png">
+                    <div class="score_text" style="top: 49%;left: 9%;width: 105%;">阅读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.read }}</span></div>
+                </div>
+                <div id="yellow_score">
+                    <img class="image" src="/image/yellow_score.png">
+                    <div class="score_text" style="top: -5%;left: 11%;width: 93%;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.spell }}</span></div>
+                </div>
+                <div id="blue_score">
+                    <img class="image" src="/image/blue_score_reverse.png">
+                    <div class="score_text" style="top: 51%;left: 13%;width: 100%;">语法:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.grammar }}</span></div>
+                </div>
+                <div id="purple_score">
+                    <img class="image" src="/image/purple_score.png">
+                    <div class="score_text" style="top: -4%;left: 14%;width: 100%;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.speak }}</span></div>
+                </div>
+            </div>
+            <div id="read_dashbd" class="little_dashbd">
+                <div class="square">
+                    <img class="image" src="/image/red_square.png">
+                </div>
+                <div class="square_text" style="color: #ff6245;">{{ end_score.read }}</div>
+                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">阅 读</div>
+                <a-progress type="dashboard" :percent="end_score.read" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#ff6245'}"/>
+            </div>
+            <div id="spell_dashbd" class="little_dashbd">
+                <div class="square">
+                    <img class="image" src="/image/yellow_square.png">
+                </div>
+                <div class="square_text" style="color: #fe9c37;">{{ end_score.spell }}</div>
+                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">拼 读</div>
+                <a-progress type="dashboard" :percent="end_score.spell" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#fe9c37'}"/>
+            </div>
+            <div id="grammar_dashbd" class="little_dashbd">
+                <div class="square">
+                    <img class="image" src="/image/blue_square.png">
+                </div>
+                <div class="square_text" style="color: #5a71fb;">{{ end_score.grammar }}</div>
+                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">语 法</div>
+                <a-progress type="dashboard" :percent="end_score.grammar" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#5a71fb'}"/>
+            </div>
+            <div id="speak_dashbd" class="little_dashbd">
+                <div class="square">
+                    <img class="image" src="/image/purple_square.png">
+                </div>
+                <div class="square_text" style="color: #b438fc;">{{ end_score.speak }}</div>
+                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">口 语</div>
+                <a-progress type="dashboard" :percent="end_score.speak" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#b438fc'}"/>
+            </div>
         </div>
         <div id="record">
             <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
@@ -83,8 +144,17 @@
                 </div>
             </div>
             <div id="book">
-                <div>当前阅读书本</div>
-                <div id="showBook"></div>
+                <div style="position: relative;top: -3%;">当前阅读书本</div>
+                <div id="showBook">
+                    <img class="image" src="/image/book_bg2.jpg">
+                    <div id="bookImage">
+                        <el-carousel :interval="4000" type="card" height="75px" arrow="never" indicator-position="none">
+                            <el-carousel-item v-for="url in urls" :key="url">
+                                <img class="image" :src="url">
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="readlevel">
@@ -255,6 +325,7 @@
 </body>
 <script>
     Vue.use(HighchartsVue.default);
+    //Vue.use(Antd);
     $(document).ready(function(){
         $(window).resize(function() {
             var cliWidth = document.body.scrollWidth;
@@ -286,10 +357,10 @@
     var app = new Vue({
         el: "#app",
         data: {
-            level: 1,
+            level: 5,
             week: 1,
             lesson: 1,
-            readLev: 7,
+            readLev: 4,
             readNum: 100,
             smt_word: 20,
             smt_sentence: 20,
@@ -303,6 +374,20 @@
             stuName: '小王',
             prnName: '老王',
             effect: '略有提升',
+            urls: [
+                '/image/test1.jpg',
+                '/image/test2.jpg',
+                '/image/test3.jpg',
+                '/image/test4.jpg',
+                '/image/test5.jpg',
+            ],
+            end_score: {
+                total: 80,
+                speak: 70,
+                spell: 90,
+                grammar: 80,
+                read: 100,
+            },
             wordData: {
                 time: 10,
                 avgScore: 90,
@@ -453,6 +538,21 @@
             }
         },
         computed: {
+            fullLev() {
+                if(this.level === 1) {
+                    return "/image/fullLev2_1.png";
+                }else if(this.level === 2) {
+                    return "/image/fullLev2_2.png";
+                }else if(this.level === 3) {
+                    return "/image/fullLev2_3.png";
+                }else if(this.level === 4) {
+                    return "/image/fullLev2_4.png";
+                }else if(this.level === 5) {
+                    return "/image/fullLev2_5.png";
+                }else if(this.level === 6) {
+                    return "/image/fullLev2_6.png";
+                }
+            },
             Lv1() {
                 var cls = {};
                 if(this.readLev === 1) {

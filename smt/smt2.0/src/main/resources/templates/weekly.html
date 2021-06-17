@@ -34,7 +34,7 @@
             </div>
         </div>
         <div id="fullLevel" v-show="isLevelPop">
-            <img class="image" src="/image/fullLev.png">
+            <img class="image" :src="fullLev">
         </div>
         <div id="record">
             <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
@@ -80,8 +80,17 @@
                 </div>
             </div>
             <div id="book">
-                <div>当前阅读书本</div>
-                <div id="showBook"></div>
+                <div style="position: relative;top: -5%;">当前阅读书本</div>
+                <div id="showBook">
+                    <img class="image" src="/image/book_bg1.jpg">
+                    <div id="bookImage">
+                        <el-carousel :interval="4000" type="card" height="75px" arrow="never" indicator-position="none">
+                            <el-carousel-item v-for="url in urls" :key="url">
+                                <img class="image" :src="url">
+                            </el-carousel-item>
+                        </el-carousel>
+                    </div>
+                </div>
             </div>
         </div>
         <div id="readlevel">
@@ -281,7 +290,7 @@
             level: 1,
             week: 1,
             lesson: 1,
-            readLev: 7,
+            readLev: 6,
             readNum: 100,
             smt_word: 20,
             smt_sentence: 20,
@@ -295,6 +304,13 @@
             stuName: '小王',
             prnName: '老王',
             effect: '略有提升',
+            urls: [
+                '/image/test1.jpg',
+                '/image/test2.jpg',
+                '/image/test3.jpg',
+                '/image/test4.jpg',
+                '/image/test5.jpg',
+            ],
             wordData: {
                 time: 10,
                 avgScore: 90,
@@ -445,6 +461,21 @@
             }
         },
         computed: {
+            fullLev() {
+                if(this.level === 1) {
+                    return "/image/fullLev1_1.jpg";
+                }else if(this.level === 2) {
+                    return "/image/fullLev1_2.png";
+                }else if(this.level === 3) {
+                    return "/image/fullLev1_3.png";
+                }else if(this.level === 4) {
+                    return "/image/fullLev1_4.png";
+                }else if(this.level === 5) {
+                    return "/image/fullLev1_5.png";
+                }else if(this.level === 6) {
+                    return "/image/fullLev1_6.png";
+                }
+            },
             Lv1() {
                 var cls = {};
                 if(this.readLev === 1) {
