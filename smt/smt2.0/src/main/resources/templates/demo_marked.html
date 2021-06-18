@@ -147,8 +147,41 @@
         }
         return "";
     }
+
+    if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+        window.addEventListener("orientationchange",function(){
+            var deviceWidth = window.screen.width;
+            var deviceHeight = window.screen.height;
+            if(window.orientation == 0 || window.orientation == 180) {
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+                $('#top_bar1').css("transform-origin","0 0");
+                $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                $('#top_bar2').css("transform-origin","0 0");
+                $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+            }
+            if(window.orientation == 90 || window.orientation == -90) {
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (deviceHeight / 1549) + ")");
+                $('#top_bar1').css("transform-origin","0 0");
+                $('#top_bar1').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+                $('#top_bar2').css("transform-origin","0 0");
+                $('#top_bar2').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+            }
+        });
+    }else {
+        window.addEventListener("orientationchange",function(){
+            var deviceWidth = window.screen.width;
+            $('#app').css("transform-origin","0 0");
+            $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+            $('#top_bar1').css("transform-origin","0 0");
+            $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+            $('#top_bar2').css("transform-origin","0 0");
+            $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+        });
+    }
     
-    window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
+    /*window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
         var deviceWidth = window.screen.width;
         $('#app').css("transform-origin","0 0");
         $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
@@ -156,7 +189,7 @@
         $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
         $('#top_bar2').css("transform-origin","0 0");
         $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
-    }, false);
+    }, false);*/
     
     var app = new Vue({
         el: "#app",
@@ -899,13 +932,34 @@
             }else {
                 window.location.href = '/login';
             }
-            var deviceWidth = window.screen.width;
-            $('#app').css("transform-origin","0 0");
-            $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
-            $('#top_bar1').css("transform-origin","0 0");
-            $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
-            $('#top_bar2').css("transform-origin","0 0");
-            $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+            if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+                var deviceWidth = window.screen.width;
+                var deviceHeight = window.screen.height;
+                if(window.orientation == 0 || window.orientation == 180) {
+                    $('#app').css("transform-origin","0 0");
+                    $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+                    $('#top_bar1').css("transform-origin","0 0");
+                    $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                    $('#top_bar2').css("transform-origin","0 0");
+                    $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                }
+                if(window.orientation == 90 || window.orientation == -90) {
+                    $('#app').css("transform-origin","0 0");
+                    $('#app').css("transform","scale(" + (deviceHeight / 1549) + ")");
+                    $('#top_bar1').css("transform-origin","0 0");
+                    $('#top_bar1').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+                    $('#top_bar2').css("transform-origin","0 0");
+                    $('#top_bar2').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+                }
+            }else {
+                var deviceWidth = window.screen.width;
+                $('#app').css("transform-origin","0 0");
+                $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
+                $('#top_bar1').css("transform-origin","0 0");
+                $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                $('#top_bar2').css("transform-origin","0 0");
+                $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+            }
         },
 
         mounted() {
