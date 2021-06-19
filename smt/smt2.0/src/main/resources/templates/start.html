@@ -78,12 +78,10 @@
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
             if(window.orientation == 0 || window.orientation == 180) {
-                alert("竖屏");
                 document.getElementById("app").style.transformOrigin = "0 0";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
             }
             if(window.orientation == 90 || window.orientation == -90) {
-                alert("横屏");
                 document.getElementById("app").style.transformOrigin = "0 0";
                 document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
             }
@@ -159,12 +157,10 @@
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
-                    alert("竖屏");
                     document.getElementById("app").style.transformOrigin = "0 0";
                     document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
                 if(window.orientation == 90 || window.orientation == -90) {
-                    alert("横屏");
                     document.getElementById("app").style.transformOrigin = "0 0";
                     document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
                 }
