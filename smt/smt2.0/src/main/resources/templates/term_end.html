@@ -46,22 +46,22 @@
                 <div style="position: absolute;width: 80%;height: 80%;">
                     <img class="image" src="/image/dashbd_end.png">
                 </div>
-                <div style="font-family: GothamRoundedMedium;font-size: 2rem;font-weight: 600;position: relative;top: 1.5%;left: 1%;">{{ end_score.total }}</div>
+                <div style="font-family: GothamRoundedMedium;font-size: 24px;font-weight: 600;position: relative;top: 1.5%;left: 1%;">{{ end_score.total }}</div>
                 <div id="red_score">
                     <img class="image" src="/image/red_score.png">
-                    <div class="score_text" style="top: 49%;left: 9%;width: 105%;">阅读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.read }}</span></div>
+                    <div class="score_text" style="top: 51%;left: 10%;width: 105%;">阅读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.read }}</span></div>
                 </div>
                 <div id="yellow_score">
                     <img class="image" src="/image/yellow_score.png">
-                    <div class="score_text" style="top: -5%;left: 11%;width: 93%;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.spell }}</span></div>
+                    <div class="score_text" style="top: -2%;left: 11%;width: 93%;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.spell }}</span></div>
                 </div>
                 <div id="blue_score">
                     <img class="image" src="/image/blue_score_reverse.png">
-                    <div class="score_text" style="top: 51%;left: 13%;width: 100%;">语法:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.grammar }}</span></div>
+                    <div class="score_text" style="top: 54%;left: 14%;width: 100%;">语法:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.grammar }}</span></div>
                 </div>
                 <div id="purple_score">
                     <img class="image" src="/image/purple_score.png">
-                    <div class="score_text" style="top: -4%;left: 14%;width: 100%;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.speak }}</span></div>
+                    <div class="score_text" style="top: -3%;left: 14%;width: 100%;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ end_score.speak }}</span></div>
                 </div>
             </div>
             <div id="read_dashbd" class="little_dashbd">
@@ -69,7 +69,7 @@
                     <img class="image" src="/image/red_square.png">
                 </div>
                 <div class="square_text" style="color: #ff6245;">{{ end_score.read }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">阅 读</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">阅 读</div>
                 <a-progress type="dashboard" :percent="end_score.read" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#ff6245'}"/>
             </div>
             <div id="spell_dashbd" class="little_dashbd">
@@ -77,7 +77,7 @@
                     <img class="image" src="/image/yellow_square.png">
                 </div>
                 <div class="square_text" style="color: #fe9c37;">{{ end_score.spell }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">拼 读</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">拼 读</div>
                 <a-progress type="dashboard" :percent="end_score.spell" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#fe9c37'}"/>
             </div>
             <div id="grammar_dashbd" class="little_dashbd">
@@ -85,7 +85,7 @@
                     <img class="image" src="/image/blue_square.png">
                 </div>
                 <div class="square_text" style="color: #5a71fb;">{{ end_score.grammar }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">语 法</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">语 法</div>
                 <a-progress type="dashboard" :percent="end_score.grammar" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#5a71fb'}"/>
             </div>
             <div id="speak_dashbd" class="little_dashbd">
@@ -93,7 +93,7 @@
                     <img class="image" src="/image/purple_square.png">
                 </div>
                 <div class="square_text" style="color: #b438fc;">{{ end_score.speak }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">口 语</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">口 语</div>
                 <a-progress type="dashboard" :percent="end_score.speak" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#b438fc'}"/>
             </div>
         </div>
@@ -207,11 +207,11 @@
                 </div>
                 <div id="time_avg">
                     <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
+                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
                 </div>
                 <div id="score_word_avg">
                     <img class="image" src="/image/score_word_avg2.jpg">
-                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
+                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
                 </div>
                 <div id="word_handle">
                     <img class="image" src="/image/word_handle2.png">
@@ -268,11 +268,11 @@
                 </div>
                 <div id="time_avg2">
                     <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
+                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
                 </div>
                 <div id="score_paper_avg">
                     <img class="image" src="/image/score_paper_avg2.png">
-                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
+                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
                 </div>
                 <div id="point_handle">
                     <img class="image" src="/image/point_handle2.png">
@@ -372,7 +372,6 @@
             isPaperPop: false,
             isLevelPop: false,
             stuName: '小王',
-            prnName: '老王',
             effect: '略有提升',
             urls: [
                 '/image/test1.jpg',

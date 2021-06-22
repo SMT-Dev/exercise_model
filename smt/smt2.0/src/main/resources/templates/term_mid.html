@@ -53,11 +53,11 @@
                 </div>
                 <div id="yellow_score">
                     <img class="image" src="/image/yellow_score.png">
-                    <div class="score_text" style="top: -5%;left: 11%;width: 93%;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ mid_score.spell }}</span></div>
+                    <div class="score_text" style="top: -4%;left: 11%;width: 93%;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ mid_score.spell }}</span></div>
                 </div>
                 <div id="blue_score">
                     <img class="image" src="/image/blue_score.png">
-                    <div class="score_text" style="top: -3%;left: 13%;width: 100%;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ mid_score.speak }}</span></div>
+                    <div class="score_text" style="top: -3%;left: 14%;width: 100%;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ mid_score.speak }}</span></div>
                 </div>
             </div>
             <div id="speak_dashbd" class="little_dashbd">
@@ -65,7 +65,7 @@
                     <img class="image" src="/image/blue_square.png">
                 </div>
                 <div class="square_text" style="color: #5a71fb;">{{ mid_score.speak }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -18%;left: -14%;color: rgb(158, 158, 160);">口 语</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -18%;left: -14%;color: rgb(158, 158, 160);">口 语</div>
                 <a-progress type="dashboard" :percent="mid_score.speak" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#5a71fb'}"/>
             </div>
             <div id="spell_dashbd" class="little_dashbd">
@@ -73,7 +73,7 @@
                     <img class="image" src="/image/yellow_square.png">
                 </div>
                 <div class="square_text" style="color: #fe9c37;">{{ mid_score.spell }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -18%;left: -14%;color: rgb(158, 158, 160);">拼 读</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -18%;left: -14%;color: rgb(158, 158, 160);">拼 读</div>
                 <a-progress type="dashboard" :percent="mid_score.spell" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#fe9c37'}"/>
             </div>
             <div id="grammar_dashbd" class="little_dashbd">
@@ -81,7 +81,7 @@
                     <img class="image" src="/image/red_square.png">
                 </div>
                 <div class="square_text" style="color: #ff6245;">{{ mid_score.grammar }}</div>
-                <div style="position: absolute;font-size: 0.5rem;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);top: -18%;left: -17%;color: rgb(158, 158, 160);">阅读语法</div>
+                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -18%;left: -17%;color: rgb(158, 158, 160);">阅读语法</div>
                 <a-progress type="dashboard" :percent="mid_score.grammar" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#ff6245'}"/>
             </div>
         </div>
@@ -195,11 +195,11 @@
                 </div>
                 <div id="time_avg">
                     <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
+                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
                 </div>
                 <div id="score_word_avg">
                     <img class="image" src="/image/score_word_avg2.jpg">
-                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
+                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
                 </div>
                 <div id="word_handle">
                     <img class="image" src="/image/word_handle2.png">
@@ -256,11 +256,11 @@
                 </div>
                 <div id="time_avg2">
                     <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 112%;font-size: 26px;left: 6%;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
+                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
                 </div>
                 <div id="score_paper_avg">
                     <img class="image" src="/image/score_paper_avg2.png">
-                    <div style="position: absolute;top: 117%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
+                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
                 </div>
                 <div id="point_handle">
                     <img class="image" src="/image/point_handle2.png">
@@ -360,7 +360,6 @@
             isPaperPop: false,
             isLevelPop: false,
             stuName: '小王',
-            prnName: '老王',
             effect: '略有提升',
             urls: [
                 '/image/test1.jpg',

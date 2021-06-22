@@ -180,9 +180,10 @@ body {
 .score_text {
     position: absolute;
     color: white;
-    font-size: 0.5rem;
+    font-size: 12px;
     font-weight: 600;
     transform: scale(0.75);
+    -moz-transform:scale(0.75);
     transform-origin: 0;
     font-family: 'Microsoft YaHei';
 }
@@ -197,7 +198,7 @@ body {
 .square_text {
     position: absolute;
     right: -30%;
-    font-size: 1rem;
+    font-size: 16px;
     font-weight: 600;
     font-family: 'GothamRoundedMedium';
 }
@@ -213,7 +214,7 @@ body {
     align-items: center;
     color: white;
     z-index: 2;
-    font-size: 1.3rem;
+    font-size: 21px;
 }
 
 #SMTmain {
@@ -268,7 +269,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.3rem;
+    font-size: 21px;
     color: crimson;
 }
 
@@ -337,7 +338,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.3rem;
+    font-size: 21px;
     color: crimson;
 }
 
@@ -347,7 +348,7 @@ body {
     margin: 0 auto;
     width: 85%;
     height: 40%;
-    font-size: 0.5rem;
+    font-size: 12px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -388,7 +389,7 @@ body {
     margin: 0 auto;
     width: 86%;
     height: 94%;
-    font-size: 0.5rem;
+    font-size: 12px;
     display: flex;
     justify-content: center;
 }
@@ -403,7 +404,7 @@ body {
     height: 9%;
     justify-content: center;
     top: 5%;
-    font-size: 0.1rem;
+    font-size: 12px;
     font-family: 'GothamRoundedMedium';
 }
 
@@ -592,10 +593,11 @@ body {
 }
 
 #text,#text2 {
-    font-size: 0.5rem;
+    font-size: 12px;
     width: 150%;
     height: 21%;
-    transform: scale(0.65);
+    transform: scale(0.8);
+    -moz-transform: scale(0.8);
     transform-origin: 0;
     position: relative;
     top: -7%;
@@ -603,35 +605,39 @@ body {
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 400;
     line-height: 200%;
+    color: black;
 }
 
 .pop_text1 {
-    font-size: 0.5rem;
+    font-size: 12px;
     width: 115%;
     height: 10%;
     left: 7.5%;
     top: 33%;
-    font-weight: bold;
     transform: scale(0.8);
+    -moz-transform: scale(0.8);
     transform-origin: 0;
     position: absolute;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 600;
     line-height: 200%;
+    color: black;
 }
 
 .pop_text2 {
-    font-size: 0.5rem;
+    font-size: 12px;
     width: 85%;
     height: 7%;
     top: 42%;
     left: 7.5%;
     transform: scale(0.8);
+    -moz-transform: scale(0.8);
     transform-origin: 0;
     position: absolute;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 500;
     line-height: 200%;
+    color: black;
 }
 
 #show_word_score,#show_paper_score {
