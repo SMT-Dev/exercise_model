@@ -55,7 +55,7 @@
             </div>
         </div>
         <button type="button" id="start_button" @click="start"></button>
-    </div>
+    </div>    
 </body>
 <script>
     function setCookie(cname,cvalue) {
@@ -73,24 +73,28 @@
         }
         return "";
     }
-    if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+    if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
             if(window.orientation == 0 || window.orientation == 180) {
-                document.getElementById("app").style.transformOrigin = "0 0";
-                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                if(deviceWidth >= deviceHeight) {
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                }else {
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                }
             }
             if(window.orientation == 90 || window.orientation == -90) {
-                document.getElementById("app").style.transformOrigin = "0 0";
-                document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                if(deviceWidth < deviceHeight) {
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                }else {
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                }
             }
-        });
-    }else {
-        window.addEventListener("orientationchange",function(){
-            var deviceWidth = window.screen.width;
-            document.getElementById("app").style.transformOrigin = "0 0";
-            document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
         });
     }
 
@@ -141,32 +145,42 @@
         },
 
         created: function () {
-            if(getCookie('user_id') !== null) {
+            /*if(getCookie('user_id') !== null) {
                 if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.href = '/login';
                 }
             }else {
                 window.location.href = '/login';
-            }
+            }*/
             if(getCookie('level') !== null && getCookie('level').length > 0){
                 this.level = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
-            if (/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+            if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
-                    document.getElementById("app").style.transformOrigin = "0 0";
-                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    if(deviceWidth >= deviceHeight) {
+                        document.getElementById("app").style.transformOrigin = "center top";
+                        document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                    }else {
+                        document.getElementById("app").style.transformOrigin = "center top";
+                        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    }
                 }
                 if(window.orientation == 90 || window.orientation == -90) {
-                    document.getElementById("app").style.transformOrigin = "0 0";
-                    document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                    if(deviceWidth < deviceHeight) {
+                        document.getElementById("app").style.transformOrigin = "center top";
+                        document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
+                    }else {
+                        document.getElementById("app").style.transformOrigin = "center top";
+                        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    }
                 }
             }else {
-                var deviceWidth = window.screen.width;
-                document.getElementById("app").style.transformOrigin = "0 0";
+                var deviceWidth = window.screen.availWidth - 16;
+                document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
             }
         }

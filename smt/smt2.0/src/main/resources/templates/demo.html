@@ -134,36 +134,44 @@
         document.getElementById("pop_container").style.zIndex = "0";
     };
 
-    if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+    if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
             if(window.orientation == 0 || window.orientation == 180) {
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                $('#pop_container').css("transform-origin","0 0");
-                $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                $('#top_bar').css("transform-origin","0 0");
-                $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                if(deviceWidth >= deviceHeight) {
+                    $('#app').css("transform-origin","center top");
+                    $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                    $('#pop_container').css("transform-origin","center top");
+                    $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                    $('#top_bar').css("transform-origin","center top");
+                    $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
+                }else {
+                    $('#app').css("transform-origin","center top");
+                    $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                    $('#pop_container').css("transform-origin","center top");
+                    $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                    $('#top_bar').css("transform-origin","center top");
+                    $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
+                }
             }
             if(window.orientation == 90 || window.orientation == -90) {
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (deviceHeight / 1549) + ")");
-                $('#pop_container').css("transform-origin","0 0");
-                $('#pop_container').css("transform","scale(" + (deviceHeight / 1549) + ")");
-                $('#top_bar').css("transform-origin","0 0");
-                $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+                if(deviceWidth < deviceHeight) {
+                    $('#app').css("transform-origin","center top");
+                    $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                    $('#pop_container').css("transform-origin","center top");
+                    $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                    $('#top_bar').css("transform-origin","center top");
+                    $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
+                }else {
+                    $('#app').css("transform-origin","center top");
+                    $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                    $('#pop_container').css("transform-origin","center top");
+                    $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                    $('#top_bar').css("transform-origin","center top");
+                    $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
+                }
             }
-        });
-    }else {
-        window.addEventListener("orientationchange",function(){
-            var deviceWidth = window.screen.width;
-            $('#app').css("transform-origin","0 0");
-            $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
-            $('#pop_container').css("transform-origin","0 0");
-            $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
-            $('#top_bar').css("transform-origin","0 0");
-            $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
         });
     }
 
@@ -630,14 +638,14 @@
         },
 
         created() {
-            if(getCookie('user_id') !== null) {
+            /*if(getCookie('user_id') !== null) {
                 if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.replace('/login');
                 }
             }else {
                 window.location.replace('/login');
-            }
+            }*/
             if(sessionStorage.getItem('questionId') !== null) {  // 如果已经进入刷题状态了，就读取 session
                 console.log("已有 sessionStorage", sessionStorage.getItem('questionId'));
                 this.num = parseInt(sessionStorage.getItem('questionId'));
@@ -685,33 +693,51 @@
                 history.replaceState('change',null,url);
             }
 
-            if(/(iPhone|iPad|iPod|iOS)/i.test(navigator.userAgent)) {
+            if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
-                    $('#app').css("transform-origin","0 0");
-                    $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                    $('#pop_container').css("transform-origin","0 0");
-                    $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                    $('#top_bar').css("transform-origin","0 0");
-                    $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                    if(deviceWidth >= deviceHeight) {
+                        $('#app').css("transform-origin","center top");
+                        $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                        $('#pop_container').css("transform-origin","center top");
+                        $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                        $('#top_bar').css("transform-origin","center top");
+                        $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
+                    }else {
+                        $('#app').css("transform-origin","center top");
+                        $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                        $('#pop_container').css("transform-origin","center top");
+                        $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                        $('#top_bar').css("transform-origin","center top");
+                        $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
+                    }
                 }
                 if(window.orientation == 90 || window.orientation == -90) {
-                    $('#app').css("transform-origin","0 0");
-                    $('#app').css("transform","scale(" + (deviceHeight / 1549) + ")");
-                    $('#pop_container').css("transform-origin","0 0");
-                    $('#pop_container').css("transform","scale(" + (deviceHeight / 1549) + ")");
-                    $('#top_bar').css("transform-origin","0 0");
-                    $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1549) + ")");
+                    if(deviceWidth < deviceHeight) {
+                        $('#app').css("transform-origin","center top");
+                        $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                        $('#pop_container').css("transform-origin","center top");
+                        $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
+                        $('#top_bar').css("transform-origin","center top");
+                        $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
+                    }else {
+                        $('#app').css("transform-origin","center top");
+                        $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                        $('#pop_container').css("transform-origin","center top");
+                        $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                        $('#top_bar').css("transform-origin","center top");
+                        $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
+                    }
                 }
             }else {
-                var deviceWidth = window.screen.width;
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                $('#pop_container').css("transform-origin","0 0");
-                $('#pop_container').css("transform","scale(" + (deviceWidth / 1549) + ")");
-                $('#top_bar').css("transform-origin","0 0");
-                $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1549) + ")");
+                var deviceWidth = window.screen.availWidth - 16;
+                $('#app').css("transform-origin","center top");
+                $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                $('#pop_container').css("transform-origin","center top");
+                $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
+                $('#top_bar').css("transform-origin","center top");
+                $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
             }
         },
 
