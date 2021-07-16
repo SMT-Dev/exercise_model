@@ -148,7 +148,7 @@
         return "";
     }
 
-    if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+    /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
@@ -187,7 +187,7 @@
                 }
             }
         });
-    }
+    }*/
     
     /*window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
         var deviceWidth = window.screen.width;
@@ -940,7 +940,7 @@
             }else {
                 window.location.href = '/login';
             }
-            if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
@@ -985,7 +985,7 @@
                 $('#top_bar1').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
                 $('#top_bar2').css("transform-origin","center top");
                 $('#top_bar2').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
-            }
+            }*/
         },
 
         mounted() {

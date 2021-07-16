@@ -17,7 +17,7 @@
         <img id="background" src="/image/start_bg.png">
         <button type="button" id="back_button" @click="goBack"></button>
         <button type="button" id="home_button" @click="goHome"></button>
-        <img id="level" src="/image/level.png">\
+        <img id="level" src="/image/level.png">
         <div id="level_info">
             <p><span>等级/L{{ level }}</span></p>
         </div>
@@ -73,7 +73,7 @@
         }
         return "";
     }
-    if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+    /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
@@ -96,7 +96,7 @@
                 }
             }
         });
-    }
+    }*/
 
     var app = new Vue({
         el: "#app",
@@ -145,19 +145,19 @@
         },
 
         created: function () {
-            /*if(getCookie('user_id') !== null) {
+            if(getCookie('user_id') !== null) {
                 if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.href = '/login';
                 }
             }else {
                 window.location.href = '/login';
-            }*/
+            }
             if(getCookie('level') !== null && getCookie('level').length > 0){
                 this.level = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
-            if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            /*if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
@@ -182,7 +182,7 @@
                 var deviceWidth = window.screen.availWidth - 16;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
-            }
+            }*/
         }
     })
 </script>

@@ -38,7 +38,7 @@ body {
 #level_box {
     display: flex;
     margin: 0 auto;
-    top: 22.5%;
+    top: 25.5%;
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;

@@ -12,13 +12,15 @@
     <script src="/js/jquery.min.js"></script>
 </head>
 <body>
-    <div id="pop_container">
-        <img id="popBox" src="/image/pop_box.png"></img>
-        <div id="pop_msg">
-            <p><span style="color: #DCDCDC;">你还有 </span><span id="remain_text" style="color: #FF8900;"></span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+    <div id="whole_pop">
+        <div id="pop_container">
+            <img id="popBox" src="/image/pop_box.png"></img>
+            <div id="pop_msg">
+                <p><span style="color: #DCDCDC;">你还有 </span><span id="remain_text" style="color: #FF8900;"></span><span style="color: #DCDCDC;"> 未完成，是否交卷？</span></p>
+            </div>
+            <button type="button" id="handIn_confirm" onclick="handInConfirm()"></button>
+            <button type="button" id="handIn_cancel" onclick="handInCancel()"></button>
         </div>
-        <button type="button" id="handIn_confirm" onclick="handInConfirm()"></button>
-        <button type="button" id="handIn_cancel" onclick="handInCancel()"></button>
     </div>
     <div id="whole">
         <div id="top_bar"></div>
@@ -134,7 +136,7 @@
         document.getElementById("pop_container").style.zIndex = "0";
     };
 
-    if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+    /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
             var deviceHeight = window.screen.height;
@@ -173,7 +175,7 @@
                 }
             }
         });
-    }
+    }*/
 
     /*window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
         var deviceWidth = window.screen.width;
@@ -638,14 +640,14 @@
         },
 
         created() {
-            /*if(getCookie('user_id') !== null) {
+            if(getCookie('user_id') !== null) {
                 if(getCookie('user_id') === "") {
                     localStorage.clear();
                     window.location.replace('/login');
                 }
             }else {
                 window.location.replace('/login');
-            }*/
+            }
             if(sessionStorage.getItem('questionId') !== null) {  // 如果已经进入刷题状态了，就读取 session
                 console.log("已有 sessionStorage", sessionStorage.getItem('questionId'));
                 this.num = parseInt(sessionStorage.getItem('questionId'));
@@ -693,7 +695,7 @@
                 history.replaceState('change',null,url);
             }
 
-            if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = window.screen.width;
                 var deviceHeight = window.screen.height;
                 if(window.orientation == 0 || window.orientation == 180) {
@@ -738,7 +740,7 @@
                 $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
                 $('#top_bar').css("transform-origin","center top");
                 $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
-            }
+            }*/
         },
 
         mounted() {
