@@ -152,7 +152,6 @@ body {
 
 #app {
     position: relative;
-    margin: 0 auto;
     width: 1533px;
     height: 1142px;
     background-color: #FFB71B;
@@ -190,6 +189,7 @@ body {
 
 #top_bar1 {
     position: absolute;
+    width: 1533px;
     height: 76px;
     left: 0;
     right: 0;
@@ -199,11 +199,12 @@ body {
 
 #top_bar2 {
     position: absolute;
+    width: 1533px;
     height: 129px;
     left: 0;
     right: 0;
     background-color:white;
-    z-index: 0;
+    z-index: -1;
 }
 
 #container1 {

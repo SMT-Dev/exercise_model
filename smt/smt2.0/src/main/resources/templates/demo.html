@@ -12,7 +12,6 @@
     <script src="/js/jquery.min.js"></script>
 </head>
 <body>
-    <div id="whole_pop">
         <div id="pop_container">
             <img id="popBox" src="/image/pop_box.png"></img>
             <div id="pop_msg">
@@ -21,8 +20,6 @@
             <button type="button" id="handIn_confirm" onclick="handInConfirm()"></button>
             <button type="button" id="handIn_cancel" onclick="handInCancel()"></button>
         </div>
-    </div>
-    <div id="whole">
         <div id="top_bar"></div>
         <div id="app">
             <button type="button" id="back_button" @click="goBack"></button>
@@ -106,7 +103,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </body>
 <script>
 
@@ -176,6 +172,41 @@
             }
         });
     }*/
+
+    window.addEventListener('resize', () => {
+        var deviceWidth = document.documentElement.clientWidth;
+        document.getElementById("app").style.transformOrigin = "left top";
+        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+        document.getElementById("pop_container").style.transformOrigin = "left top";
+        document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+        document.getElementById("top_bar").style.transformOrigin = "left top";
+        document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+    }, false);
+
+    window.addEventListener("orientationchange",() => {
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            var deviceWidth = document.documentElement.clientWidth;
+            var deviceHeight = document.documentElement.clientHeight;
+            if(window.orientation == 0 || window.orientation == 180) {
+                deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "left top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("pop_container").style.transformOrigin = "left top";
+                document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("top_bar").style.transformOrigin = "left top";
+                document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+            }
+            if(window.orientation == 90 || window.orientation == -90) {
+                deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "left top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("pop_container").style.transformOrigin = "left top";
+                document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("top_bar").style.transformOrigin = "left top";
+                document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+            }
+        }
+    });
 
     /*window.addEventListener("onorientationchange" in window ? "orientationchange" : "resize", function() {
         var deviceWidth = window.screen.width;
@@ -694,53 +725,36 @@
                 var url = sessionStorage.getItem('lastUrl');
                 history.replaceState('change',null,url);
             }
-
-            /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
-                var deviceWidth = window.screen.width;
-                var deviceHeight = window.screen.height;
+            if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+                var deviceWidth = document.documentElement.clientWidth;
+                var deviceHeight = document.documentElement.clientHeight;
                 if(window.orientation == 0 || window.orientation == 180) {
-                    if(deviceWidth >= deviceHeight) {
-                        $('#app').css("transform-origin","center top");
-                        $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
-                        $('#pop_container').css("transform-origin","center top");
-                        $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
-                        $('#top_bar').css("transform-origin","center top");
-                        $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
-                    }else {
-                        $('#app').css("transform-origin","center top");
-                        $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                        $('#pop_container').css("transform-origin","center top");
-                        $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                        $('#top_bar').css("transform-origin","center top");
-                        $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
-                    }
+                    deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "left top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    document.getElementById("pop_container").style.transformOrigin = "left top";
+                    document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    document.getElementById("top_bar").style.transformOrigin = "left top";
+                    document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
                 if(window.orientation == 90 || window.orientation == -90) {
-                    if(deviceWidth < deviceHeight) {
-                        $('#app').css("transform-origin","center top");
-                        $('#app').css("transform","scale(" + (deviceHeight / 1533) + ")");
-                        $('#pop_container').css("transform-origin","center top");
-                        $('#pop_container').css("transform","scale(" + (deviceHeight / 1533) + ")");
-                        $('#top_bar').css("transform-origin","center top");
-                        $('#top_bar').css("transform","scaleY(" + (deviceHeight / 1533) + ")");
-                    }else {
-                        $('#app').css("transform-origin","center top");
-                        $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                        $('#pop_container').css("transform-origin","center top");
-                        $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                        $('#top_bar').css("transform-origin","center top");
-                        $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
-                    }
+                    deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "left top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    document.getElementById("pop_container").style.transformOrigin = "left top";
+                    document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                    document.getElementById("top_bar").style.transformOrigin = "left top";
+                    document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
             }else {
-                var deviceWidth = window.screen.availWidth - 16;
-                $('#app').css("transform-origin","center top");
-                $('#app').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                $('#pop_container').css("transform-origin","center top");
-                $('#pop_container').css("transform","scale(" + (deviceWidth / 1533) + ")");
-                $('#top_bar').css("transform-origin","center top");
-                $('#top_bar').css("transform","scaleY(" + (deviceWidth / 1533) + ")");
-            }*/
+                var deviceWidth = document.documentElement.clientWidth;
+                document.getElementById("app").style.transformOrigin = "left top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("pop_container").style.transformOrigin = "left top";
+                document.getElementById("pop_container").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+                document.getElementById("top_bar").style.transformOrigin = "left top";
+                document.getElementById("top_bar").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+            }
         },
 
         mounted() {

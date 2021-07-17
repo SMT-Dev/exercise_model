@@ -13,49 +13,49 @@
     <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
 <body>
-    <div id="app">
-        <img id="background" src="/image/start_bg.png">
-        <button type="button" id="back_button" @click="goBack"></button>
-        <button type="button" id="home_button" @click="goHome"></button>
-        <img id="level" src="/image/level.png">
-        <div id="level_info">
-            <p><span>等级/L{{ level }}</span></p>
+        <div id="app">
+            <img id="background" src="/image/start_bg.png">
+            <button type="button" id="back_button" @click="goBack"></button>
+            <button type="button" id="home_button" @click="goHome"></button>
+            <img id="level" src="/image/level.png">
+            <div id="level_info">
+                <p><span>等级/L{{ level }}</span></p>
+            </div>
+            <img id="ribbon" src="/image/ribbon.png">
+            <div id="level_box">
+                <div class="star_container">
+                    <img id="star1" class="star" src="/image/star1.png" @click="choose(1)">
+                </div>
+                <div class="star_container">
+                    <img id="star2" class="star" src="/image/star2.png" @click="choose(2)">
+                </div>
+                <div class="star_container">
+                    <img id="star3" class="star" src="/image/star3.png" @click="choose(3)">
+                </div>
+                <div class="star_container">
+                    <img id="star4" class="star" src="/image/star4.png" @click="choose(4)">
+                </div>
+                <div class="star_container">
+                    <img id="star5" class="star" src="/image/star5.png" @click="choose(5)">
+                </div>
+                <div class="star_container">
+                    <img id="star6" class="star" src="/image/star6.png" @click="choose(6)">
+                </div>
+                <div class="star_container">
+                    <img id="star7" class="star" src="/image/star7.png" @click="choose(7)">
+                </div>
+                <div class="star_container">
+                    <img id="star8" class="star" src="/image/star8.png" @click="choose(8)">
+                </div>
+                <div class="star_container">
+                    <img id="star9" class="star" src="/image/star9.png" @click="choose(9)">
+                </div>
+                <div class="star_container">
+                    <img id="star10" class="star" src="/image/star10.png" @click="choose(10)">
+                </div>
+            </div>
+            <button type="button" id="start_button" @click="start"></button>
         </div>
-        <img id="ribbon" src="/image/ribbon.png">
-        <div id="level_box">
-            <div class="star_container">
-                <img id="star1" class="star" src="/image/star1.png" @click="choose(1)">
-            </div>
-            <div class="star_container">
-                <img id="star2" class="star" src="/image/star2.png" @click="choose(2)">
-            </div>
-            <div class="star_container">
-                <img id="star3" class="star" src="/image/star3.png" @click="choose(3)">
-            </div>
-            <div class="star_container">
-                <img id="star4" class="star" src="/image/star4.png" @click="choose(4)">
-            </div>
-            <div class="star_container">
-                <img id="star5" class="star" src="/image/star5.png" @click="choose(5)">
-            </div>
-            <div class="star_container">
-                <img id="star6" class="star" src="/image/star6.png" @click="choose(6)">
-            </div>
-            <div class="star_container">
-                <img id="star7" class="star" src="/image/star7.png" @click="choose(7)">
-            </div>
-            <div class="star_container">
-                <img id="star8" class="star" src="/image/star8.png" @click="choose(8)">
-            </div>
-            <div class="star_container">
-                <img id="star9" class="star" src="/image/star9.png" @click="choose(9)">
-            </div>
-            <div class="star_container">
-                <img id="star10" class="star" src="/image/star10.png" @click="choose(10)">
-            </div>
-        </div>
-        <button type="button" id="start_button" @click="start"></button>
-    </div>    
 </body>
 <script>
     function setCookie(cname,cvalue) {
@@ -73,6 +73,29 @@
         }
         return "";
     }
+
+    window.addEventListener('resize', () => {
+        var deviceWidth = document.documentElement.clientWidth;
+        document.getElementById("app").style.transformOrigin = "left top";
+        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+    }, false);
+
+    window.addEventListener("orientationchange",() => {
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            var deviceWidth = document.documentElement.clientWidth;
+            var deviceHeight = document.documentElement.clientHeight;
+            if(window.orientation == 0 || window.orientation == 180) {
+                deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "left top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+            }
+            if(window.orientation == 90 || window.orientation == -90) {
+                deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "left top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+            }
+        }
+    });
     /*if(/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
         window.addEventListener("orientationchange",function(){
             var deviceWidth = window.screen.width;
@@ -157,32 +180,24 @@
                 this.level = parseInt(getCookie('level'));
             }
             sessionStorage.clear();
-            /*if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
-                var deviceWidth = window.screen.width;
-                var deviceHeight = window.screen.height;
+            if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+                var deviceWidth = document.documentElement.clientWidth;
+                var deviceHeight = document.documentElement.clientHeight;
                 if(window.orientation == 0 || window.orientation == 180) {
-                    if(deviceWidth >= deviceHeight) {
-                        document.getElementById("app").style.transformOrigin = "center top";
-                        document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
-                    }else {
-                        document.getElementById("app").style.transformOrigin = "center top";
-                        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
-                    }
+                    deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "left top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
                 if(window.orientation == 90 || window.orientation == -90) {
-                    if(deviceWidth < deviceHeight) {
-                        document.getElementById("app").style.transformOrigin = "center top";
-                        document.getElementById("app").style.transform = "scale(" + (deviceHeight / 1533) + ")";
-                    }else {
-                        document.getElementById("app").style.transformOrigin = "center top";
-                        document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
-                    }
+                    deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "left top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
             }else {
-                var deviceWidth = window.screen.availWidth - 16;
-                document.getElementById("app").style.transformOrigin = "center top";
+                var deviceWidth = document.documentElement.clientWidth;
+                document.getElementById("app").style.transformOrigin = "left top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
-            }*/
+            }
         }
     })
 </script>

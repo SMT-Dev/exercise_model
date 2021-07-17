@@ -143,25 +143,17 @@ body {
     background-image: url(/image/next_after.png);
 }
 
-#whole {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: #FFB71B;
-}
-
 #app {
     position: relative;
-    margin: 0 auto;
     width: 1533px;
     height: 1142px;
 }
 
 #pop_container {
     position: absolute;
-    margin: 0 auto;
     width: 1533px;
     height: 1142px;
+    z-index: 0;
 }
 
 #main {
@@ -198,6 +190,7 @@ body {
 #top_bar {
     position: absolute;
     height: 76px;
+    width: 1533px;
     left: 0;
     right: 0;
     background-color: #2A7DE1;
