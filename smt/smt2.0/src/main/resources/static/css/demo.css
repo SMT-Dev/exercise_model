@@ -143,6 +143,12 @@ body {
     background-image: url(/image/next_after.png);
 }
 
+#whole {
+    width: 100%;
+    height: 100%;
+    background-color: #FFB71B;
+}
+
 #app {
     position: relative;
     width: 1533px;
