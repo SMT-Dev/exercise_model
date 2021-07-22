@@ -360,11 +360,18 @@ public class ExerciseController {
         ArrayList<ProblemEvaluation> probEvalList = new ArrayList<>();
         probEvalList = problemEvalService.getProblemEvalByUser(USER_ID);
         Collections.shuffle(probEvalList);
-        if(probEvalList.size() > 0) {
+        if(probEvalList.size() >= partNum) {  //修复 bug 遗忘曲线题目量不足
             for (int i = 0; i < partNum; i++)
                 probList.add(probEvalList.get(i).getProb_id());
         }
-        else {
+        else if (probEvalList.size() > 0) {
+            int margin = partNum - probEvalList.size();
+            for (ProblemEvaluation pe : probEvalList)
+                probList.add(pe.getProb_id());
+            for (int i = 0; i < margin; i++) {
+                probList.add(getOneRandom());
+            }
+        } else {
             for (int i = 0; i < partNum; i++)
                 probList.add(getOneRandom());
         }
@@ -603,11 +610,12 @@ public class ExerciseController {
             ArrayList<Long> tmpList = new ArrayList<>();
 
             Long lesson_id = Long.valueOf(settingTemp.getSys());
+            tmpList.addAll(getFromNew(lesson_id, 20));  //2021.7.22: 校对期间，全部是该 lesson 的题目
 //            tmpList.addAll(getFromNew(lesson_id, 10));  //如果该 lesson 缺题目，则返回空，无新知识点
-            tmpList.addAll(getFromEasy(10));
-            tmpList.addAll(getFromSimilar(5, USER_ID));
-            tmpList.addAll(getHighFrequency(3));
-            tmpList.addAll(getFromForgetCurve(2, USER_ID));
+//            tmpList.addAll(getFromEasy(10));
+//            tmpList.addAll(getFromSimilar(5, USER_ID));
+//            tmpList.addAll(getHighFrequency(3));
+//            tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
             //此处 tmpList 已固定题量 20，不需要 shuffle

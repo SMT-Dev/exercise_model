@@ -131,6 +131,10 @@ public class AuthController {
 
         System.out.println(String.format("请求参数: {\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id, passwd, institute_seq));
         try {
+            // 仅供内部测试使用，绕过登录验证
+            if(institute_seq.equals("1111") && user_id.equals("1111") && passwd.equals("1111")) {
+                return "OK";
+            }
             String sr = sendPost("https://interface.smartreelearners.com:8442/api/app/auth/student/login/china",
                     String.format("{\"user_id\":\"%s\",\"passwd\":\"%s\",\"institute_seq\":\"%s\"}", user_id, passwd, institute_seq));
             HashMap hashMap = JSON.parseObject(sr, HashMap.class);
