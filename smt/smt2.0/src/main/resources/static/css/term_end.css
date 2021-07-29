@@ -11,6 +11,7 @@ html,body {
 
 body {
     margin: 0;
+    text-align: center;
 }
 
 .image {
@@ -24,12 +25,14 @@ body {
     margin: 0;
     position: relative;
     width: 450px;
-    height: 2386.5px;
+    height: 2862.1px;
+    display: inline-block;
+    text-align: left;
 }
 
 #layer {
     position: absolute;
-    z-index: 4;
+    z-index: 5;
     background-color: #000000;
     width: 100%;
     height: 100%;
@@ -45,10 +48,10 @@ body {
 
 #basicInfo {
     position: relative;
-    top: 6%;
+    top: 3.7%;
     margin: 0 auto;
     width: 70%;
-    height: 2.8%;
+    height: 2.33%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
@@ -94,28 +97,38 @@ body {
 #fullLevel {
     position: absolute;
     width: 100%;
-    height: 8.5%;
-    top: 6%;
+    height: 7.08%;
+    top: 6.2%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     z-index: 5;
 }
 
+#diff_table {
+    position: absolute;
+    top: 7.12%;
+    left: 17%;
+    width: 64%;
+    height: 7.81%;
+    display: flex;
+    z-index: 2;
+}
+
 #score_detail {
     position: absolute;
     display: flex;
-    width: 80%;
-    height: 7.5%;
-    left: 10.5%;
-    top: 9.5%;
+    width: 79.5%;
+    height: 6.25%;
+    left: 10%;
+    top: 16.38%;
     z-index: 4;
 }
 
 #myScore {
     position: absolute;
     width: 23%;
-    height: 7%;
+    height: 6.7%;
     top: 6%;
     left: 6%;
 }
@@ -199,7 +212,9 @@ body {
     font-weight: 600;
     transform: scale(0.75);
     -moz-transform:scale(0.75);
-    transform-origin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-family: 'Microsoft YaHei';
 }
 
@@ -213,8 +228,10 @@ body {
 
 .square_text {
     position: absolute;
-    right: 30%;
-    bottom: -69%;
+    right: 35%;
+    bottom: -75%;
+    width: 22%;
+    text-align: center;
     font-size: 16px;
     font-weight: 600;
     font-family: 'GothamRoundedMedium';
@@ -225,21 +242,21 @@ body {
     width: 80%;
     height: 1%;
     margin: 0 auto;
-    top: 14.7%;
+    top: 20.55%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     color: white;
     z-index: 2;
-    font-size: 1.3rem;
+    font-size: 21px;
 }
 
 #SMTmain {
     position: relative;
-    top: 15.5%;
+    top: 21.2%;
     margin: 0 auto;
     width: 72%;
-    height: 9%;
+    height: 7.5%;
     display: flex;
     align-items: center;
     z-index: 2;
@@ -269,34 +286,137 @@ body {
     font-weight: 600;
 }
 
+#smt_point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 46px;
+    left: 6px;
+    z-index: 1;
+}
+
+#iptv_point {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    top: 46px;
+    left: 217px;
+    z-index: 1;  
+}
+
+#smt_progress_text {
+    position: absolute;
+    top: 60px;
+    left: 6px;
+    font-size: 12px;
+    transform-origin: left top;
+    transform: scale(0.5);
+    font-family: 'GothamRoundedMedium';
+    font-weight: bold;
+    color: #297DDF;
+}
+
+#iptv_progress_text {
+    position: absolute;
+    top: 60px;
+    left: 217px;
+    font-size: 12px;
+    transform-origin: left top;
+    transform: scale(0.5);
+    font-family: 'GothamRoundedMedium';
+    font-weight: bold;
+    color: #297DDF;
+}
+
+#smt_progress {
+    position: absolute;
+    width: 64%;
+    top: 20%;
+    left: 4%;
+}
+
+#iptv_progress {
+    position: absolute;
+    width: 46%;
+    top: 20%;
+    right: -15%;
+}
+
+#smt_text {
+    position: absolute;
+    font-size: 12px;
+    transform-origin: left top;
+    transform: scale(0.45);
+    font-family: 'Microsoft YaHei';
+    top: 17%;
+    left: 30%;
+}
+
+#iptv_text {
+    position: absolute;
+    font-size: 12px;
+    transform-origin: left top;
+    transform: scale(0.45);
+    font-family: 'Microsoft YaHei';
+    top: 17%;
+    right: -27%;
+}
+
 #main_report {
     position: relative;
     width: 100%;
     height: 48%;
+    top: 10%;
     display: flex;
     align-items: center;
     justify-content: space-between;
     font-family: 'GothamRoundedMedium';
 }
 
-.rect {
+.rect1,.rect2,.rect3 {
     position: relative;
     width: 32%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 21px;
-    color: crimson;
+    font-size: 12px;
+    font-family: 'GothamRoundedMedium';
+    font-weight: bold;
+}
+
+.el-progress-bar__innerText {
+    color: transparent !important;
+}
+
+.el-progress-bar__outer {
+    background-color: #C8C9CB !important;
+}
+
+.rect1 .el-progress-bar__outer {
+    background-color: #ffb71b !important;
+}
+
+.rect2 .el-progress-bar__outer {
+    background-color: #f94188 !important;
+}
+
+.rect3 .el-progress-bar__outer {
+    background-color: #58dbac !important;
+}
+
+.rect4 .el-progress-bar__outer {
+    background-color: #7a73ff !important;
+}
+
+.rect5 .el-progress-bar__outer {
+    background-color: #dcfaff !important;
 }
 
 #checkTrail {
     position: absolute;
     z-index: 5;
-    left: 36.5%;
-    bottom: 5%;
-    height: 8%;
-    width: 27%;
+    left: 34%;
+    bottom: -2.5%;
+    height: 9.5%;
+    width: 32%;
     border: none;
     background-image: url(/image/checktrail.png);
     background-repeat: no-repeat;
@@ -311,10 +431,10 @@ body {
 
 #library {
     position: relative;
-    top: 16.5%;
+    top: 22.8%;
     margin: 0 auto;
     width: 72%;
-    height: 12%;
+    height: 10%;
     display: flex;
     flex-wrap: wrap;
     z-index: 2;
@@ -352,11 +472,9 @@ body {
     position: relative;
     width: 46%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 21px;
-    color: crimson;
+    font-family: 'GothamRoundedMedium';
+    font-weight: bold;
+    font-size: 12px;
 }
 
 #book {
@@ -392,10 +510,10 @@ body {
 
 #readlevel {
     position: relative;
-    top: 15.5%;
+    top: 23.5%;
     margin: 0 auto;
     width: 72%;
-    height: 10%;
+    height: 8.33%;
     display: flex;
     z-index: 2;
 }
@@ -464,20 +582,20 @@ body {
     width: 80%;
     height: 1%;
     margin: 0 auto;
-    top: 19.45%;
+    top: 27.23%;
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
     color: white;
     z-index: 2;
-    font-size: 21px;
+    font-size: 1.3rem;
 }
 
 #word_part,#paper_part {
     position: relative;
     margin: 0 auto;
     width: 72%;
-    height: 18%;
+    height: 15%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -488,28 +606,28 @@ body {
     position: absolute;
     margin: 0 auto;
     width: 83%;
-    height: 27%;
+    height: 22.5%;
     left: 8.8%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    z-index: 4;
+    z-index: 5;
 }
 
 #word_part {
-    top: 20%;
+    top: 28%;
 }
 
 #pop_word {
-    top: 48.7%;
+    top: 55.5%;
 }
 
 #paper_part {
-    top: 19.5%;
+    top: 29%;
 }
 
 #pop_paper {
-    top: 70.9%;
+    top: 74%;
 }
 
 #graph1,#graph2 {
@@ -567,8 +685,8 @@ body {
 
 #time_avg,#time_avg2 {
     position: absolute;
-    width: 26%;
-    height: 44%;
+    width: 25%;
+    height: 43%;
     top: -57%;
     left: 6%;
 }
@@ -599,7 +717,7 @@ body {
 
 #text_part,#text_part2 {
     position: relative;
-    top: 4%;
+    top: 5%;
     margin: 0 auto;
     width: 100%;
     height: 43%;
@@ -625,39 +743,31 @@ body {
     color: black;
 }
 
-.pop_text1 {
+.pop_text {
     font-size: 12px;
     width: 115%;
-    height: 10%;
-    left: 7.5%;
-    top: 33%;
-    transform: scale(0.8);
-    -moz-transform: scale(0.8);
     transform-origin: 0;
     position: absolute;
     font-family: 'Microsoft YaHei',微软雅黑;
     font-weight: 600;
     line-height: 200%;
     color: black;
+    left: 11%;
+    transform: scale(0.9);
+    -moz-transform: scale(0.9);
 }
 
-.pop_text2 {
-    font-size: 12px;
-    width: 85%;
-    height: 7%;
-    top: 42%;
-    left: 7.5%;
-    transform: scale(0.8);
-    -moz-transform: scale(0.8);
-    transform-origin: 0;
-    position: absolute;
-    font-family: 'Microsoft YaHei',微软雅黑;
-    font-weight: 500;
-    line-height: 200%;
-    color: black;
+#pop_text1 {
+    height: 10%;
+    top: 35%;
 }
 
-#show_word_score,#show_paper_score {
+#pop_text2 {
+    height: 12%;
+    top: 35%;
+}
+
+#show_word_score {
     position: relative;
     margin: 0 auto;
     display: flex;
@@ -671,7 +781,37 @@ body {
     font-weight: 600;
 }
 
-#pop_show_word_score,#pop_show_paper_score {
+#show_paper_score {
+    position: relative;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    width: 90%;
+    height: 50%;
+    font-family: 'GothamRoundedMedium';
+    color: crimson;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#pop_show_word_score {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    top: -10%;
+    left: 1%;
+    width: 81%;
+    height: 15%;
+    z-index: 4;
+    font-family: 'GothamRoundedMedium';
+    color: crimson;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+#pop_show_paper_score {
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -687,25 +827,55 @@ body {
     font-weight: 600;
 }
 
-#handle_word_pic,#handle_paper_pic {
+#handle_word_pic {
     position: absolute;
     width: 15%;
-    height: 4.2%;
-    top: 67%;
+    height: 4.7%;
+    top: 64%;
     left: 43.5%;
     z-index: 4;
 }
 
-#handle_word_table,#handle_paper_table {
+#handle_paper_pic1 {
+    position: absolute;
+    width: 15%;
+    height: 4.2%;
+    top: 68%;
+    left: 23.5%;
+    z-index: 4;
+}
+
+#handle_paper_pic2 {
+    position: absolute;
+    width: 15%;
+    height: 4.2%;
+    top: 68.1%;
+    left: 64%;
+    z-index: 4;
+}
+
+#handle_word_table {
     position: absolute;
     width: 81%;
-    height: 31%;
+    height: 27%;
     left: 10.5%;
-    top: 66%;
+    top: 69%;
+}
+
+#handle_paper_table {
+    position: absolute;
+    width: 81%;
+    height: 30%;
+    left: 10.5%;
+    top: 69%;
 }
 
 .el-table tbody tr>td {
     border-radius: 10px;
+}
+
+.el-table th {
+    padding: 6px 0 !important;
 }
 
 .el-table td,.el-table th.is-leaf {
@@ -737,7 +907,6 @@ body {
 #word_detail,#paper_detail {
     position: absolute;
     left: 15%;
-    top: 87%;
     height: 4%;
     width: 70%;
     border: none;
@@ -750,4 +919,63 @@ body {
     border-radius: 30px;
     cursor: pointer;
     outline: none;
+}
+
+#word_detail {
+    bottom: 10px;
+}
+
+#paper_detail {
+    bottom: 12px;
+}
+
+#compare_text {
+    position: relative;
+    text-align: center;
+    left: 18%;
+    top: 29.73%;
+    transform-origin: left top;
+    transform: scale(0.65);
+    font-weight: bold;
+    color: white;
+    z-index: 1;
+    font-size: 12px;
+    font-family: 'Microsoft YaHei';
+}
+
+#compare {
+    position: relative;
+    width: 77%;
+    height: 6%;
+    top: 29.7%;
+    left: 12%;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#legend {
+    position: absolute;
+    width: 100%;
+    height: auto;
+    top: 2.9%;
+}
+
+#yAxis {
+    position: absolute;
+    height: 47%;
+    width: 4.3%;
+    left: 14%;
+    top: 25%;
+    z-index: 2;
+}
+
+#xAxis {
+    position: absolute;
+    width: 93%;
+    left: 6.1%;
+    height: auto;
+    bottom: 4%;
+    z-index: 2;
 }

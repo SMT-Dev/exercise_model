@@ -3,7 +3,7 @@
 <head>
     <title>双周评测</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0">
+    <meta name="viewport" content="width=device-width">
     <link href="/css/weekly.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -18,14 +18,13 @@
     <div id="app">
         <div id="layer" v-show="isPop"></div>
         <div id="bg">
-            <img class="image" src="/image/bg1.png">
+            <img class="image" style="left: 0;" src="/image/bg1.jpg">
         </div>
         <div id="basicInfo">
             <div id="levelInfo">
                 <img class="image" src="/image/yellow-bg.png">
                 <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;等级/</div>
-                <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';">Level {{ level }}</div>
-                <button type="button" id="checkLevel" @click="checkLevel"></button>
+                <div style="top: -2%;font-size: 1.5rem;text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';">Level {{ level }}</div>
             </div>
             <div id="classInfo">
                 <img class="image" src="/image/purple-bg.png">
@@ -33,8 +32,8 @@
                 <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';font-size: 12.8px;">Week {{ week }} / Lesson {{ lesson }}</div>
             </div>
         </div>
-        <div id="fullLevel" v-show="isLevelPop">
-            <img class="image" :src="fullLev">
+        <div id="diff_table">
+            <img  style="height: 100%;width: auto;position: absolute;" :src="diff_pic_src">
         </div>
         <div id="record">
             <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
@@ -49,18 +48,33 @@
                 <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/IPTV.png">
                 <div>&nbsp;IPTV</div>
             </div>
+            <div id="smt_point">
+                <img class="image" src="/image/point.png">
+            </div>
+            <div id="iptv_point">
+                <img class="image" src="/image/point.png">
+            </div>
+            <div id="smt_progress_text">{{ finish_lesson }}/{{ total_lesson }}</div>
+            <div id="iptv_progress_text">{{ finish_movie }}/{{ total_movie }}</div>
+            <el-progress id="smt_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_lesson*100/total_lesson"></el-progress>
+            <el-progress id="iptv_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_movie*100/total_movie"></el-progress>
+            <div id="smt_text"><span style="color: #438AE4;">实际完成课时数</span><span style="color: #5B595A;">/应完成课时数</span></div>
+            <div id="iptv_text"><span style="color: #438AE4;">实际完成观影数</span><span style="color: #5B595A;">/应完成观影数</span></div>
             <div id="main_report">
-                <div class="rect">
+                <div class="rect1">
                     <img class="image" src="/image/SMTword.png">
-                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_word }}&nbsp;</div>
+                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_word*100/smt_word_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_word }}</span>/{{ smt_word_total }}</div>
                 </div>
-                <div class="rect">
+                <div class="rect2">
                     <img class="image" src="/image/SMTsentence.png">
-                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_sentence }}&nbsp;</div>
+                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_sentence*100/smt_sentence_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_sentence }}</span>/{{ smt_sentence_total }}</div>
                 </div>
-                <div class="rect">
+                <div class="rect3">
                     <img class="image" src="/image/SMTmovie.png">
-                    <div style="position: relative;margin-top: -0.1rem;">{{ smt_movie }}&nbsp;</div>
+                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_movie*100/smt_movie_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_movie }}</span>/{{ smt_movie_total }}</div>
                 </div>
             </div>
             <button type="button" id="checkTrail" @click="checkTrail"></button>
@@ -70,13 +84,15 @@
                 <img class="image" src="/image/library.png">
             </div>
             <div id="lib_report">
-                <div id="libBook">
+                <div id="libBook" class="rect4">
                     <img class="image" src="/image/LIBbook.png">
-                    <div style="position: relative;margin-top: -0.1rem;">{{ lib_book }}&nbsp;</div>
+                    <el-progress :text-inside="true" :stroke-width="11" :percentage="lib_book*100/lib_book_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_book }}</span>/{{ lib_book_total }}</div>
                 </div>
-                <div id="libHour">
+                <div id="libHour" class="rect5">
                     <img class="image" src="/image/LIBhour.png">
-                    <div style="position: relative;margin-top: -0.1rem;">{{ lib_hour }}&nbsp;</div>
+                    <el-progress :text-inside="true" :stroke-width="11" :percentage="0" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_hour }}</span>h</div>
                 </div>
             </div>
             <div id="book">
@@ -151,13 +167,13 @@
             <div id="text_part">
                 <div id="text">
                     在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
-                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ wordData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.progress }}</span> %。
+                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ chinese(wordData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(wordData.progress) }}</span> %。
                 </div>
                 <div id="show_word_score">
-                    <div id="handle_num">&nbsp;{{ wordData.point_handle }}</div>
+                    <div id="handle_num">&nbsp;{{ wordData.word_unhandle }}</div>
                     <div id="score_avg">&nbsp;{{ wordData.avgScore }}</div>
                     <div id="effect">{{ wordData.progress }}%&nbsp;</div>
-                    <img class="image" src="/image/show_score.png">
+                    <img class="image" src="/image/show_score2.png">
                 </div>
             </div>
             <button type="button" id="word_detail" @click="wordDetail"></button>
@@ -167,27 +183,36 @@
             <div id="graph1">
                 <highcharts :options="chartOptions1" style="width:310px;height:180px;"></highcharts>
             </div>
-            <div class="pop_text1">
-                尊敬的{{ stuName }}家长：<br>
-                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
-                具体信息如下：
-            </div>
-            <div class="pop_text2">
-                在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
-                本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ wordData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.progress }}</span> %。
+            <div class="pop_text" id="pop_text1">
+                在这两周的学习中，{{ stuName }}小朋友总计做了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.times }}</span> 次的语音训练，<br>
+                总计用时<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.time }}</span> 分钟；平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span> 。
             </div>
             <div id="pop_show_word_score">
-                <div id="handle_num3">&nbsp;{{ wordData.point_handle }}</div>
+                <div id="handle_num3">&nbsp;{{ wordData.word_unhandle }}</div>
                 <div id="score_avg3">&nbsp;{{ wordData.avgScore }}</div>
                 <div id="effect3">{{ wordData.progress }}%&nbsp;</div>
-                <img class="image" src="/image/show_score.png">
+                <img class="image" src="/image/show_score2.png">
             </div>
             <div id="handle_word_pic">
-                <img class="image" src="/image/handle_word1.png">
+                <img class="image" src="/image/handle_word4.png">
             </div>
             <div id="handle_word_table">
-                <el-table :data="wordHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
-                    <el-table-column prop="handle_word" align="center"></el-table-column>
+                <el-table :data="wordComment" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'14px',padding:'0'}"  :cell-style="setWordCellStyle" style="font-size: 12px">
+                    <el-table-column prop="word" label="单  词" align="center">
+                        <template slot-scope="scope">
+                            <span style="font-weight:bold;color:black">{{scope.row.word}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="evaluate" label="评  价" align="center">
+                        <template slot-scope="scope">
+                            <img :src="scope.row.evaluate" alt="" style="width: 17px;height: 17px;vertical-align: middle" />
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="audio" label="音  频" align="center">
+                        <template slot-scope="scope">
+                            <img src="/image/audio.png" alt="" style="width: 37px;height: 17px;vertical-align: middle;cursor: pointer;" @click="wordPlay(scope.row.audio)"/>
+                        </template>
+                    </el-table-column>
                 </el-table>
             </div>
         </div>
@@ -212,7 +237,7 @@
             <div id="text_part2">
                 <div id="text2">
                     在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
-                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ paperData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.progress }}</span> %。
+                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ chinese(paperData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(paperData.progress) }}</span> %。
                 </div>
                 <div id="show_paper_score">
                     <div id="handle_num2">&nbsp;{{ paperData.point_handle }}</div>
@@ -228,14 +253,10 @@
             <div id="graph2">
                 <highcharts :options="chartOptions2" style="width:310px;height:180px;"></highcharts>
             </div>
-            <div class="pop_text1">
-                尊敬的{{ stuName }}家长：<br>
-                经过两周的学习和训练，{{ stuName }}小朋友在SMARTree的学习情况<span style="color: red;">{{ effect }}</span>。<br>
-                具体信息如下：
-            </div>
-            <div class="pop_text2">
-                在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
-                本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ paperData.chinese }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.progress }}</span> %。
+            <div class="pop_text" id="pop_text2">
+                在这两周的学习中，{{ stuName }}小朋友总计做了<span style="color: red;font-style: italic;font-weight: 600;font-size: 16px;">{{ paperData.times }}</span> 次的语法训练，<br>
+                总计练习了<span style="color: red;font-style: italic;font-weight: 600;font-size: 16px;">{{ paperData.probNum }}</span> 题,<br>
+                其中，基础难度占<span style="color: red;font-style: italic;font-weight: 600;font-size: 16px;">{{ paperData.probEasy }}</span> %；中等难度占<span style="color: red;font-style: italic;font-weight: 600;font-size: 16px;">{{ paperData.probMedium }}</span> %；困难难度占<span style="color: red;font-style: italic;font-weight: 600;font-size: 16px;">{{ paperData.probHard }}</span> %；
             </div>
             <div id="pop_show_paper_score">
                 <div id="handle_num4">&nbsp;{{ paperData.point_handle }}</div>
@@ -243,20 +264,43 @@
                 <div id="effect4">{{ paperData.progress }}%&nbsp;</div>
                 <img class="image" src="/image/show_score.png">
             </div>
-            <div id="handle_paper_pic">
+            <div id="handle_paper_pic1">
                 <img class="image" src="/image/handle_paper1.png">
             </div>
+            <div id="handle_paper_pic2">
+                <img class="image" src="/image/handle_paper4.png">
+            </div>
             <div id="handle_paper_table">
-                <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'20px'}"  :cell-style="{padding:'8px 0px'}">
-                    <el-table-column prop="handle_paper" align="center"></el-table-column>
+                <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'14px',padding:'0'}"  :cell-style="setPaperCellStyle" style="font-size: 12px">
+                    <el-table-column prop="handle_paper" align="center">
+                        <template slot-scope="scope">
+                            <span style="font-weight:bold;color:black">{{scope.row.handle_paper}}</span>
+                        </template>
+                    </el-table-column>
+                    <el-table-column prop="unhandle_paper" align="center">
+                        <template slot-scope="scope">
+                            <span style="font-weight:bold;color:black">{{scope.row.unhandle_paper}}</span>
+                        </template>
+                    </el-table-column>
                 </el-table>
+            </div>
+        </div>
+        <div id="compare_text">综&nbsp;&nbsp;合&nbsp;&nbsp;分&nbsp;&nbsp;值</div>
+        <div id="compare">
+            <img id="legend" src="/image/legend_weekly.jpg">
+            <div id="yAxis">
+                <img class="image" src="/image/yAxis.jpg">
+            </div>
+            <img id="xAxis" src="/image/xAxis_weekly.jpg">
+            <div id="compare_graph">
+                <highcharts :options="chartOptions3" style="width:230px;height:130px;"></highcharts>
             </div>
         </div>
     </div>
 </body>
 <script>
     Vue.use(HighchartsVue.default);
-    $(document).ready(function(){
+    /*$(document).ready(function(){
         $(window).resize(function() {
             var cliWidth = document.body.scrollWidth;
             var cliHeight = document.body.scrollHeight;
@@ -264,7 +308,7 @@
             $('#app').css("transform","scale(" + (cliHeight / 2386.5) + ")");
             $('#app').css("margin-left",( document.body.scrollWidth - 450) / 2 );
         });
-    });
+    });*/
 
     $(document).mouseup(function(e){
         var popPaper = $('#pop_paper');  
@@ -284,6 +328,23 @@
         }
     });
 
+    window.addEventListener("orientationchange",() => {
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            var deviceWidth = document.documentElement.clientWidth;
+            var deviceHeight = document.documentElement.clientHeight;
+            if(window.orientation == 0 || window.orientation == 180) {
+                deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "center top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+            }
+            if(window.orientation == 90 || window.orientation == -90) {
+                deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "center top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+            }
+        }
+    });
+
     var app = new Vue({
         el: "#app",
         data: {
@@ -297,12 +358,17 @@
             smt_movie: 20,
             lib_book: 20,
             lib_hour: 20,
+            smt_word_total: 266,
+            smt_sentence_total: 200,
+            smt_movie_total: 48,
+            finish_lesson: 3,
+            total_lesson: 4,
+            finish_movie: 3,
+            total_movie: 4,
             isPop: false,
             isWordPop: false,
             isPaperPop: false,
-            isLevelPop: false,
             stuName: '小王',
-            effect: '略有提升',
             urls: [
                 '/image/test1.jpg',
                 '/image/test2.jpg',
@@ -311,23 +377,27 @@
                 '/image/test5.jpg',
             ],
             wordData: {
-                time: 10,
+                time: 160,
+                times: 8,
                 avgScore: 90,
                 avgTime: 20,
                 point_handle: 3,
-                progress: 30,
-                chinese: '提升'
+                word_unhandle: 3,
+                progress: -30,
             },
             paperData: {
-                time: 15,
+                times: 15,
+                probNum: 40,
+                probEasy: 40,
+                probMedium: 40,
+                probHard: 20,
                 avgScore: 85,
                 avgTime: 25,
                 point_handle: 5,
                 progress: 40,
-                chinese: '提升'
             },
-            wordHandle: [{handle_word: 'AA'},{handle_word: 'BB'},{handle_word: 'CC'},{handle_word: 'DD'},{handle_word: 'EE'},{handle_word: 'FF'}],
-            paperHandle: [{handle_paper: 'DD'},{handle_paper: 'EE'},{handle_paper: 'FF'}],
+            wordComment: [{word: 'alligator',evaluate: '/image/evaluate1.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate2.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate3.png',audio: ''}],
+            paperHandle: [{handle_paper: 'DD',unhandle_paper: 'AA'},{handle_paper: 'EE',unhandle_paper: 'BB'},{handle_paper: 'FF',unhandle_paper: 'CC'}],
             chartOptions1: {
                 chart: {
                     type: 'areaspline'
@@ -364,32 +434,33 @@
                 plotOptions: {
                     areaspline: {
                         marker: {
+                            enabled:false,
                             radius: 7,
                             fillColor: 'white',
-                            lineColor: 'purple',
+                            lineColor: 'rgba(143, 4, 143)',
                             lineWidth: 4
                         },
                         states: {
                             hover: {
-                                enabled: false
+                                enabled: true
                             }
                         },
                         fillColor: {
                             linearGradient: [0, 0, 0, 150],
                             stops: [
                                 [0, 'rgba(143, 4, 143, 0.664)'],
-                                [1, 'white']
+                                [0.8, 'white']
                             ]
                         }
                     }
                 },
                 series: [{
                     name: '',
-                    color: 'purple',
+                    color: 'rgba(143, 4, 143)',
                     marker: {
                         symbol: 'circle'
                     },
-                    lineWidth: 5,
+                    lineWidth: 3,
                     data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
                 }]
             },
@@ -429,50 +500,141 @@
                 plotOptions: {
                     areaspline: {
                         marker: {
+                            enabled:false,
                             radius: 7,
                             fillColor: 'white',
-                            lineColor: 'purple',
+                            lineColor: 'rgba(143, 4, 143)',
                             lineWidth: 4
                         },
                         states: {
                             hover: {
-                                enabled: false
+                                enabled: true
                             }
                         },
                         fillColor: {
                             linearGradient: [0, 0, 0, 150],
                             stops: [
                                 [0, 'rgba(143, 4, 143, 0.664)'],
-                                [1, 'white']
+                                [0.8, 'white']
                             ]
                         }
                     }
                 },
                 series: [{
                     name: '',
-                    color: 'purple',
+                    color: 'rgba(143, 4, 143)',
                     marker: {
                         symbol: 'circle'
                     },
-                    lineWidth: 5,
+                    lineWidth: 3,
                     data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
+                }]
+            },
+            chartOptions3: {
+                chart: {
+                    type: 'spline'
+                },
+                title: {
+                    text: null
+                },
+                credits: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                legend: {
+                    enabled: false
+                },
+                xAxis: {
+                    categories: [0,1,2,3,4],
+                    labels: {
+                        enabled: false
+                    },
+                    gridLineWidth: 1,
+                    gridLineDashStyle: 'shortdash',
+                    tickmarkPlacement: 'on',
+                    lineWidth: 1
+                },
+                yAxis: {
+                    tickPositions: [0,10,20,30,40,50,60],
+                    title: {
+                        text: null
+                    },
+                    labels: {
+                        enabled: false
+                    }
+                },
+                tooltip: {
+                    enabled: false,
+                },
+                plotOptions: {
+                    spline: {
+                        marker: {
+                            radius: 2,
+                            fillColor: 'white',
+                            lineWidth: 1
+                        },
+                        states: {
+                            hover: {
+                                enabled: false
+                            }
+                        },
+                        enableMouseTracking: false
+                    }
+                },
+                series: [{
+                    name: '',
+                    marker: {
+                        symbol: 'circle',
+                        lineColor: '#FD9732'
+                    },
+                    lineColor: '#FD9732',
+                    lineWidth: 1,
+                    data: [48, 100, 72, 84, 91]
+                },{
+                    name: '',
+                    marker: {
+                        symbol: 'circle',
+                        lineColor: '#C7C7C7'
+                    },
+                    lineColor: '#C7C7C7',
+                    lineWidth: 1,
+                    data: [75, 64, 83, 96, 77]
                 }]
             }
         },
         computed: {
-            fullLev() {
+            diff_pic_src() {
                 if(this.level === 1) {
-                    return "/image/fullLev1_1.jpg";
+                    return "/image/diff1_week.png";
                 }else if(this.level === 2) {
-                    return "/image/fullLev1_2.png";
+                    return "/image/diff2_week.png";
                 }else if(this.level === 3) {
-                    return "/image/fullLev1_3.png";
+                    return "/image/diff3_week.png";
                 }else if(this.level === 4) {
-                    return "/image/fullLev1_4.png";
+                    return "/image/diff4_week.png";
                 }else if(this.level === 5) {
-                    return "/image/fullLev1_5.png";
+                    return "/image/diff5_week.png";
                 }else if(this.level === 6) {
-                    return "/image/fullLev1_6.png";
+                    return "/image/diff6_week.png";
+                }
+            },
+            lib_book_total() {
+                if(this.readLev === 1) {
+                    return 163;
+                }else if(this.readLev === 2) {
+                    return 178;
+                }else if(this.readLev === 3) {
+                    return 145;
+                }else if(this.readLev === 4) {
+                    return 137;
+                }else if(this.readLev === 5) {
+                    return 160;
+                }else if(this.readLev === 6) {
+                    return 115;
+                }else if(this.readLev === 7) {
+                    return 111;
                 }
             },
             Lv1() {
@@ -584,6 +746,17 @@
             },
         },
         methods: {
+            format() {
+                return '';
+            },
+
+            chinese(num) {
+                if(num > 0)
+                    return "提升";
+                else 
+                    return "下降";
+            },
+
             tableRowClassName: function ({row, rowIndex}) {
                 if ((rowIndex % 2) !== 0) {
                     return 'white_row';
@@ -592,12 +765,29 @@
                 }
             },
 
-            checkTrail: function () {
-                this.isPop = true;
+            setWordCellStyle : function ({column, columnIndex}) {
+                if(columnIndex === 0) {
+                    return 'padding: 4px 0;borderRadius: 6px 0 0 6px';
+                }else if(columnIndex === 1) {
+                    return 'padding: 4px 0;borderRadius: 0 0 0 0';
+                }else {
+                    return 'padding: 4px 0;borderRadius: 0 6px 6px 0';
+                }
             },
 
-            checkLevel: function () {
-                this.isLevelPop = true;
+            setPaperCellStyle : function ({column, columnIndex}) {
+                if(columnIndex === 0) {
+                    return 'padding: 4px 0;borderRadius: 6px 0 0 6px';
+                }else {
+                    return 'padding: 4px 0;borderRadius: 0 6px 6px 0';
+                }
+            },
+
+            wordPlay: function (url) {
+                alert(url);
+            },
+
+            checkTrail: function () {
                 this.isPop = true;
             },
 
@@ -609,6 +799,24 @@
             paperDetail: function () {
                 this.isPaperPop = true;
                 this.isPop = true;
+            },
+
+            CmpGraphPretreat: function (array) {
+                for(var i = 0;i < array.length;i++) {
+                    if(array[i] < 60)
+                        array[i] = array[i] * 10 / 60;
+                    else if(array[i] < 65)
+                        array[i] = 10 + 10 * ((array[i] - 60) / 5);
+                    else if(array[i] < 75)
+                        array[i] = 20 + 10 * ((array[i] - 65) / 10);
+                    else if(array[i] < 85)
+                        array[i] = 30 + 10 * ((array[i] - 75) / 10);
+                    else if(array[i] < 95)
+                        array[i] = 40 + 10 * ((array[i] - 85) / 10);
+                    else
+                        array[i] = 50 + 10 * ((array[i] - 95) / 5);
+                }
+                return array;
             },
 
             getInit: function () {
@@ -639,25 +847,31 @@
             },
         },
         created: function () {
-            if(navigator.userAgent.match(/Android/i)
-		        || navigator.userAgent.match(/webOS/i)
-		        || navigator.userAgent.match(/iPhone/i)
-                || navigator.userAgent.match(/iPad/i)
-                || navigator.userAgent.match(/iPod/i)
-                || navigator.userAgent.match(/BlackBerry/i)
-                || navigator.userAgent.match(/Windows Phone/i)) {
-                var cliWidth = window.screen.width;
-                var cliHeight = window.screen.height;
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (cliWidth / 450) + ")");
+            if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+                var deviceWidth = document.documentElement.clientWidth;
+                var deviceHeight = document.documentElement.clientHeight;
+                if(window.orientation == 0 || window.orientation == 180) {
+                    deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+                }
+                if(window.orientation == 90 || window.orientation == -90) {
+                    deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
+                    document.getElementById("app").style.transformOrigin = "center top";
+                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+                }
             }else {
-                var cliWidth = document.body.scrollWidth;
-                var cliHeight = document.body.scrollHeight;
-                $('#app').css("transform-origin","0 0");
-                $('#app').css("transform","scale(" + (cliHeight / 2386.5) + ")");
-                $('#app').css("margin-left",( document.body.scrollWidth - 450) / 2 );
+                var deviceWidth = document.documentElement.clientWidth;
+                document.getElementById("app").style.transformOrigin = "center top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / (450 * 3)) + ")";
+
             }
-            
+            document.getElementById("smt_point").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";
+            document.getElementById("iptv_point").style.left = (99 * this.finish_lesson / this.total_lesson + 217) + "px";
+            document.getElementById("smt_progress_text").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";
+            document.getElementById("iptv_progress_text").style.left = (99 * this.finish_lesson / this.total_lesson + 217) + "px";
+            this.chartOptions3.series[0].data = this.CmpGraphPretreat(this.chartOptions3.series[0].data);
+            this.chartOptions3.series[1].data = this.CmpGraphPretreat(this.chartOptions3.series[1].data);
         }
     })
 </script>
