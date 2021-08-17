@@ -18,247 +18,298 @@
 </head>
 <body>
     <div id="app">
-        <div id="layer" v-show="isPop"></div>
-        <div id="bg">
-            <img class="image" style="left: 0;" src="/image/bg2.jpg">
+        <div id="bind_win" v-show="ifBind">
+            <img style="position: absolute;width: 100%;height: auto;" src="/image/bind.png" @load="() => { this.winShow = true }">
+            <img style="position: absolute;width: 28%;height: auto;top: 410px;left: 36%;cursor: pointer;" src="/image/bind_button.png" @click="bind" v-if="winShow">
+            <el-input v-model="bindData.orgCode" style="top: 194px;" :disabled="false" prefix-icon="" class="input_bar" v-if="winShow"></el-input>
+            <el-input v-model="smtId" style="top: 219px;" :disabled="false" prefix-icon="" class="input_bar" v-if="winShow"></el-input>
+            <el-input v-model="bindData.password" style="top: 243px;" :disabled="false" prefix-icon="" class="input_bar" show-password v-if="winShow"></el-input>
         </div>
-        <div id="basicInfo">
-            <div id="levelInfo">
-                <img class="image" src="/image/blue-bg.png">
-                <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;等级/</div>
-                <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';top: -4%;font-size: 1.4rem;">Level {{ level }}</div>
-                <button type="button" id="checkLevel" @click="checkLevel"></button>
+        <div id="container">
+            <div id="bg">
+                <img class="image" style="left: 0;" src="/image/bg2.jpg">
             </div>
-            <div id="classInfo">
-                <img class="image" src="/image/yellow-bg.png">
-                <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;课时/</div>
-                <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';font-size: 0.8rem;">Week {{ week }} / Lesson {{ lesson }}</div>
+            <div id="basicInfo">
+                <div id="levelInfo">
+                    <img class="image" src="/image/blue-bg.png">
+                    <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;等级/</div>
+                    <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';top: -4%;font-size: 1.4rem;">Level {{ level }}</div>
+                    <button type="button" id="checkLevel" @click="checkLevel"></button>
+                </div>
+                <div id="classInfo">
+                    <img class="image" src="/image/yellow-bg.png">
+                    <div style="position: relative;width: 100%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">&nbsp;课时/</div>
+                    <div style="text-align: center;position: relative;width: 100%;font-family: 'GothamRoundedMedium';font-size: 0.8rem;">Week {{ week }} / Lesson {{ lesson }}</div>
+                </div>
+            </div>
+            <div id="diff_table">
+                <img  style="height: 100%;width: auto;position: absolute;" :src="diff_pic_src">
+            </div>
+            <div id="score_detail">
+                <img class="image" src="/image/table_bg.jpg">
+                <div id="myScore">
+                    <img class="image" src="/image/myScore_end.png">
+                </div>
+                <div id="total_dashbd">
+                    <div style="position: absolute;width: 80%;height: 80%;">
+                        <img class="image" src="/image/dashbd_end.png">
+                    </div>
+                    <div style="font-family: GothamRoundedMedium;font-size: 24px;font-weight: 600;position: relative;top: 1.5%;left: 1%;">{{ end_score_lev[0] }}</div>
+                    <div id="red_score">
+                        <img class="image" src="/image/red_score.png">
+                        <div class="score_text" style="bottom: 0;left: 0;width: 112.71%;height: 63.23%;transform-origin: left bottom;">阅读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[4] }}</span></div>
+                    </div>
+                    <div id="yellow_score">
+                        <img class="image" src="/image/yellow_score.png">
+                        <div class="score_text" style="top: 0;left: 0;width: 116.19%;height: 61.5%;transform-origin:left top;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[2] }}</span></div>
+                    </div>
+                    <div id="blue_score">
+                        <img class="image" src="/image/blue_score_reverse.png">
+                        <div class="score_text" style="bottom: 0;left: 0;width: 133.33%;height: 58.39%;transform-origin: left bottom;">语法:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[3] }}</span></div>
+                    </div>
+                    <div id="purple_score">
+                        <img class="image" src="/image/purple_score.png">
+                        <div class="score_text" style="top: 0;left: 0;width: 133.33%;height: 59.16%;transform-origin: left top;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[1] }}</span></div>
+                    </div>
+                </div>
+                <div id="read_dashbd" class="little_dashbd">
+                    <div class="square">
+                        <img class="image" v-show="end_score.read !== 0" src="/image/red_square.png">
+                        <img class="image" v-show="end_score.read === 0" src="/image/gray_square.png">
+                    </div>
+                    <div class="square_text" v-show="end_score.read !== 0" style="color: #ff6245;">{{ end_score_lev[4] }}</div>
+                    <div class="square_text" v-show="end_score.read === 0" style="color: #e8e8e8;">{{ end_score_lev[4] }}</div>
+                    <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">阅 读</div>
+                    <a-progress type="dashboard" :percent="end_score.read" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#ff6245'}"/>
+                </div>
+                <div id="spell_dashbd" class="little_dashbd">
+                    <div class="square">
+                        <img class="image" v-show="end_score.spell !== 0" src="/image/yellow_square.png">
+                        <img class="image" v-show="end_score.spell === 0" src="/image/gray_square.png">
+                    </div>
+                    <div class="square_text" v-show="end_score.spell !== 0" style="color: #fe9c37;">{{ end_score_lev[2] }}</div>
+                    <div class="square_text" v-show="end_score.spell === 0" style="color: #e8e8e8;">{{ end_score_lev[2] }}</div>
+                    <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">拼 读</div>
+                    <a-progress type="dashboard" :percent="end_score.spell" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#fe9c37'}"/>
+                </div>
+                <div id="grammar_dashbd" class="little_dashbd">
+                    <div class="square">
+                        <img class="image" v-show="end_score.grammar !== 0" src="/image/blue_square.png">
+                        <img class="image" v-show="end_score.grammar === 0" src="/image/gray_square.png">
+                    </div>
+                    <div class="square_text" v-show="end_score.grammar !== 0" style="color: #5a71fb;">{{ end_score_lev[3] }}</div>
+                    <div class="square_text" v-show="end_score.grammar === 0" style="color: #e8e8e8;">{{ end_score_lev[3] }}</div>
+                    <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">语 法</div>
+                    <a-progress type="dashboard" :percent="end_score.grammar" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#5a71fb'}"/>
+                </div>
+                <div id="speak_dashbd" class="little_dashbd">
+                    <div class="square">
+                        <img class="image" v-show="end_score.speak !== 0" src="/image/purple_square.png">
+                        <img class="image" v-show="end_score.speak === 0" src="/image/gray_square.png">
+                    </div>
+                    <div class="square_text" v-show="end_score.speak !== 0" style="color: #b438fc;">{{ end_score_lev[1] }}</div>
+                    <div class="square_text" v-show="end_score.speak === 0" style="color: #e8e8e8;">{{ end_score_lev[1] }}</div>
+                    <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">口 语</div>
+                    <a-progress type="dashboard" :percent="end_score.speak" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#b438fc'}"/>
+                </div>
+            </div>
+            <div id="record">
+                <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
+                <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">录</div>
+            </div>
+            <div id="SMTmain">
+                <div id="SMARTREE">
+                    <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/SMARTREE.png">
+                    <div>&nbsp;SMT主课件</div>
+                </div>
+                <div id="IPTV">
+                    <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/IPTV.png">
+                    <div>&nbsp;IPTV</div>
+                </div>
+                <div id="smt_point">
+                    <img class="image" src="/image/point.png">
+                </div>
+                <div id="iptv_point">
+                    <img class="image" src="/image/point.png">
+                </div>
+                <div id="smt_progress_text">{{ finish_lesson }}/{{ total_lesson }}</div>
+                <div id="iptv_progress_text">{{ finish_movie }}/{{ total_movie }}</div>
+                <el-progress id="smt_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_lesson*100/total_lesson"></el-progress>
+                <el-progress id="iptv_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_movie*100/total_movie"></el-progress>
+                <div id="smt_text"><span style="color: #438AE4;">实际完成课时数</span><span style="color: #5B595A;">/应完成课时数</span></div>
+                <div id="iptv_text"><span style="color: #438AE4;">实际完成观影数</span><span style="color: #5B595A;">/应完成观影数</span></div>
+                <div id="main_report">
+                    <div class="rect1">
+                        <img class="image" src="/image/SMTword.png">
+                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_word*100/smt_word_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_word }}</span>/{{ smt_word_total }}</div>
+                    </div>
+                    <div class="rect2">
+                        <img class="image" src="/image/SMTsentence.png">
+                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_sentence*100/smt_sentence_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_sentence }}</span>/{{ smt_sentence_total }}</div>
+                    </div>
+                    <div class="rect3">
+                        <img class="image" src="/image/SMTmovie.png">
+                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_movie*100/smt_movie_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_movie }}</span>/{{ smt_movie_total }}</div>
+                    </div>
+                </div>
+                <button type="button" id="checkTrail" @click="checkTrail"></button>
+            </div>
+            <div id="library">
+                <div style="width: 17%;left: 1.5%;height: 6%;position: absolute;">
+                    <img class="image" src="/image/library.png">
+                    <div id="blue_circle1">
+                        <img class="image" src="/image/blue_circle.png">
+                    </div>
+                </div>
+                <div id="lib_report">
+                    <div id="libBook" class="rect4">
+                        <img class="image" src="/image/LIBbook.png">
+                        <el-progress :text-inside="true" :stroke-width="11" :percentage="lib_book*100/lib_book_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_book }}</span>/{{ lib_book_total }}</div>
+                    </div>
+                    <div id="libHour" class="rect5">
+                        <img class="image" src="/image/LIBhour.png">
+                        <el-progress :text-inside="true" :stroke-width="11" :percentage="0" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_hour }}</span>h</div>
+                    </div>
+                </div>
+                <div id="book">
+                    <div style="position: relative;top: -3%;">当前阅读书本</div>
+                    <div id="showBook">
+                        <img class="image" src="/image/book_bg2.jpg">
+                        <div id="bookImage">
+                            <el-carousel :interval="4000" type="card" height="75px" arrow="never" indicator-position="none">
+                                <el-carousel-item v-for="url in urls" :key="url">
+                                    <img class="image" :src="url">
+                                </el-carousel-item>
+                            </el-carousel>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="readlevel">
+                <div style="width: 20%;left: 1.5%;height: 7%;position: absolute;">
+                    <img class="image" src="/image/readlevel.png">
+                    <div id="blue_circle2">
+                        <img class="image" src="/image/blue_circle.png">
+                    </div>
+                </div>
+                <div id="level">
+                    <div id="read_info">
+                        <img class="image" src="/image/shadow.png">
+                        Level 1/100L
+                    </div>
+                    <div style="width: 25%;height: 6%;;position: absolute;top: 0;left: 0;">
+                        <img class="image" src="/image/readLv.png">
+                    </div>
+                    <div id="read_table">
+                        <img class="image" src="/image/table.png">
+                        <div id="lv1" v-bind:style="Lv1">
+                            <img class="image" src="/image/lv1.png">
+                        </div>
+                        <div id="lv2" v-bind:style="Lv2">
+                            <img class="image" src="/image/lv2.png">
+                        </div>
+                        <div id="red1" v-bind:style="Red1">
+                            <img class="image" :src="red1Src">
+                        </div>
+                        <div id="red2" v-bind:style="Red2">
+                            <img class="image" src="/image/red2.png">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="analysis">
+                <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">分</div>
+                <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">析</div>
+            </div>
+            <div id="word_part">
+                <div id="AI">
+                    <img class="image" src="/image/AI.png">
+                </div>
+                <div id="AI_analysis">
+                    <img class="image" src="/image/AI_analysis.png">
+                </div>
+                <div id="pic_part">
+                    <img class="image" src="/image/pic_bg2.png">
+                    <div id="word">
+                        <img class="image" src="/image/word2.png">
+                    </div>
+                    <div id="time_avg">
+                        <img class="image" src="/image/time_avg2.png">
+                        <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
+                    </div>
+                    <div id="score_word_avg">
+                        <img class="image" src="/image/score_word_avg2.jpg">
+                        <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
+                    </div>
+                    <div id="word_handle">
+                        <img class="image" src="/image/word_handle2.png">
+                    </div>
+                </div>
+                <div id="text_part">
+                    <div id="text">
+                        在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
+                        本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ chinese(wordData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(wordData.progress) }}</span> %。
+                    </div>
+                    <div id="show_word_score">
+                        <div id="handle_num">&nbsp;{{ wordData.word_unhandle }}</div>
+                        <div id="score_avg">&nbsp;{{ wordData.avgScore }}</div>
+                        <div id="effect">{{ wordData.progress }}%&nbsp;</div>
+                        <img class="image" src="/image/show_score2.png">
+                    </div>
+                </div>
+                <button type="button" id="word_detail" @click="wordDetail"></button>
+            </div>
+            <div id="paper_part">
+                <div id="pic_part2">
+                    <img class="image" src="/image/pic_bg2.png">
+                    <div id="paper">
+                        <img class="image" src="/image/paper2.png">
+                    </div>
+                    <div id="time_avg2">
+                        <img class="image" src="/image/time_avg2.png">
+                        <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
+                    </div>
+                    <div id="score_paper_avg">
+                        <img class="image" src="/image/score_paper_avg2.png">
+                        <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
+                    </div>
+                    <div id="point_handle">
+                        <img class="image" src="/image/point_handle2.png">
+                    </div>
+                </div>
+                <div id="text_part2">
+                    <div id="text2">
+                        在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
+                        本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ chinese(paperData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(paperData.progress) }}</span> %。
+                    </div>
+                    <div id="show_paper_score">
+                        <div id="handle_num2">&nbsp;{{ paperData.point_handle }}</div>
+                        <div id="score_avg2">&nbsp;{{ paperData.avgScore }}</div>
+                        <div id="effect2">{{ paperData.progress }}%&nbsp;</div>
+                        <img class="image" src="/image/show_score.png">
+                    </div>
+                </div>
+                <button type="button" id="paper_detail" @click="paperDetail"></button>
+            </div>
+            <div id="compare_text">综&nbsp;&nbsp;合&nbsp;&nbsp;分&nbsp;&nbsp;值</div>
+            <div id="compare">
+                <img id="legend" src="/image/legend_term.jpg">
+                <div id="yAxis">
+                    <img class="image" src="/image/yAxis.jpg">
+                </div>
+                <img id="xAxis" src="/image/xAxis_term.jpg">
+                <div id="compare_graph">
+                    <highcharts :options="chartOptions3" style="width:230px;height:130px;"></highcharts>
+                </div>
             </div>
         </div>
         <div id="fullLevel" v-show="isLevelPop">
             <img class="image" :src="fullLev">
-        </div>
-        <div id="diff_table">
-            <img  style="height: 100%;width: auto;position: absolute;" :src="diff_pic_src">
-        </div>
-        <div id="score_detail">
-            <img class="image" src="/image/table_bg.jpg">
-            <div id="myScore">
-                <img class="image" src="/image/myScore_end.png">
-            </div>
-            <div id="total_dashbd">
-                <div style="position: absolute;width: 80%;height: 80%;">
-                    <img class="image" src="/image/dashbd_end.png">
-                </div>
-                <div style="font-family: GothamRoundedMedium;font-size: 24px;font-weight: 600;position: relative;top: 1.5%;left: 1%;">{{ end_score_lev[0] }}</div>
-                <div id="red_score">
-                    <img class="image" src="/image/red_score.png">
-                    <div class="score_text" style="bottom: 0;left: 0;width: 112.71%;height: 63.23%;transform-origin: left bottom;">阅读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[4] }}</span></div>
-                </div>
-                <div id="yellow_score">
-                    <img class="image" src="/image/yellow_score.png">
-                    <div class="score_text" style="top: 0;left: 0;width: 116.19%;height: 61.5%;transform-origin:left top;">拼读:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[2] }}</span></div>
-                </div>
-                <div id="blue_score">
-                    <img class="image" src="/image/blue_score_reverse.png">
-                    <div class="score_text" style="bottom: 0;left: 0;width: 133.33%;height: 58.39%;transform-origin: left bottom;">语法:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[3] }}</span></div>
-                </div>
-                <div id="purple_score">
-                    <img class="image" src="/image/purple_score.png">
-                    <div class="score_text" style="top: 0;left: 0;width: 133.33%;height: 59.16%;transform-origin: left top;">口语:<span style="font-family: 'GothamRoundedMedium';">{{ end_score_lev[1] }}</span></div>
-                </div>
-            </div>
-            <div id="read_dashbd" class="little_dashbd">
-                <div class="square">
-                    <img class="image" v-show="end_score.read !== 0" src="/image/red_square.png">
-                    <img class="image" v-show="end_score.read === 0" src="/image/gray_square.png">
-                </div>
-                <div class="square_text" v-show="end_score.read !== 0" style="color: #ff6245;">{{ end_score_lev[4] }}</div>
-                <div class="square_text" v-show="end_score.read === 0" style="color: #e8e8e8;">{{ end_score_lev[4] }}</div>
-                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">阅 读</div>
-                <a-progress type="dashboard" :percent="end_score.read" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#ff6245'}"/>
-            </div>
-            <div id="spell_dashbd" class="little_dashbd">
-                <div class="square">
-                    <img class="image" v-show="end_score.spell !== 0" src="/image/yellow_square.png">
-                    <img class="image" v-show="end_score.spell === 0" src="/image/gray_square.png">
-                </div>
-                <div class="square_text" v-show="end_score.spell !== 0" style="color: #fe9c37;">{{ end_score_lev[2] }}</div>
-                <div class="square_text" v-show="end_score.spell === 0" style="color: #e8e8e8;">{{ end_score_lev[2] }}</div>
-                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">拼 读</div>
-                <a-progress type="dashboard" :percent="end_score.spell" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#fe9c37'}"/>
-            </div>
-            <div id="grammar_dashbd" class="little_dashbd">
-                <div class="square">
-                    <img class="image" v-show="end_score.grammar !== 0" src="/image/blue_square.png">
-                    <img class="image" v-show="end_score.grammar === 0" src="/image/gray_square.png">
-                </div>
-                <div class="square_text" v-show="end_score.grammar !== 0" style="color: #5a71fb;">{{ end_score_lev[3] }}</div>
-                <div class="square_text" v-show="end_score.grammar === 0" style="color: #e8e8e8;">{{ end_score_lev[3] }}</div>
-                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">语 法</div>
-                <a-progress type="dashboard" :percent="end_score.grammar" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#5a71fb'}"/>
-            </div>
-            <div id="speak_dashbd" class="little_dashbd">
-                <div class="square">
-                    <img class="image" v-show="end_score.speak !== 0" src="/image/purple_square.png">
-                    <img class="image" v-show="end_score.speak === 0" src="/image/gray_square.png">
-                </div>
-                <div class="square_text" v-show="end_score.speak !== 0" style="color: #b438fc;">{{ end_score_lev[1] }}</div>
-                <div class="square_text" v-show="end_score.speak === 0" style="color: #e8e8e8;">{{ end_score_lev[1] }}</div>
-                <div style="position: absolute;font-size: 12px;font-family: 'Microsoft YaHei';font-weight: 600;transform: scale(0.8);-moz-transform:scale(0.8);top: -15%;left: 1%;color: rgb(158, 158, 160);">口 语</div>
-                <a-progress type="dashboard" :percent="end_score.speak" :width="45" :stroke-width="11" :gap-degree="20" gap-position="bottom" :show-info="false" :stroke-color="{'100%': '#b438fc'}"/>
-            </div>
-        </div>
-        <div id="record">
-            <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
-            <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">录</div>
-        </div>
-        <div id="SMTmain">
-            <div id="SMARTREE">
-                <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/SMARTREE.png">
-                <div>&nbsp;SMT主课件</div>
-            </div>
-            <div id="IPTV">
-                <img class="image" style="height: 100%;width: auto;position: relative;" src="/image/IPTV.png">
-                <div>&nbsp;IPTV</div>
-            </div>
-            <div id="smt_point">
-                <img class="image" src="/image/point.png">
-            </div>
-            <div id="iptv_point">
-                <img class="image" src="/image/point.png">
-            </div>
-            <div id="smt_progress_text">{{ finish_lesson }}/{{ total_lesson }}</div>
-            <div id="iptv_progress_text">{{ finish_movie }}/{{ total_movie }}</div>
-            <el-progress id="smt_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_lesson*100/total_lesson"></el-progress>
-            <el-progress id="iptv_progress" color="#247CE0" :stroke-width="3" :format="format" :percentage="finish_movie*100/total_movie"></el-progress>
-            <div id="smt_text"><span style="color: #438AE4;">实际完成课时数</span><span style="color: #5B595A;">/应完成课时数</span></div>
-            <div id="iptv_text"><span style="color: #438AE4;">实际完成观影数</span><span style="color: #5B595A;">/应完成观影数</span></div>
-            <div id="main_report">
-                <div class="rect1">
-                    <img class="image" src="/image/SMTword.png">
-                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_word*100/smt_word_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
-                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_word }}</span>/{{ smt_word_total }}</div>
-                </div>
-                <div class="rect2">
-                    <img class="image" src="/image/SMTsentence.png">
-                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_sentence*100/smt_sentence_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
-                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_sentence }}</span>/{{ smt_sentence_total }}</div>
-                </div>
-                <div class="rect3">
-                    <img class="image" src="/image/SMTmovie.png">
-                    <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_movie*100/smt_movie_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
-                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_movie }}</span>/{{ smt_movie_total }}</div>
-                </div>
-            </div>
-            <button type="button" id="checkTrail" @click="checkTrail"></button>
-        </div>
-        <div id="library">
-            <div style="width: 17%;left: 1.5%;height: 6%;position: absolute;">
-                <img class="image" src="/image/library.png">
-                <div id="blue_circle1">
-                    <img class="image" src="/image/blue_circle.png">
-                </div>
-            </div>
-            <div id="lib_report">
-                <div id="libBook" class="rect4">
-                    <img class="image" src="/image/LIBbook.png">
-                    <el-progress :text-inside="true" :stroke-width="11" :percentage="lib_book*100/lib_book_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
-                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_book }}</span>/{{ lib_book_total }}</div>
-                </div>
-                <div id="libHour" class="rect5">
-                    <img class="image" src="/image/LIBhour.png">
-                    <el-progress :text-inside="true" :stroke-width="11" :percentage="0" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
-                    <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ lib_hour }}</span>h</div>
-                </div>
-            </div>
-            <div id="book">
-                <div style="position: relative;top: -3%;">当前阅读书本</div>
-                <div id="showBook">
-                    <img class="image" src="/image/book_bg2.jpg">
-                    <div id="bookImage">
-                        <el-carousel :interval="4000" type="card" height="75px" arrow="never" indicator-position="none">
-                            <el-carousel-item v-for="url in urls" :key="url">
-                                <img class="image" :src="url">
-                            </el-carousel-item>
-                        </el-carousel>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="readlevel">
-            <div style="width: 20%;left: 1.5%;height: 7%;position: absolute;">
-                <img class="image" src="/image/readlevel.png">
-                <div id="blue_circle2">
-                    <img class="image" src="/image/blue_circle.png">
-                </div>
-            </div>
-            <div id="level">
-                <div id="read_info">
-                    <img class="image" src="/image/shadow.png">
-                    Level 1/100L
-                </div>
-                <div style="width: 25%;height: 6%;;position: absolute;top: 0;left: 0;">
-                    <img class="image" src="/image/readLv.png">
-                </div>
-                <div id="read_table">
-                    <img class="image" src="/image/table.png">
-                    <div id="lv1" v-bind:style="Lv1">
-                        <img class="image" src="/image/lv1.png">
-                    </div>
-                    <div id="lv2" v-bind:style="Lv2">
-                        <img class="image" src="/image/lv2.png">
-                    </div>
-                    <div id="red1" v-bind:style="Red1">
-                        <img class="image" :src="red1Src">
-                    </div>
-                    <div id="red2" v-bind:style="Red2">
-                        <img class="image" src="/image/red2.png">
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div id="analysis">
-            <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">分</div>
-            <div style="position: absolute;left: 65%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">析</div>
-        </div>
-        <div id="word_part">
-            <div id="AI">
-                <img class="image" src="/image/AI.png">
-            </div>
-            <div id="AI_analysis">
-                <img class="image" src="/image/AI_analysis.png">
-            </div>
-            <div id="pic_part">
-                <img class="image" src="/image/pic_bg2.png">
-                <div id="word">
-                    <img class="image" src="/image/word2.png">
-                </div>
-                <div id="time_avg">
-                    <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ wordData.avgTime }}m</div>
-                </div>
-                <div id="score_word_avg">
-                    <img class="image" src="/image/score_word_avg2.jpg">
-                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ wordData.avgScore }}</div>
-                </div>
-                <div id="word_handle">
-                    <img class="image" src="/image/word_handle2.png">
-                </div>
-            </div>
-            <div id="text_part">
-                <div id="text">
-                    在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
-                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ chinese(wordData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(wordData.progress) }}</span> %。
-                </div>
-                <div id="show_word_score">
-                    <div id="handle_num">&nbsp;{{ wordData.word_unhandle }}</div>
-                    <div id="score_avg">&nbsp;{{ wordData.avgScore }}</div>
-                    <div id="effect">{{ wordData.progress }}%&nbsp;</div>
-                    <img class="image" src="/image/show_score2.png">
-                </div>
-            </div>
-            <button type="button" id="word_detail" @click="wordDetail"></button>
         </div>
         <div id="pop_word" v-show="isWordPop">
             <img class="image" src="/image/pop_window2.png">
@@ -298,38 +349,6 @@
                 </el-table>
             </div>
         </div>
-        <div id="paper_part">
-            <div id="pic_part2">
-                <img class="image" src="/image/pic_bg2.png">
-                <div id="paper">
-                    <img class="image" src="/image/paper2.png">
-                </div>
-                <div id="time_avg2">
-                    <img class="image" src="/image/time_avg2.png">
-                    <div style="position: absolute;top: 100%;font-size: 26px;font-family: 'GothamRoundedMedium';color: rgb(255,183,27);">{{ paperData.avgTime }}m</div>
-                </div>
-                <div id="score_paper_avg">
-                    <img class="image" src="/image/score_paper_avg2.png">
-                    <div style="position: absolute;top: 105%;font-size: 26px;left: 25%;font-family: 'GothamRoundedMedium';color: rgb(104,159,255)">{{ paperData.avgScore }}</div>
-                </div>
-                <div id="point_handle">
-                    <img class="image" src="/image/point_handle2.png">
-                </div>
-            </div>
-            <div id="text_part2">
-                <div id="text2">
-                    在语法方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.point_handle }}</span> 个，<br>
-                    本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ paperData.avgScore }}</span>，较上一阶段{{ chinese(paperData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(paperData.progress) }}</span> %。
-                </div>
-                <div id="show_paper_score">
-                    <div id="handle_num2">&nbsp;{{ paperData.point_handle }}</div>
-                    <div id="score_avg2">&nbsp;{{ paperData.avgScore }}</div>
-                    <div id="effect2">{{ paperData.progress }}%&nbsp;</div>
-                    <img class="image" src="/image/show_score.png">
-                </div>
-            </div>
-            <button type="button" id="paper_detail" @click="paperDetail"></button>
-        </div>
         <div id="pop_paper" v-show="isPaperPop">
             <img class="image" src="/image/pop_window2.png">
             <div id="graph2">
@@ -367,28 +386,15 @@
                 </el-table>
             </div>
         </div>
-        <div id="compare_text">综&nbsp;&nbsp;合&nbsp;&nbsp;分&nbsp;&nbsp;值</div>
-        <div id="compare">
-            <img id="legend" src="/image/legend_term.jpg">
-            <div id="yAxis">
-                <img class="image" src="/image/yAxis.jpg">
-            </div>
-            <img id="xAxis" src="/image/xAxis_term.jpg">
-            <div id="compare_graph">
-                <highcharts :options="chartOptions3" style="width:230px;height:130px;"></highcharts>
-            </div>
-        </div>
     </div>
 </body>
 <script>
     Vue.use(HighchartsVue.default);
     //Vue.use(Antd);
-    $(document).ready(function(){
-        $(window).resize(function() {
-            var deviceWidth = document.documentElement.clientWidth;
-            //document.getElementById("app").style.marginLeft = deviceWidth / 3 + "px";
-        });
-    });
+
+    Mock.mock('/getSmtId',{
+        "smtId": ''
+    })
 
     $(document).mouseup(function(e){
         var popPaper = $('#pop_paper');  
@@ -397,92 +403,105 @@
         if((!popPaper.is(e.target) && popPaper.has(e.target).length === 0) && app.isPaperPop === true){
             app.isPaperPop = false;
             app.isPop = false; 
+            document.getElementById("container").style.filter = "brightness(1)";
         }
         if((!popWord.is(e.target) && popWord.has(e.target).length === 0) && app.isWordPop === true) {
             app.isWordPop = false;
             app.isPop = false; 
+            document.getElementById("container").style.filter = "brightness(1)";
         }
         if((!fullLev.is(e.target) && fullLev.has(e.target).length === 0) && app.isLevelPop === true) {
             app.isLevelPop = false;
             app.isPop = false; 
+            document.getElementById("container").style.filter = "brightness(1)";
         }
     });
+
+    window.onscroll = function() {
+        if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+            var deviceWidth = document.documentElement.clientWidth;
+            var deviceHeight = document.documentElement.clientHeight;
+            deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+            var scale = deviceWidth / 450;
+            var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+            percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+            document.getElementById("bind_win").style.top = percent + "%";
+        }else {
+            var deviceWidth = document.documentElement.clientWidth;
+            var scale = deviceWidth / 1350;
+            var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+            percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+            document.getElementById("bind_win").style.top = percent + "%";
+        }
+    };
 
     window.addEventListener("orientationchange",() => {
         if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
             var deviceWidth = document.documentElement.clientWidth;
             var deviceHeight = document.documentElement.clientHeight;
-            if(window.orientation == 0 || window.orientation == 180) {
-                deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
-                document.getElementById("app").style.transformOrigin = "center top";
-                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
-            }
-            if(window.orientation == 90 || window.orientation == -90) {
-                deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
-                document.getElementById("app").style.transformOrigin = "center top";
-                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
-            }
+            deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+            document.getElementById("app").style.transformOrigin = "center top";
+            document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
         }
     });
 
     var app = new Vue({
         el: "#app",
         data: {
+            winShow: false,
+            bgShow: false,
             level: 1,
             week: 1,
             lesson: 1,
-            readLev: 4,
+            readLev: 1,
             readNum: 100,
-            smt_word: 20,
-            smt_sentence: 20,
-            smt_movie: 20,
-            lib_book: 20,
-            lib_hour: 20,
+            smt_word: 0,
+            smt_sentence: 0,
+            smt_movie: 0,
+            lib_book: 0,
+            lib_hour: 0,
             smt_word_total: 266,
             smt_sentence_total: 200,
             smt_movie_total: 48,
-            finish_lesson: 3,
+            finish_lesson: 0,
             total_lesson: 4,
-            finish_movie: 3,
+            finish_movie: 0,
             total_movie: 4,
             isPop: false,
             isWordPop: false,
             isPaperPop: false,
             isLevelPop: false,
+            ifBind: false,
             stuName: '小王',
+            smtId: '1111',
             urls: [
-                '/image/test1.jpg',
-                '/image/test2.jpg',
-                '/image/test3.jpg',
-                '/image/test4.jpg',
-                '/image/test5.jpg',
             ],
             end_score: {
-                total: 80,
-                speak: 70,
+                total: 0,
+                speak: 0,
                 spell: 0,
-                grammar: 80,
-                read: 100,
+                grammar: 0,
+                read: 0,
             },
             wordData: {
-                time: 160,
-                times: 8,
-                avgScore: 90,
-                avgTime: 20,
-                point_handle: 3,
-                word_unhandle: 3,
-                progress: -30,
+                time: 0,
+                times: 0,
+                avgScore: 0,
+                avgTime: 0,
+                point_handle: 0,
+                word_unhandle: 0,
+                progress: 0,
             },
             paperData: {
-                times: 15,
-                probNum: 40,
-                probEasy: 40,
-                probMedium: 40,
-                probHard: 20,
-                avgScore: 85,
-                avgTime: 25,
-                point_handle: 5,
-                progress: 40,
+                times: 0,
+                probNum: 0,
+                probEasy: 0,
+                probMedium: 0,
+                probHard: 0,
+                avgScore: 0,
+                avgTime: 0,
+                point_handle: 0,
+                progress: 0,
             },
             wordComment: [{word: 'alligator',evaluate: '/image/evaluate1.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate2.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate3.png',audio: ''}],
             paperHandle: [{handle_paper: 'DD',unhandle_paper: 'AA'},{handle_paper: 'EE',unhandle_paper: 'BB'},{handle_paper: 'FF',unhandle_paper: 'CC'}],
@@ -690,7 +709,12 @@
                     lineWidth: 1,
                     data: [75, 64, 83, 96, 77]
                 }]
-            }
+            },
+            bindData: {
+                orgCode: '',
+                smtId: '',
+                password: '',
+            },
         },
         computed: {
             fullLev() {
@@ -938,21 +962,25 @@
 
             checkTrail: function () {
                 this.isPop = true;
+                document.getElementById("container").style.filter = "brightness(0.8)";
             },
 
             checkLevel: function () {
                 this.isLevelPop = true;
                 this.isPop = true;
+                document.getElementById("container").style.filter = "brightness(0.8)";
             },
 
             wordDetail: function () {
                 this.isWordPop = true;
                 this.isPop = true;
+                document.getElementById("container").style.filter = "brightness(0.8)";
             },
 
             paperDetail: function () {
                 this.isPaperPop = true;
                 this.isPop = true;
+                document.getElementById("container").style.filter = "brightness(0.8)";
             },
 
             CmpGraphPretreat: function (array) {
@@ -971,6 +999,95 @@
                         array[i] = 50 + 10 * ((array[i] - 95) / 5);
                 }
                 return array;
+            },
+
+            getSMTbind: function () {
+                return new Promise(resolve => {
+                    axios.get("/getSmtId").then((response) => {
+                        resolve(response.data.smtId);
+                    })
+                })
+            },
+
+            getSMTId: async function () {
+                this.smtId = await this.getSMTbind();
+                if(this.smtId.length === 0) {
+                    this.ifBind = true;
+                    if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
+                        var deviceWidth = document.documentElement.clientWidth;
+                        var deviceHeight = document.documentElement.clientHeight;
+                        deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                        document.getElementById("bind_win").style.top = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * deviceWidth / 450) - 18) / 2 + "%";
+                    }else {
+                        var deviceWidth = document.documentElement.clientWidth;
+                        document.getElementById("bind_win").style.top = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * deviceWidth / 1350) - 18) / 2 + "%";
+                    }
+                    document.getElementById("container").style.filter = "blur(15px)";
+                }else {
+                    sessionStorage.setItem('smtId',this.smtId);
+                    //根据smtId调用函数获取数据
+                }
+            },
+
+            bind: function () {
+                this.bindData.smtId = this.smtId;
+                console.log(this.bindData.orgCode + '  ' + this.bindData.smtId + '  ' + this.bindData.password);
+                this.ifBind = false;
+
+                this.level = 2;
+                this.week = 2;
+                this.lesson = 2;
+                this.readLev = 2;
+                this.readNum = 1000;
+                this.smt_word = 10;
+                this.smt_sentence = 10;
+                this.smt_movie = 10;
+                this.lib_book = 10;
+                this.lib_hour = 10;
+                this.finish_lesson = 2;
+                this.finish_movie = 2;
+                this.stuName = 'Messi';
+                this.urls = [
+                    '/image/test1.jpg',
+                    '/image/test2.jpg',
+                    '/image/test3.jpg',
+                    '/image/test4.jpg',
+                    '/image/test5.jpg',
+                ];
+                this.wordData = {
+                    time: 10,
+                    times: 10,
+                    avgScore: 10,
+                    avgTime: 10,
+                    point_handle: 10,
+                    word_unhandle: 10,
+                    progress: 10,
+                };
+                this.paperData = {
+                    times: 10,
+                    probNum: 10,
+                    probEasy: 10,
+                    probMedium: 10,
+                    probHard: 10,
+                    avgScore: 10,
+                    avgTime: 10,
+                    point_handle: 10,
+                    progress: 10,
+                };
+                this.end_score = {
+                    total: 80,
+                    speak: 70,
+                    spell: 0,
+                    grammar: 80,
+                    read: 100,
+                };
+
+
+                document.getElementById("container").style.filter = "blur(0px)";
+                axios.post("/bind", $.param(this.bindData)  
+                ).then((response) => {
+                    ;
+                });
             },
 
             getInit: function () {
@@ -1004,22 +1121,21 @@
             if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = document.documentElement.clientWidth;
                 var deviceHeight = document.documentElement.clientHeight;
-                if(window.orientation == 0 || window.orientation == 180) {
-                    deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
-                    document.getElementById("app").style.transformOrigin = "center top";
-                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
-                }
-                if(window.orientation == 90 || window.orientation == -90) {
-                    deviceWidth = (deviceWidth > deviceHeight) ? deviceWidth : deviceHeight;
-                    document.getElementById("app").style.transformOrigin = "center top";
-                    document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
-                }
+                deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
+                document.getElementById("app").style.transformOrigin = "center top";
+                document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
             }else {
                 var deviceWidth = document.documentElement.clientWidth;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / (450 * 3)) + ")";
-
             }
+
+            if(sessionStorage.getItem('smtId') === null) {
+                this.getSMTId();
+            }else {
+                //根据smtId调用函数获取数据
+            }
+            
             document.getElementById("smt_point").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";
             document.getElementById("iptv_point").style.left = (99 * this.finish_lesson / this.total_lesson + 217) + "px";
             document.getElementById("smt_progress_text").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";

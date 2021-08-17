@@ -30,13 +30,33 @@ body {
     text-align: left;
 }
 
-#layer {
-    position: absolute;
-    z-index: 5;
-    background-color: #000000;
+#container {
+    position: relative;
     width: 100%;
     height: 100%;
-    opacity: 0.15;
+}
+
+#bind_win {
+    position: absolute;
+    width: 100%;
+    height: 18%;
+    z-index: 6;
+}
+
+.input_bar {
+    left: 33%;
+    border: none;
+    font-size: 1.5rem !important;
+}
+
+.el-input {
+    width: 50% !important;
+}
+
+.el-input__inner {
+    border: none !important;
+    font-family: 'GothamRoundedMedium' !important;
+    background-color: #f1f1f1 !important;
 }
 
 #bg {
