@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface ProblemEvalRepository extends JpaRepository<ProblemEvaluation, Long> {
     @Transactional
@@ -33,4 +34,27 @@ public interface ProblemEvalRepository extends JpaRepository<ProblemEvaluation, 
 
     @Query(value = "select * from t_prob_eval where prob_eval_id=?1 limit 1", nativeQuery = true)
     ProblemEvaluation getProblemEvalById(@Param("prob_eval_id") Long prob_eval_id);
+
+    // 某学生过去两周的刷题简单题数量
+    @Query(value = "SELECT COUNT(*) FROM t_prob_eval PE join t_problem P ON PE.prob_id=P.prob_id\n" +
+            "WHERE TO_DAYS(NOW()) - TO_DAYS(prob_eval_time) <= 14 AND P.prob_diff='Easy' AND user_id=?1", nativeQuery = true)
+    Integer getExerciseEasyNumWeekly(@Param("user_id") Long user_id);
+
+    // 某学生过去两周的刷题中等题数量
+    @Query(value = "SELECT COUNT(*) FROM t_prob_eval PE join t_problem P ON PE.prob_id=P.prob_id\n" +
+            "WHERE TO_DAYS(NOW()) - TO_DAYS(prob_eval_time) <= 14 AND P.prob_diff='Medium' AND user_id=?1", nativeQuery = true)
+    Integer getExerciseMediumNumWeekly(@Param("user_id") Long user_id);
+
+    // 某学生过去两周的刷题困难题数量
+    @Query(value = "SELECT COUNT(*) FROM t_prob_eval PE join t_problem P ON PE.prob_id=P.prob_id\n" +
+            "WHERE TO_DAYS(NOW()) - TO_DAYS(prob_eval_time) <= 14 AND P.prob_diff='Hard' AND user_id=?1", nativeQuery = true)
+    Integer getExerciseHardNumWeekly(@Param("user_id") Long user_id);
+
+    // 某学生做对题目的考点列表
+    @Query(value = "SELECT point,count(*) FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=1 AND user_id=?1 GROUP BY point;", nativeQuery = true)
+    List<Object[]> getExerciseRightPoint(@Param("user_id") Long user_id);
+
+    // 某学生做错题目的考点列表
+    @Query(value = "SELECT point,count(*) FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=0 AND user_id=?1 GROUP BY point;", nativeQuery = true)
+    List<Object[]> getExerciseWrongPoint(@Param("user_id") Long user_id);
 }

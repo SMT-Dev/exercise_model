@@ -19,7 +19,7 @@ public class CorsFilter implements Filter {
 
         HttpServletRequest reqs = (HttpServletRequest) req;
 
-        String []  allowDomain= {"https://www.smartreelearners.com","http://127.0.0.1:8080", "https://interface.smartreelearners.com:8442"};
+        String []  allowDomain= {"https://www.smartreelearners.com","http://127.0.0.1:8080", "https://interface.smartreelearners.com:8442", "pass"};
         Set<String> allowedOrigins= new HashSet<>(Arrays.asList(allowDomain));
         String originHeader=((HttpServletRequest) req).getHeader("Origin");
 

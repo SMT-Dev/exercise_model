@@ -18,10 +18,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class AuthController {
@@ -150,7 +149,7 @@ public class AuthController {
                 HashMap infoMap = JSON.parseObject(infoString, HashMap.class);
                 String level = infoMap.get("level").toString();
 
-                return "OK " + level;
+                return "OK " + infoMap.toString();
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -198,5 +197,4 @@ public class AuthController {
 
         return "OK";
     }
-
 }
