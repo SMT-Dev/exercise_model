@@ -62,8 +62,9 @@ public class WxController {
         System.out.println("UserInfo:" + userInfoJson);
 
         // 1种情况, 是基于微信授权的账号做为我们本系统的账号体系来使用
-         map.put("userinfo", userInfoJson);
-         return "/home";
+//         map.put("userinfo", userInfoJson);
+//         return "/home";
+        return userInfoJson.toJSONString();
     }
 
 }

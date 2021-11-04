@@ -349,6 +349,69 @@ public class ExerciseController {
         return probNumList;
     }
 
+    public ArrayList<Long> getFromLessonEasyAndMedium(Long lesson_id, Integer totalNum) {
+        /**
+         * @description: 从对应的 lesson 中抽取题目[要求是 Easy 12 道(9 选择+3 文本)，和 Mid 3 道]
+         * @return: 题目序号列表
+         */
+        ArrayList<Long> probNumList = new ArrayList<>();
+        SettingTemp settingTemp = SettingTemp.getInstance();
+        List<Problem> tempList = problemService.getProblemByLevelAndLesson_id(settingTemp.getLev().toString(), lesson_id);
+        List<Problem> easyChoiceProbList = new ArrayList<>(),
+                easyTextProbList = new ArrayList<>(),
+                mediumProbList = new ArrayList<>(),
+                probList = new ArrayList<>();
+        for (Problem p : tempList) {
+            if (p.getProb_diff().equals("Easy") && p.getProb_attr().equals("Choice")) {
+                easyChoiceProbList.add(p);
+            }
+            else if (p.getProb_diff().equals("Easy") && !p.getProb_attr().equals("Choice")) {
+                easyTextProbList.add(p);
+            }
+            else if (p.getProb_diff().equals("Medium")) {
+                mediumProbList.add(p);
+            }
+        }
+
+        Collections.shuffle(easyChoiceProbList);
+        int gap = 9 - easyChoiceProbList.size();
+        if (gap < 0) {
+            probList.addAll(easyChoiceProbList.subList(0, 9));
+        } else {
+            probList.addAll(easyChoiceProbList);
+            for (int i = 0; i < gap; i++) {
+                probList.add(problemService.getProblemByProb_id(getOneRandom()));
+            }
+        }
+
+        Collections.shuffle(easyTextProbList);
+        gap = 3 - easyTextProbList.size();
+        if (gap < 0) {
+            probList.addAll(easyTextProbList.subList(0, 3));
+        } else {
+            probList.addAll(easyTextProbList);
+            for (int i = 0; i < gap; i++) {
+                probList.add(problemService.getProblemByProb_id(getOneRandom()));
+            }
+        }
+
+        Collections.shuffle(mediumProbList);
+        gap = 3 - mediumProbList.size();
+        if (gap < 0) {
+            probList.addAll(mediumProbList.subList(0, 3));
+        } else {
+            probList.addAll(mediumProbList);
+            for (int i = 0; i < gap; i++) {
+                probList.add(problemService.getProblemByProb_id(getOneRandom()));
+            }
+        }
+
+        for (Problem pro : probList)
+            probNumList.add(pro.getProb_id());
+
+        return probNumList;
+    }
+
     @GetMapping("/getFromForgetCurve")
     public ArrayList<Long> getFromForgetCurve(@RequestParam("num") Integer partNum, Long USER_ID) {
         /**
@@ -456,16 +519,16 @@ public class ExerciseController {
         return probList;
     }
 
-    @GetMapping("getFromEasy")
-    public ArrayList<Long> getFromEasy(@RequestParam("num") Integer partNum) {
+    @GetMapping("getFromMedium")
+    public ArrayList<Long> getFromMedium(@RequestParam("num") Integer partNum) {
         /**
-         * @description: 公测的初期阶段，出一些简单题
+         * @description: 公测的初期阶段，出一些中等题
          * @return: 题目序号列表
          */
         List<Long> probList = new ArrayList<>();
         List<Problem> allProbList = problemService.getAllProblem();
         for (Problem problem : allProbList) {
-            if (problem.getProb_diff().equals("Easy")) {
+            if (problem.getProb_diff().equals("Medium")) {
                 probList.add(problem.getProb_id());
             }
         }
@@ -585,6 +648,20 @@ public class ExerciseController {
         return outputProblemList;
     }
 
+    public boolean checkDiff(ArrayList<Long> tmpList) {
+        int easyNum = 0, midNum = 0;
+        for (Long prob_id :tmpList) {
+            if (problemService.getProblemByProb_id(prob_id).getProb_attr().equals("Easy")) {
+                easyNum++;
+            }
+            if (problemService.getProblemByProb_id(prob_id).getProb_attr().equals("Medium")) {
+                midNum++;
+            }
+        }
+        assert easyNum==16 && midNum==4;
+        return true;
+    }
+
 
     @GetMapping(path = "/initPaper")
     public SheetTemp initPaper(HttpServletRequest request) {
@@ -596,6 +673,7 @@ public class ExerciseController {
         //TODO 实现各种出题逻辑,包括设置选择题和文本题各自的题量
         //setting 中 src: lesson/wrong/recommend
         //题量-20，其中新知识点-10，基于相似-5，高频练习-3，基于遗忘曲线-2（新知识点10题数量不可改变）
+        // 2021.11.03:厦门海沧新知识点-15（12+3），基于相似-3，基于遗忘曲线-2
 
         Long USER_ID = getUserFromCookies(request);
         SettingTemp settingTemp = SettingTemp.getInstance();
@@ -610,20 +688,25 @@ public class ExerciseController {
             ArrayList<Long> tmpList = new ArrayList<>();
 
             Long lesson_id = Long.valueOf(settingTemp.getSys());
-            tmpList.addAll(getFromNew(lesson_id, 20));  //2021.7.22: 校对期间，全部是该 lesson 的题目
+//            tmpList.addAll(getFromNew(lesson_id, 20));  //2021.7.22: 校对期间，全部是该 lesson 的题目
+//            tmpList.addAll(getFromMedium(4));
 //            tmpList.addAll(getFromNew(lesson_id, 10));  //如果该 lesson 缺题目，则返回空，无新知识点
 //            tmpList.addAll(getFromEasy(10));
-//            tmpList.addAll(getFromSimilar(5, USER_ID));
 //            tmpList.addAll(getHighFrequency(3));
-//            tmpList.addAll(getFromForgetCurve(2, USER_ID));
+
+            //2021.11.03: 厦门海沧地区测试，15+3+2
+            tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
+            tmpList.addAll(getFromSimilar(3, USER_ID));
+            tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
-            //此处 tmpList 已固定题量 20，不需要 shuffle
+            //此处 tmpList 已固定题量g 20，不需要 shuffle
             HashSet<Long> hashSet = new HashSet<>(tmpList);
             assert tmpList.size() == hashSet.size(); //保证列表去重
 
             //保证选择题在文本题前面
             probList = reorganizeProbList(tmpList);
+            System.out.println(probList);
 
         } else if (settingTemp.getSrc().equals("test")) {
             //进入双周测 or 阶段测做题，此处 sys=7-8 表示7-8周
