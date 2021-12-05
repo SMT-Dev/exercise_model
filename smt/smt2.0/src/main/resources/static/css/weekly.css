@@ -471,6 +471,44 @@ body {
     z-index: 5;
 }
 
+#trail {
+    position: absolute;
+    margin: 0 auto;
+    width: 90%;
+    background-color: white;
+    border-radius: 30px;
+    padding: 8% 5% 13% 5%;
+    top: 19%;
+    justify-content: center;
+    z-index: 5;
+}
+
+#playAudio {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    left: 13%;
+    bottom: 4%;
+    border: none;
+    background-image: url(/image/playAudio.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-color: transparent;
+    background-size: 100% 100%;
+    cursor: pointer;
+    outline: none;
+    z-index: 6;
+}
+
+/* .el-carousel .el-carousel__container {
+    pointer-events: none !important;
+} */
+
+/* .el-carousel__arrow {
+    pointer-events: auto;
+} */
+
 #word_part {
     top: 13%;
 }

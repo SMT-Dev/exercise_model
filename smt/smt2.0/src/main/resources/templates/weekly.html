@@ -4,6 +4,7 @@
     <title>双周评测</title>
     <meta http-equiv="content-type" content="text/html charset=utf-8"/>
     <meta name="viewport" content="width=device-width">
+    <meta name="referrer" content="no-referrer"/>
     <link href="/css/weekly.css" type="text/css" rel="stylesheet" charset="utf-8">
     <link href="/css/index.css" type="text/css" rel="stylesheet" charset="utf-8">
     <script src="/js/vue@2.6.10.js"></script>
@@ -40,7 +41,7 @@
                 </div>
             </div>
             <div id="diff_table" v-if="bgShow">
-                <img  style="height: 100%;width: auto;position: absolute;" :src="diff_pic_src">
+                <img  style="height: 100%;width: auto;position: absolute;">
             </div>
             <div id="record" v-if="bgShow">
                 <div style="position: absolute;left: 30%;font-family: 'Microsoft YaHei',微软雅黑;font-weight: 600;">记</div>
@@ -70,17 +71,17 @@
                 <div id="main_report">
                     <div class="rect1">
                         <img class="image" src="/image/SMTword.png">
-                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_word*100/smt_word_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <el-progress :text-inside="true" :stroke-width="12" :percentage="smt_word*100/smt_word_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
                         <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_word }}</span>/{{ smt_word_total }}</div>
                     </div>
                     <div class="rect2">
                         <img class="image" src="/image/SMTsentence.png">
-                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_sentence*100/smt_sentence_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <el-progress :text-inside="true" :stroke-width="12" :percentage="smt_sentence*100/smt_sentence_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
                         <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_sentence }}</span>/{{ smt_sentence_total }}</div>
                     </div>
                     <div class="rect3">
                         <img class="image" src="/image/SMTmovie.png">
-                        <el-progress :text-inside="true" :stroke-width="11" :percentage="smt_movie*100/smt_movie_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
+                        <el-progress :text-inside="true" :stroke-width="12" :percentage="smt_movie*100/smt_movie_total" color="white" style="position: absolute;width: 69%;top: 44.5%;left: 14%;"></el-progress>
                         <div style="position: relative;transform-origin: left top;transform: scale(0.7);top: 33%;left: 19%;"><span style="color: red;">{{ smt_movie }}</span>/{{ smt_movie_total }}</div>
                     </div>
                 </div>
@@ -122,7 +123,7 @@
                 </div>
                 <div id="level">
                     <img class="image" src="/image/readinfo.png">
-                    <div id="read_info">Level 1/100L</div>
+                    <div id="read_info">Level {{ readLev }}/{{ readNum }}L</div>
                     <div style="width: 25%;height: 6%;;position: absolute;top: 0;left: 0;">
                         <img class="image" src="/image/readLv.png">
                     </div>
@@ -173,7 +174,7 @@
                 </div>
                 <div id="text_part">
                     <div id="text">
-                        在词汇方面，已掌握考点总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.point_handle }}</span> 个，<br>
+                        在词汇方面，需巩固单词总数为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.word_unhandle }}</span> 个，<br>
                         本阶段的平均分为<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ wordData.avgScore }}</span>，较上一阶段{{ chinese(wordData.progress) }}了<span style="color: red;font-style: italic;font-weight: 600;font-size: 18px;">{{ Math.abs(wordData.progress) }}</span> %。
                     </div>
                     <div id="show_word_score">
@@ -228,6 +229,16 @@
                     <highcharts :options="chartOptions3" style="width:230px;height:130px;"></highcharts>
                 </div>
             </div>
+        </div>
+        <div id="trail" v-if="isTrailPop">
+            <el-carousel id="carousel" :height="h + 'px'" :autoplay="false" arrow="hover" indicator-position="none" @change="changeHeight">
+                <el-carousel-item v-for="pic in trails" :key="pic">
+                    <img ref="portfolio" class="image" style="height: auto;" :src="pic" @load=imgLoad>
+                </el-carousel-item>
+            </el-carousel>
+            <button type="button" id="playAudio" @click="play_audio"></button>
+            <el-progress :text-inside="true" :stroke-width="11" :percentage="currentTime / audio_time * 100" color="#1ABB9B" style="position: absolute;width: 47%;bottom: 6%;left: 32%;"></el-progress>
+            <div style="position: absolute;color: #1ABB9B;right: 11%;bottom: 5%;font-weight: bold;">{{ Math.floor(audio_time / 60) }}:{{ audio_time % 60 }}</div>
         </div>
         <div id="pop_word" v-show="isWordPop">
             <img class="image" src="/image/pop_window1.png">
@@ -290,7 +301,7 @@
                 <img class="image" src="/image/handle_paper4.png">
             </div>
             <div id="handle_paper_table">
-                <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'14px',padding:'0'}"  :cell-style="setPaperCellStyle" style="font-size: 12px">
+                <el-table :data="paperHandle" height="100%" borderstyle="width: 100%" :row-class-name="tableRowClassName" :header-row-style="{height:'14px',padding:'0'}"  :cell-style="setPaperCellStyle" style="font-size: 11px">
                     <el-table-column prop="handle_paper" align="center">
                         <template slot-scope="scope">
                             <span style="font-weight:bold;color:black">{{scope.row.handle_paper}}</span>
@@ -308,6 +319,7 @@
 </body>
 <script>
     Vue.use(HighchartsVue.default);
+    var audio = document.createElement("audio");
     /*$(document).ready(function(){
         $(window).resize(function() {
             var cliWidth = document.body.scrollWidth;
@@ -322,9 +334,153 @@
         "smtId": ''
     })
 
+    Mock.mock('/getMainReport?user_id=messi',{
+        "data": {
+            "level_movie_total": 20,  // 本 level 总计影片数
+            "level_movie_watched": 10,  // 本 level 累计已观影数量
+            "level_sentence_total": 10,  // 本 level 总计句子数
+            "level_sentence_learned": 10,  // 本 level 累计已学句子
+            "weekly_lesson_finish": 2, // 两周内上课次数
+            "level_word_learned": 10,  // 本 level 累计已学单词
+            "level_word_total": 20,  // 本 level 总计单词数
+            "weekly_movie_finish": 2   // 两周内观影次数
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
+    Mock.mock('/getExerciseReport?user_id=messi',{
+        "data": {
+            "avg_time": 8,
+            "avg_score": 65,
+            "progress": -10,
+            "times": 3,
+            "prob_num": 60,
+            "last_ten_score": [
+                53,
+                56,
+                55,
+                61,
+                65,
+                69,
+                62,
+                69,
+                71,
+                78
+            ],
+            "prob_easy": 40,
+            "prob_medium": 30,
+            "prob_hard": 30,
+            "point_handle": 25,
+            "handle_list": [
+                "人称代词",
+                "There be",
+                "过去分词"
+            ],
+            "unhandle_list": [
+                "固定搭配",
+                "现在分词",
+                ""
+            ]
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
+    Mock.mock('/getVocalReport?user_id=messi',{
+        "data": {
+            "word_unhandle": 13,  // 需要巩固的单词数量
+            "avg_time": 20,  // 练习平均耗时
+            "avg_score": 76,  // 练习平均得分
+            "progress": 20,  // 相对于上一阶段进步、退步
+            "time": 80,  // 两周内总计练习用时(分钟)
+            "times": 4,  // 两周内练习次数
+            "last_ten_score": [  // 过去 10 次训练得分
+                64,
+                63,
+                52,
+                41,
+                49,
+                59,
+                62,
+                69,
+                81,
+                78
+            ],
+            "comment_list": [  //单词评析: status 为 0 表示不通过, 为 1 表示通过
+                {
+                    "audio": "",
+                    "status": "0",
+                    "word": "abandon"
+                },
+                {
+                    "audio": "",
+                    "status": "1",
+                    "word": "banana"
+                },
+                {
+                    "audio": "",
+                    "status": "0",
+                    "word": "chair"
+                }
+            ]
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
+    Mock.mock('/getLibraryReport?user_id=messi',{
+        "data": {
+            "lib_book_total": 9,  // 累计已读书本数量
+            "read_lev": 3,  // 当前所处阅读等级
+            "read_num": 400,  // 当前阅读量(单位为 L)
+            "book_urls": [  // 阅读书本图片 URL
+                "https://i0.hdslb.com/bfs/album/1e3e118c2b8b0473bedbf34808928e63b066b634.jpg",
+                "https://i0.hdslb.com/bfs/album/1ae25afb2e06e106a72dacd1d0910deb8b1e962d.png",
+                "https://i0.hdslb.com/bfs/album/4468f61b04bb98ac13a1b210ce5e922e8c630d2b.png"
+            ],
+            "lib_hour_total": 36  // 累计阅读时间
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
+    Mock.mock('/getContrastReport?user_id=messi',{
+        "data": {
+            "my_avg_score": [
+                50,
+                60,
+                40,
+                70,
+                80
+            ],
+            "all_avg_score": [
+                60,
+                40,
+                50,
+                60,
+                40
+            ]
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
+    Mock.mock('/getStudentInfo?user_id=messi',{
+        "data": {
+            "lesson": "3",
+            "level": "3",
+            "week": "2",
+            "name": "Messi"
+        },
+        "code": "0",
+        "msg": "操作成功！"
+    })
+
     $(document).mouseup(function(e){
         var popPaper = $('#pop_paper');  
         var popWord = $('#pop_word'); 
+        var popTrail = $('#trail');
         if((!popPaper.is(e.target) && popPaper.has(e.target).length === 0) && app.isPaperPop === true){
             app.isPaperPop = false;
             app.isPop = false; 
@@ -334,6 +490,18 @@
             app.isWordPop = false;
             app.isPop = false; 
             document.getElementById("container").style.filter = "brightness(1)";
+        }
+        if((!popTrail.is(e.target) && popTrail.has(e.target).length === 0) && app.isTrailPop === true) {
+            app.isTrailPop = false;
+            app.isPop = false; 
+            document.getElementById("container").style.filter = "brightness(1)";
+            audio.currentTime = 0;
+            audio.pause();
+            if(app.$refs.portfolio) {
+                console.log($("#carousel")[0])
+                app.h = app.$refs.portfolio[0].height;
+                app.imgLoad();
+            }
         }
     });
 
@@ -370,19 +538,23 @@
         data: {
             winShow: false,
             bgShow: false,
-            level: 1,
-            week: 1,
-            lesson: 1,
-            readLev: 1,
-            readNum: 100,
+            h: 0,
+            idx: 0,
+            currentTime: 0,
+            audio_time: 0,
+            level: 0,
+            week: 0,
+            lesson: 0,
+            readLev: 0,
+            readNum: 0,
             smt_word: 0,
             smt_sentence: 0,
             smt_movie: 0,
             lib_book: 0,
             lib_hour: 0,
-            smt_word_total: 266,
-            smt_sentence_total: 200,
-            smt_movie_total: 48,
+            smt_word_total: 0,
+            smt_sentence_total: 0,
+            smt_movie_total: 0,
             finish_lesson: 0,
             total_lesson: 4,
             finish_movie: 0,
@@ -390,17 +562,19 @@
             isPop: false,
             isWordPop: false,
             isPaperPop: false,
+            isTrailPop: false,
             ifBind: false,
             stuName: '小王',
             smtId: '1111',
             urls: [
             ],
+            trails: ['/image/report_week.png','/image/report_term.png','image/SMARTREE.png'],
+            audios: ['/audio/1.wav', '/audio/2.wav', '/audio/3.wav'],
             wordData: {
                 time: 0,
                 times: 0,
                 avgScore: 0,
                 avgTime: 0,
-                point_handle: 0,
                 word_unhandle: 0,
                 progress: 0,
             },
@@ -415,8 +589,8 @@
                 point_handle: 0,
                 progress: 0,
             },
-            wordComment: [{word: 'alligator',evaluate: '/image/evaluate1.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate2.png',audio: ''},{word: 'alligator',evaluate: '/image/evaluate3.png',audio: ''}],
-            paperHandle: [{handle_paper: 'DD',unhandle_paper: 'AA'},{handle_paper: 'EE',unhandle_paper: 'BB'},{handle_paper: 'FF',unhandle_paper: 'CC'}],
+            wordComment: [],
+            paperHandle: [],
             chartOptions1: {
                 chart: {
                     type: 'areaspline'
@@ -480,7 +654,7 @@
                         symbol: 'circle'
                     },
                     lineWidth: 3,
-                    data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
+                    data: []
                 }]
             },
             chartOptions2: {
@@ -546,7 +720,7 @@
                         symbol: 'circle'
                     },
                     lineWidth: 3,
-                    data: [10, 20, 30, 35, 44, 50, 58, 65, 80, 75]
+                    data: []
                 }]
             },
             chartOptions3: {
@@ -606,11 +780,11 @@
                     name: '',
                     marker: {
                         symbol: 'circle',
-                        lineColor: '#FD9732'
+                        lineColor: '#a558ff'
                     },
-                    lineColor: '#FD9732',
+                    lineColor: '#a558ff',
                     lineWidth: 1,
-                    data: [48, 100, 72, 84, 91]
+                    data: []
                 },{
                     name: '',
                     marker: {
@@ -619,7 +793,7 @@
                     },
                     lineColor: '#C7C7C7',
                     lineWidth: 1,
-                    data: [75, 64, 83, 96, 77]
+                    data: []
                 }]
             },
             bindData: {
@@ -629,21 +803,21 @@
             },
         },
         computed: {
-            diff_pic_src() {
-                if(this.level === 1) {
-                    return "/image/diff1_week.png";
-                }else if(this.level === 2) {
-                    return "/image/diff2_week.png";
-                }else if(this.level === 3) {
-                    return "/image/diff3_week.png";
-                }else if(this.level === 4) {
-                    return "/image/diff4_week.png";
-                }else if(this.level === 5) {
-                    return "/image/diff5_week.png";
-                }else if(this.level === 6) {
-                    return "/image/diff6_week.png";
-                }
-            },
+            // diff_pic_src() {
+            //     if(this.level === 1) {
+            //         return "/image/diff1_week.png";
+            //     }else if(this.level === 2) {
+            //         return "/image/diff2_week.png";
+            //     }else if(this.level === 3) {
+            //         return "/image/diff3_week.png";
+            //     }else if(this.level === 4) {
+            //         return "/image/diff4_week.png";
+            //     }else if(this.level === 5) {
+            //         return "/image/diff5_week.png";
+            //     }else if(this.level === 6) {
+            //         return "/image/diff6_week.png";
+            //     }
+            // },
             lib_book_total() {
                 if(this.readLev === 1) {
                     return 163;
@@ -807,12 +981,67 @@
                 }
             },
 
+            imgLoad: function () {
+                if(this.$refs.portfolio) {
+                    this.$nextTick(() => {
+                        this.h = this.$refs.portfolio[this.idx].height;
+                        console.log(this.$refs);
+                        audio.src = this.audios[0];
+                        audio.load();
+                        audio.oncanplay = () => {this.audio_time = Math.ceil(audio.duration);}
+                    })
+                }
+            },
+
+            changeHeight: function(idx1, idx2) {
+                this.idx = idx1;
+                this.h = this.$refs.portfolio[this.idx].height
+                this.imgLoad()
+                this.stop_audio();
+                console.log(idx1)
+                this.$nextTick(() => {
+                    audio.src = this.audios[idx1];
+                    audio.load();
+                    audio.oncanplay = () => {this.audio_time = Math.ceil(audio.duration);}
+                })
+                
+            },
+
+            changeTime: function () {
+                this.currentTime = audio.currentTime;
+            },
+
+            play_audio: function () {
+                this.stop_audio();
+                audio.play();
+            },
+
+            stop_audio: function () {
+                audio.currentTime = 0;
+                audio.pause();
+            },
+
+            pause_audio: function () {
+                audio.pause();
+            },
+
+
             wordPlay: function (url) {
                 alert(url);
             },
 
             checkTrail: function () {
+                this.isTrailPop = true;
                 this.isPop = true;
+                this.idx = 0;
+                this.h = this.$refs.portfolio[0].height;
+                console.log(this.$refs)
+                this.imgLoad();
+                this.$nextTick(() => {
+                    audio.src = this.audios[0];
+                    audio.load();
+                    audio.oncanplay = () => {this.audio_time = Math.ceil(audio.duration);}
+                })
                 document.getElementById("container").style.filter = "brightness(0.8)";
             },
 
@@ -870,8 +1099,171 @@
                     document.getElementById("container").style.filter = "blur(15px)";
                 }else {
                     sessionStorage.setItem('smtId',this.smtId);
-                    //根据smtId调用函数获取数据
+                    this.setMainData();
+                    this.setExerciseData();
+                    this.setVocalData();
+                    this.setLibraryData();
+                    this.setContrastData();
+                    this.setUserInfo();//根据smtId调用函数获取数据
+                    this.setPortfolio();
                 }
+            },
+
+            getMainReport: function () {
+                return new Promise(resolve => {
+                    axios.get("/getMainReport?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setMainData: async function () {
+                var response = await this.getMainReport();
+                var res = response.data;
+                this.smt_movie_total = res.level_movie_total;
+                this.smt_movie = res.level_movie_watched;
+                this.smt_sentence_total = res.level_sentence_total;
+                this.smt_sentence = res.level_sentence_learned;
+                this.smt_word_total = res.level_word_total;
+                this.smt_word = res.level_word_learned;
+                this.finish_lesson = res.weekly_lesson_finish;
+                this.finish_movie = res.weekly_movie_finish;
+            },
+
+            getExerciseReport: function () {
+                return new Promise(resolve => {
+                    axios.get("/getExerciseReport?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setExerciseData: async function () {
+                var response = await this.getExerciseReport();
+                var res = response.data;
+                this.paperData.times = res.times;
+                this.paperData.probNum = res.prob_num;
+                this.paperData.probEasy = res.prob_easy;
+                this.paperData.probMedium = res.prob_medium;
+                this.paperData.probHard = res.prob_hard;
+                this.paperData.avgScore = res.avg_score;
+                this.paperData.avgTime = res.avg_time;
+                this.paperData.point_handle = res.point_handle;
+                this.paperData.progress = res.progress;
+                this.chartOptions2.series[0].data = res.last_ten_score;
+                for(var i = 0;i < res.handle_list.length;i++) {
+                    var obj = {};
+                    obj.handle_paper = res.handle_list[i];
+                    obj.unhandle_paper = res.unhandle_list[i];
+                    this.paperHandle.push(obj);
+                }
+            },
+
+            getVocalReport: function () {
+                return new Promise(resolve => {
+                    axios.get("/getVocalReport?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setVocalData: async function () {
+                var response = await this.getVocalReport();
+                var res = response.data;
+                this.wordData.times = res.times;
+                this.wordData.time = res.time;
+                this.wordData.avgScore = res.avg_score;
+                this.wordData.avgTime = res.avg_time;
+                this.wordData.word_unhandle = res.word_unhandle;
+                this.paperData.progress = res.progress;
+                this.chartOptions1.series[0].data = res.last_ten_score;
+                for(var i = 0;i < res.comment_list.length;i++) {
+                    var obj = {};
+                    obj.word = res.comment_list[i].word;
+                    if(res.comment_list[i].status === "1")
+                        obj.evaluate = '/image/evaluate1.png';
+                    else if(res.comment_list[i].status === "0")
+                        obj.evaluate = '/image/evaluate3.png';
+                    obj.audio = res.comment_list[i].audio;
+                    this.wordComment.push(obj);
+                }
+            },
+
+            getLibraryReport: function () {
+                return new Promise(resolve => {
+                    axios.get("/getLibraryReport?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setLibraryData: async function () {
+                var response = await this.getLibraryReport();
+                var res = response.data;
+                this.lib_book = res.lib_book_total;
+                this.lib_hour = res.lib_hour_total;
+                this.readLev = res.read_lev;
+                this.readNum = res.read_num;
+                for(var i = 0;i < res.book_urls.length;i++) {
+                    this.urls.push(res.book_urls[i]);
+                }
+            },
+
+            getContrastReport: function () {
+                return new Promise(resolve => {
+                    axios.get("/getContrastReport?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setContrastData: async function () {
+                var response = await this.getContrastReport();
+                var res = response.data;
+                this.chartOptions3.series[0].data = this.CmpGraphPretreat(res.my_avg_score);
+                this.chartOptions3.series[1].data = this.CmpGraphPretreat(res.all_avg_score);
+            },
+
+            getUserInfo: function () {
+                return new Promise(resolve => {
+                    axios.get("/getStudentInfo?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setUserInfo: async function () {
+                var response = await this.getUserInfo();
+                var res = response.data;
+                this.level = res.level;
+                this.week = res.week;
+                this.lesson = res.lesson;
+                this.stuName = res.name;
+                $("#diff_table")[0].children[0].src = "/image/diff" + this.level + "_week.png";
+            },
+
+            getPortfolio: function () {
+                return new Promise(resolve => {
+                    axios.get("/getPortfolio?user_id=" + this.bindData.smtId).then((response) => {
+                        resolve(response.data);
+                    })
+                })
+            },
+
+            setPortfolio: async function () {
+                var response = await this.getPortfolio();
+                var res = response.data;
+                // image = [];
+                // audio = [];
+                // for(i = 0;i < len(res.portfolioList);i++) {
+                //     if(res.portfolioList[i].fileType === "image") {
+                //         image.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
+                //     }else if(res.portfolioList[i].fileType === "audio") {
+                //         audio.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
+                //     }
+                // }
+                // this.trails = image;
+                // this.audios = audio;
             },
 
             bind: function () {
@@ -879,81 +1271,24 @@
                 console.log(this.bindData.orgCode + '  ' + this.bindData.smtId + '  ' + this.bindData.password);
                 this.ifBind = false;
 
-                this.level = 2;
-                this.week = 2;
-                this.lesson = 2;
-                this.readLev = 2;
-                this.readNum = 1000;
-                this.smt_word = 10;
-                this.smt_sentence = 10;
-                this.smt_movie = 10;
-                this.lib_book = 10;
-                this.lib_hour = 10;
-                this.finish_lesson = 2;
-                this.finish_movie = 2;
-                this.stuName = 'Messi';
-                this.urls = [
-                    '/image/test1.jpg',
-                    '/image/test2.jpg',
-                    '/image/test3.jpg',
-                    '/image/test4.jpg',
-                    '/image/test5.jpg',
-                ];
-                this.wordData = {
-                    time: 10,
-                    times: 10,
-                    avgScore: 10,
-                    avgTime: 10,
-                    point_handle: 10,
-                    word_unhandle: 10,
-                    progress: 10,
-                };
-                this.paperData = {
-                    times: 10,
-                    probNum: 10,
-                    probEasy: 10,
-                    probMedium: 10,
-                    probHard: 10,
-                    avgScore: 10,
-                    avgTime: 10,
-                    point_handle: 10,
-                    progress: 10,
-                };
+                this.setMainData();
+                this.setExerciseData();
+                this.setVocalData();
+                this.setLibraryData();
+                this.setContrastData();
+                this.setUserInfo();
+                this.setPortfolio();
 
 
                 document.getElementById("container").style.filter = "blur(0px)";
-                axios.post("/bind", $.param(this.bindData)
+                axios.post("/bind", $.param(this.bindData)  
                 ).then((response) => {
-                    ;
+                    sessionStorage.setItem("smtId",this.bindData.smtId);
                 });
             },
-
-            getInit: function () {
-                return new Promise(resolve => {
-                    axios.get("/init"
-                    ).then((response) => {
-                        resolve(response.data.info);
-                    })
-                })
-            },
-            
-            getWeeklyInfo: function () {
-                return new Promise(resolve => {
-                    axios.get("/getInfo"
-                    ).then((response) => {
-                        resolve(response.data.info);
-                    })
-                })
-            },
-
-            getWeeklyScore: function () {
-                return new Promise(resolve => {
-                    axios.get("/getScore"
-                    ).then((response) => {
-                        resolve(response.data.info);
-                    })
-                })
-            },
+        },
+        mounted: function () {
+            this.imgLoad()
         },
         created: function () {
             if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
@@ -971,15 +1306,23 @@
             if(sessionStorage.getItem('smtId') === null) {
                 this.getSMTId();
             }else {
-                //根据smtId调用函数获取数据
+                this.bindData.smtId = sessionStorage.getItem('smtId');
+                this.setMainData();
+                this.setExerciseData();
+                this.setVocalData();
+                this.setLibraryData();
+                this.setContrastData();
+                this.setUserInfo();//根据smtId调用函数获取数据
+                this.setPortfolio();
             }
-
+            audio.addEventListener("timeupdate", this.changeTime, true);
+            audio.src = this.audios[0];
+            audio.load();
+            audio.oncanplay = () => {this.audio_time = Math.ceil(audio.duration);}
             document.getElementById("smt_point").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";
             document.getElementById("iptv_point").style.left = (99 * this.finish_lesson / this.total_lesson + 217) + "px";
             document.getElementById("smt_progress_text").style.left = (157 * this.finish_lesson / this.total_lesson + 6) + "px";
             document.getElementById("iptv_progress_text").style.left = (99 * this.finish_lesson / this.total_lesson + 217) + "px";
-            this.chartOptions3.series[0].data = this.CmpGraphPretreat(this.chartOptions3.series[0].data);
-            this.chartOptions3.series[1].data = this.CmpGraphPretreat(this.chartOptions3.series[1].data);
         }
     })
 </script>
