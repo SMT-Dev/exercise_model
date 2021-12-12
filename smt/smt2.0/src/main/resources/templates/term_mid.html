@@ -1408,10 +1408,18 @@
                 deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+                var scale = deviceWidth / 450;
+                var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+                percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+                document.getElementById("bind_win").style.top = percent + "%";
             }else {
                 var deviceWidth = document.documentElement.clientWidth;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / (450 * 3)) + ")";
+                var scale = deviceWidth / 1350;
+                var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+                percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+                document.getElementById("bind_win").style.top = percent + "%";
             }
 
             if(sessionStorage.getItem('smtId') === null) {

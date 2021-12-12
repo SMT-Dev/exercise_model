@@ -236,8 +236,8 @@
                     <img ref="portfolio" class="image" style="height: auto;" :src="pic" @load=imgLoad>
                 </el-carousel-item>
             </el-carousel>
-            <button type="button" id="playAudio" @click="play_audio"></button>
-            <el-progress :text-inside="true" :stroke-width="11" :percentage="currentTime / audio_time * 100" color="#1ABB9B" style="position: absolute;width: 47%;bottom: 6%;left: 32%;"></el-progress>
+            <button type="button" id="playAudio" @click="process_audio"></button>
+            <el-progress :text-inside="true" :stroke-width="11" :percentage="currentTime / audio_time * 100" color="#1ABB9B" style="position: absolute;width: 57%;bottom: 6%;left: 22%;"></el-progress>
             <div style="position: absolute;color: #1ABB9B;right: 11%;bottom: 5%;font-weight: bold;">{{ Math.floor(audio_time / 60) }}:{{ audio_time % 60 }}</div>
         </div>
         <div id="pop_word" v-show="isWordPop">
@@ -495,8 +495,9 @@
             app.isTrailPop = false;
             app.isPop = false; 
             document.getElementById("container").style.filter = "brightness(1)";
-            audio.currentTime = 0;
-            audio.pause();
+            app.stop_audio();
+            app.isPlaying = false;
+            document.getElementById("playAudio").style.backgroundImage = "url(/image/playAudio.png)";
             if(app.$refs.portfolio) {
                 console.log($("#carousel")[0])
                 app.h = app.$refs.portfolio[0].height;
@@ -564,12 +565,13 @@
             isPaperPop: false,
             isTrailPop: false,
             ifBind: false,
-            stuName: '小王',
-            smtId: '1111',
+            isPlaying: false,
+            stuName: '',
+            smtId: '',
             urls: [
             ],
-            trails: ['/image/report_week.png','/image/report_term.png','image/SMARTREE.png'],
-            audios: ['/audio/1.wav', '/audio/2.wav', '/audio/3.wav'],
+            trails: [],
+            audios: [],
             wordData: {
                 time: 0,
                 times: 0,
@@ -1011,18 +1013,29 @@
                 this.currentTime = audio.currentTime;
             },
 
+            process_audio: function () {
+                if (this.isPlaying) {
+                    this.pause_audio();
+                }else {
+                    this.play_audio();
+                }
+            },
+
             play_audio: function () {
-                this.stop_audio();
                 audio.play();
+                this.isPlaying = true;
+                document.getElementById("playAudio").style.backgroundImage = "url(/image/pause.png)";
             },
 
             stop_audio: function () {
                 audio.currentTime = 0;
-                audio.pause();
+                this.pause_audio();
             },
 
             pause_audio: function () {
                 audio.pause();
+                this.isPlaying = false;
+                document.getElementById("playAudio").style.backgroundImage = "url(/image/playAudio.png)";
             },
 
 
@@ -1297,10 +1310,18 @@
                 deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 450) + ")";
+                var scale = deviceWidth / 450;
+                var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+                percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+                document.getElementById("bind_win").style.top = percent + "%";
             }else {
                 var deviceWidth = document.documentElement.clientWidth;
                 document.getElementById("app").style.transformOrigin = "center top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / (450 * 3)) + ")";
+                var scale = deviceWidth / 1350;
+                var percent = (document.documentElement.clientHeight * 100 / (document.getElementById("app").clientHeight * scale) - 18) / 2;
+                percent += (document.documentElement.scrollTop / (document.getElementById("app").clientHeight * scale)) * 100;
+                document.getElementById("bind_win").style.top = percent + "%";
             }
 
             if(sessionStorage.getItem('smtId') === null) {

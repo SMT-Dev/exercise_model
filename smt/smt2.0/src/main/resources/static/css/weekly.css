@@ -501,6 +501,10 @@ body {
     z-index: 6;
 }
 
+.el-progress__text {
+    color: transparent !important;
+}
+
 /* .el-carousel .el-carousel__container {
     pointer-events: none !important;
 } */
