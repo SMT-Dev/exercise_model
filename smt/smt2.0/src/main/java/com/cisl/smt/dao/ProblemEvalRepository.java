@@ -50,11 +50,34 @@ public interface ProblemEvalRepository extends JpaRepository<ProblemEvaluation, 
             "WHERE TO_DAYS(NOW()) - TO_DAYS(prob_eval_time) <= 14 AND P.prob_diff='Hard' AND user_id=?1", nativeQuery = true)
     Integer getExerciseHardNumWeekly(@Param("user_id") Long user_id);
 
-    // 某学生做对题目的考点列表
-    @Query(value = "SELECT point,count(*) FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=1 AND user_id=?1 GROUP BY point;", nativeQuery = true)
-    List<Object[]> getExerciseRightPoint(@Param("user_id") Long user_id);
+    // 某学生掌握考点 TOP3
+    @Query(value = "SELECT r.point FROM (\n" +
+            "\tSELECT point,count(*) as right_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=1 AND user_id=?1 GROUP BY point) r\n" +
+            "\tLEFT OUTER JOIN \n" +
+            "\t(SELECT point,count(*) as wrong_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=0 AND user_id=?1 GROUP BY point) w\n" +
+            "\tON r.point=w.point\n" +
+            "\tWHERE r.right_cnt/(r.right_cnt+w.wrong_cnt) >= 0.6\n" +
+            "\tORDER BY r.right_cnt/(r.right_cnt+w.wrong_cnt) DESC\n" +
+            "\tLIMIT 3", nativeQuery = true)
+    String[] getExerciseRightPoint(@Param("user_id") Long user_id);
 
-    // 某学生做错题目的考点列表
-    @Query(value = "SELECT point,count(*) FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=0 AND user_id=?1 GROUP BY point;", nativeQuery = true)
-    List<Object[]> getExerciseWrongPoint(@Param("user_id") Long user_id);
+    // 某学生未掌握考点 TOP3
+    @Query(value = "SELECT r.point FROM (\n" +
+            "\tSELECT point,count(*) as right_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=1 AND user_id=?1 GROUP BY point) r\n" +
+            "\tLEFT OUTER JOIN \n" +
+            "\t(SELECT point,count(*) as wrong_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=0 AND user_id=?1 GROUP BY point) w\n" +
+            "\tON r.point=w.point\n" +
+            "\tWHERE r.right_cnt/(r.right_cnt+w.wrong_cnt) >= 0 AND r.right_cnt/(r.right_cnt+w.wrong_cnt) < 0.6\n" +
+            "\tORDER BY r.right_cnt/(r.right_cnt+w.wrong_cnt)\n" +
+            "\tLIMIT 3", nativeQuery = true)
+    String[] getExerciseWrongPoint(@Param("user_id") Long user_id);
+
+    // 某学生已掌握考点个数
+    @Query(value = "SELECT  COUNT(*) FROM (\n" +
+            "\tSELECT point,count(*) as right_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=1 AND user_id=?1 GROUP BY point) r\n" +
+            "\tLEFT OUTER JOIN \n" +
+            "\t(SELECT point,count(*) as wrong_cnt FROM t_prob_eval WHERE point!='未知考点' AND prob_eval_res=0 AND user_id=?1 GROUP BY point) w\n" +
+            "\tON r.point=w.point\n" +
+            "\tWHERE r.right_cnt/(r.right_cnt+w.wrong_cnt) >= 0.6", nativeQuery = true)
+    Integer getHandlePointCount(@Param("user_id") Long user_id);
 }

@@ -27,15 +27,33 @@ public interface ExerciseEvalRepository extends JpaRepository<ExerciseEvaluation
     List<ExerciseEvaluation> getExerciseEval(@Param("user_id") Long user_id);
 
     // 某学生过去两周的刷题次数
-    @Query(value = "SELECT count(*) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 14 AND user_id=?1;", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 14 AND user_id=?1", nativeQuery = true)
     Integer getExerciseTimesWeekly(@Param("user_id") Long user_id);
 
     // 某学生过去两周的刷题平均分
-    @Query(value = "SELECT avg(exer_eval_score) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 14 AND user_id=?1;", nativeQuery = true)
+    @Query(value = "SELECT ifnull(avg(exer_eval_score),0) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 14 AND user_id=?1", nativeQuery = true)
     Integer getExerciseAvgScoreWeekly(@Param("user_id") Long user_id);
 
     // 某学生上一阶段的刷题平均分
-    @Query(value = "SELECT avg(exer_eval_score) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 28 AND TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) > 14 AND user_id=?1;", nativeQuery = true)
+    @Query(value = "SELECT ifnull(avg(exer_eval_score),0) FROM t_exer_eval WHERE TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) <= 28 AND TO_DAYS(NOW()) - TO_DAYS(exer_eval_time) > 14 AND user_id=?1", nativeQuery = true)
     Integer getExerciseLastAvgWeekly(@Param("user_id") Long user_id);
+
+    // 某学生所有刷题平均分
+    @Query(value = "SELECT avg(exer_eval_score) FROM t_exer_eval WHERE exer_eval_score!=0 AND user_id=?1", nativeQuery = true)
+    Integer getExerciseScoreAvg(@Param("user_id") Long user_id);
+
+    // 所有学生刷题平均分
+    @Query(value = "SELECT avg(exer_eval_score) FROM t_exer_eval WHERE exer_eval_score!=0", nativeQuery = true)
+    Integer getExerciseAllAvg();
+
+    // 某学生所有刷题平均耗时
+    @Query(value = "SELECT avg(consume_time) FROM t_exer_eval WHERE exer_eval_score!=0 AND consume_time<2000 AND user_id=?1", nativeQuery = true)
+    Integer getExerciseTimeAvg(@Param("user_id") Long user_id);
+
+    // 某学生过去 10 次刷题得分
+    @Query(value = "SELECT exer_eval_score FROM t_exer_eval\n" +
+            "WHERE exer_eval_score > 5 AND user_id=?1\n" +
+            "LIMIT 10", nativeQuery = true)
+    int[] getLastTenExercise(@Param("user_id") Long user_id);
 
 }

@@ -274,17 +274,24 @@ public class UploadController {
         return "OK";
     }
 
+    @GetMapping("/getNextProb")
+    public Long getNextProb() {
+        return problemRepository.getLastProb_id() + 1;
+    }
+
     @PostMapping("/fileUpload")
-    public String singleImage(@RequestParam("file") MultipartFile file, HttpServletRequest request) throws FileNotFoundException {  //参数名需与前端文件标签名一样
-        //获取项目classes/static的地址
+    public String singleImage(@RequestParam("file") MultipartFile file, @RequestParam(value="prob_id") String prob_id, HttpServletRequest request) throws FileNotFoundException {  //参数名需与前端文件标签名一样
+        // 获取项目classes/static的地址
         String path = ClassUtils.getDefaultClassLoader().getResource("static").getPath();  //static
-        String fileName = file.getOriginalFilename();  //获取文件名  xxx.jpg
-        //图片访问URI(即除了协议、地址和端口号的URL)
+        String fileName = file.getOriginalFilename();  //获取文件名  xxx.jpg -> prob_id.jpg
+//        fileName = prob_id + "." + fileName.split("\\.")[1];
+        fileName = prob_id + ".png";
+        // 图片访问URI(即除了协议、地址和端口号的URL)
         String url_path = "image/_prob"+ File.separator+fileName;
-        System.out.println(("图片访问uri："+url_path));
         String savePath = path+File.separator+url_path;  //图片保存路径
         System.out.println(("图片保存地址："+savePath));
         File saveFile = new File(savePath);
+        // 这个语句只会产生文件夹
 //        if (!saveFile.exists()){
 //            saveFile.mkdirs();
 //        }
@@ -294,9 +301,13 @@ public class UploadController {
             e.printStackTrace();
         }
         //返回图片访问地址
-        System.out.println(url_path);
         return url_path;
     }
 
+    /*
+    2021.12.24 bug 修复
+    transferTo 提示 Permission Denied 修改一下权限即可
+    sudo chmod 777 /home/smartree/www/smt-exercise/WEB-INF/classes/static/image/_prob
+     */
 
 }

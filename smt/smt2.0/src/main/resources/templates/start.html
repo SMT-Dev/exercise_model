@@ -12,7 +12,7 @@
     <script src="/js/jquery.min.js"></script>
     <script src="http://mockjs.com/dist/mock.js"></script>
 </head>
-<body>
+<body onload="showData()">
         <div id="app">
             <img id="background" src="/image/start_bg.png">
             <button type="button" id="back_button" @click="goBack"></button>
@@ -61,7 +61,16 @@
     function setCookie(cname,cvalue) {
         document.cookie = cname + "=" + cvalue + "; ";
     }
-
+    function showData () {
+        var deviceWidth = document.documentElement.clientWidth;
+        var deviceHeight = document.documentElement.clientHeight;
+        var availWidth = window.screen.availWidth;
+        var availHeight =  window.screen.availHeight;
+        var screenHeight = window.screen.height;
+        var screenWidth = window.screen.width;
+        alert('deviceWidth:' + deviceWidth + ' deviceHeight: ' +deviceHeight + ' availWidth:' + availWidth +
+            ' availHeight:' + availHeight + ' screenWidth:' + screenWidth + ' screenHeight:' +screenHeight)
+    }
     function getCookie(cname) {
         var name = cname + "=";
         var ca = document.cookie.split(';');
@@ -183,6 +192,7 @@
             if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
                 var deviceWidth = document.documentElement.clientWidth;
                 var deviceHeight = document.documentElement.clientHeight;
+
                 if(window.orientation == 0 || window.orientation == 180) {
                     deviceWidth = (deviceWidth < deviceHeight) ? deviceWidth : deviceHeight;
                     document.getElementById("app").style.transformOrigin = "left top";
@@ -193,10 +203,13 @@
                     document.getElementById("app").style.transformOrigin = "left top";
                     document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
                 }
+
             }else {
                 var deviceWidth = document.documentElement.clientWidth;
+
                 document.getElementById("app").style.transformOrigin = "left top";
                 document.getElementById("app").style.transform = "scale(" + (deviceWidth / 1533) + ")";
+
             }
         }
     })

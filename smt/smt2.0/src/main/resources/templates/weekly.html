@@ -330,6 +330,8 @@
         });
     });*/
 
+    // Mock 合集
+    /*
     Mock.mock('/getSmtId',{
         "smtId": ''
     })
@@ -476,6 +478,7 @@
         "code": "0",
         "msg": "操作成功！"
     })
+    */
 
     $(document).mouseup(function(e){
         var popPaper = $('#pop_paper');  
@@ -1097,7 +1100,9 @@
             },
 
             getSMTId: async function () {
-                this.smtId = await this.getSMTbind();
+                // TODO 进行 SmtId 与微信的 bind
+                // this.smtId = await this.getSMTbind();
+
                 if(this.smtId.length === 0) {
                     this.ifBind = true;
                     if (/(iPhone|iPad|iPod|iOS|Android)/i.test(navigator.userAgent)) {
@@ -1112,19 +1117,20 @@
                     document.getElementById("container").style.filter = "blur(15px)";
                 }else {
                     sessionStorage.setItem('smtId',this.smtId);
-                    this.setMainData();
-                    this.setExerciseData();
-                    this.setVocalData();
-                    this.setLibraryData();
-                    this.setContrastData();
-                    this.setUserInfo();//根据smtId调用函数获取数据
-                    this.setPortfolio();
+                    await this.setMainData();
+                    await this.setExerciseData();
+                    await this.setVocalData();
+                    await this.setLibraryData();
+                    await this.setContrastData();
+                    await this.setUserInfo();//根据smtId调用函数获取数据
+                    await this.setPortfolio();
                 }
             },
 
             getMainReport: function () {
                 return new Promise(resolve => {
-                    axios.get("/getMainReport?user_id=" + this.bindData.smtId).then((response) => {
+                    axios.get("/getMainReport?user_id=" + this.bindData.smtId
+                    + "&orgCode=" + this.bindData.orgCode + "&password=" + this.bindData.password).then((response) => {
                         resolve(response.data);
                     })
                 })
@@ -1141,6 +1147,13 @@
                 this.smt_word = res.level_word_learned;
                 this.finish_lesson = res.weekly_lesson_finish;
                 this.finish_movie = res.weekly_movie_finish;
+                // 个人信息
+                this.level = res.level;
+                this.week = res.week;
+                this.stuName = res.name;
+                $("#diff_table")[0].children[0].src = "/image/diff" + this.level + "_week.png";
+                if (this.level === 0)
+                    $("#diff_table")[0].children[0].src = "/image/diff1_week.png";
             },
 
             getExerciseReport: function () {
@@ -1188,7 +1201,7 @@
                 this.wordData.avgScore = res.avg_score;
                 this.wordData.avgTime = res.avg_time;
                 this.wordData.word_unhandle = res.word_unhandle;
-                this.paperData.progress = res.progress;
+                this.wordData.progress = res.progress;
                 this.chartOptions1.series[0].data = res.last_ten_score;
                 for(var i = 0;i < res.comment_list.length;i++) {
                     var obj = {};
@@ -1245,19 +1258,22 @@
                 })
             },
 
+            // 已经被 MainReport 代替
             setUserInfo: async function () {
-                var response = await this.getUserInfo();
-                var res = response.data;
-                this.level = res.level;
-                this.week = res.week;
-                this.lesson = res.lesson;
-                this.stuName = res.name;
-                $("#diff_table")[0].children[0].src = "/image/diff" + this.level + "_week.png";
+                // var response = await this.getUserInfo();
+                // var res = response.data;
+                // this.level = res.level;
+                // this.week = res.week;
+                // this.lesson = res.lesson;
+                // this.stuName = res.name;
+                // $("#diff_table")[0].children[0].src = "/image/diff" + this.level + "_week.png";
+                // if (this.level === 0)
+                //     $("#diff_table")[0].children[0].src = "/image/diff1_week.png";
             },
 
             getPortfolio: function () {
                 return new Promise(resolve => {
-                    axios.get("/getPortfolio?user_id=" + this.bindData.smtId).then((response) => {
+                    axios.get("/getPortfolio?user_id=" + this.smtId).then((response) => {
                         resolve(response.data);
                     })
                 })
@@ -1266,37 +1282,53 @@
             setPortfolio: async function () {
                 var response = await this.getPortfolio();
                 var res = response.data;
-                // image = [];
-                // audio = [];
-                // for(i = 0;i < len(res.portfolioList);i++) {
-                //     if(res.portfolioList[i].fileType === "image") {
-                //         image.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
-                //     }else if(res.portfolioList[i].fileType === "audio") {
-                //         audio.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
-                //     }
-                // }
-                // this.trails = image;
-                // this.audios = audio;
+                var image = [];
+                var audio = [];
+                for(i = 0;i < res.portfolioList.length;i++) {
+                    if(res.portfolioList[i].fileType === "image") {
+                        image.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
+                    }else if(res.portfolioList[i].fileType === "audio") {
+                        audio.push("https://www.smartreelearners.com" + res.portfolioList[i].fileData);
+                    }
+                }
+                this.trails = image;
+                this.audios = audio;
             },
 
             bind: function () {
                 this.bindData.smtId = this.smtId;
+
                 console.log(this.bindData.orgCode + '  ' + this.bindData.smtId + '  ' + this.bindData.password);
-                this.ifBind = false;
-
-                this.setMainData();
-                this.setExerciseData();
-                this.setVocalData();
-                this.setLibraryData();
-                this.setContrastData();
-                this.setUserInfo();
-                this.setPortfolio();
-
-
-                document.getElementById("container").style.filter = "blur(0px)";
-                axios.post("/bind", $.param(this.bindData)  
+                // 登录请求
+                axios.post("/bind", $.param(this.bindData)
                 ).then((response) => {
-                    sessionStorage.setItem("smtId",this.bindData.smtId);
+                    if(response.data.indexOf("OK") >= 0){
+                        this.$message({
+                            type: 'success',
+                            message: '登录成功'
+                        });
+
+                        sessionStorage.setItem("smtId",this.bindData.smtId);
+                        sessionStorage.setItem("orgCode",this.bindData.orgCode);
+                        sessionStorage.setItem("password",this.bindData.password);
+                        this.ifBind = false;
+
+                        this.setMainData();
+                        this.setExerciseData();
+                        this.setVocalData();
+                        this.setLibraryData();
+                        this.setContrastData();
+                        this.setUserInfo();
+                        this.setPortfolio();
+                        document.getElementById("container").style.filter = "blur(0px)";
+                    }
+                    else {
+                        this.$message({
+                            type: 'error',
+                            message: '机构码/账号/密码错误'
+                        });
+                        return;
+                    }
                 });
             },
         },
@@ -1328,6 +1360,8 @@
                 this.getSMTId();
             }else {
                 this.bindData.smtId = sessionStorage.getItem('smtId');
+                this.bindData.orgCode = sessionStorage.getItem('orgCode');
+                this.bindData.password = sessionStorage.getItem('password');
                 this.setMainData();
                 this.setExerciseData();
                 this.setVocalData();
