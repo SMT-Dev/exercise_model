@@ -1,11 +1,14 @@
 package com.cisl.smt.po;
 
+import lombok.Data;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@Data
 @Table(name = "t_answer")
 public class Answer {
 
@@ -18,36 +21,8 @@ public class Answer {
 
     public Answer() {};
 
-    public Long getAnswer_id() {
-        return answer_id;
-    }
-
-    public String getAnswer_text() {
-        return answer_text;
-    }
-
-    public String getAnalysis_text() {
-        return analysis_text;
-    }
-
-    public void setAnswer_id(Long answer_id) {
-        this.answer_id = answer_id;
-    }
-
-    public void setAnswer_text(String answer_text) {
+    public Answer(String answer_text, String analysis_text) {
         this.answer_text = answer_text;
-    }
-
-    public void setAnalysis_text(String analysis_text) {
         this.analysis_text = analysis_text;
-    }
-
-    @Override
-    public String toString() {
-        return "Answer{" +
-                "answer_id=" + answer_id +
-                ", answer_text='" + answer_text + '\'' +
-                ", analysis_text='" + analysis_text + '\'' +
-                '}';
     }
 }
