@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    url: jdbc:mysql://rm-uf6e8i940vetuip7l.mysql.rds.aliyuncs.com:3306/smt?useUnicode=true&characterEncoding=utf-8
+    driver-class-name: com.mysql.jdbc.Driver
+    username: 'owner'
+    password: 'XWTwEsUJIDPh$'
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
