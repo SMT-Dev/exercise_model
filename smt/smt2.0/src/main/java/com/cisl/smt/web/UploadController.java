@@ -352,18 +352,18 @@ public class UploadController {
                         //text only->do nothing
                         break;
                     case 2:
-                        //audio only->save audio url
-                        options.setA_audio_url(option_a_audio);
-                        options.setB_audio_url(option_b_audio);
-                        options.setC_audio_url(option_c_audio);
-                        options.setD_audio_url(option_d_audio);
-                        break;
-                    case 3:
                         //pic only->save pic url
                         options.setA_image_url(option_a_image);
                         options.setB_image_url(option_b_image);
                         options.setC_image_url(option_c_image);
                         options.setD_image_url(option_d_image);
+                        break;
+                    case 3:
+                        //audio only->save audio url
+                        options.setA_audio_url(option_a_audio);
+                        options.setB_audio_url(option_b_audio);
+                        options.setC_audio_url(option_c_audio);
+                        options.setD_audio_url(option_d_audio);
                         break;
                     case 4:
                         //audio+pic->save both url
