@@ -5,3 +5,9 @@ spring:
     view:
       prefix: classpath:/templates/
       suffix: .html
+  http:
+    multipart:
+      maxFileSize: 50Mb
+      maxRequestSize: 500Mb
+
+

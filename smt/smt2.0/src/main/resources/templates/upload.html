@@ -119,22 +119,33 @@
                     <el-form-item label="" prop="prob_text">
                         <el-input label-width="800px" type="textarea" :rows="3" v-model="formData.prob_text"></el-input>
                     </el-form-item>
+
                     <h4>图片部分（可不填）</h4>
                     <el-upload
                             class="upload-demo"
                             drag
-                            action="localhost:8080/fileUpload1"
+                            action="fileUpload1"
                             :limit="1"
-                            :before-upload="uploadBefore"
-                            :data="formData.prob_img_time"
+                            :on-success="uploadImgAfter"
+                            :data="{fileType:'image',info:'stem'}"
                             >
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                         <div class="el-upload__tip" slot="tip">只能上传单个jpg/png文件</div>
                     </el-upload>
+
                     <h4>音频部分（可不填）</h4>
-                    <input type="file" accept=".mp3, .mkv, .wma" @change="uploadAudio">
-                    <div id="prob_audio"></div>
+                    <el-upload
+                            class="upload-demo"
+                            action="fileUpload1"
+                            :on-success="uploadAudioAfter"
+                            multiple
+                            :limit="1"
+                            :data="{fileType:'audio',info:'stem'}"
+                            >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
+
                     <div v-if="radioType === 'Choice'" style="width: 600px">
                         <h3>选项：options</h3>
                         <el-form-item label="A.">
@@ -234,35 +245,6 @@
                         </template>
                         <el-button size="mini" @click="addPoint" round style="margin-top: 10px">+ 添加新考点</el-button>
 
-                        <h3 style="margin: 10px 0">图片:（可选）</h3>
-<!--                        <el-upload class="upload-demo"-->
-<!--                                   ref="upload"-->
-<!--                                   drag-->
-<!--                                   action="http://localhost:8080/fileUpload"-->
-<!--                                   multiple-->
-<!--                                   :auto-upload="false"-->
-<!--                                   with-credentials="true"-->
-<!--                                   :limit="1"-->
-<!--                                   :before-upload="handleBefore"-->
-<!--                                   :on-success="handleFilUploadSuccess"-->
-<!--                                   :on-remove="handleRemove"-->
-<!--                                   :data="uploadData"-->
-<!--                        >-->
-<!--                            <i class="el-icon-upload"></i>-->
-<!--                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>-->
-<!--                        </el-upload>-->
-                        <el-upload
-                                class="upload-demo"
-                                drag
-                                action="https://interface.smartreelearners.com:8442/fileUpload"
-                                :limit="1"
-                                :before-upload="handleBefore"
-                                :data="imageData"
-                                multiple>
-                            <i class="el-icon-upload"></i>
-                            <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                            <div class="el-upload__tip" slot="tip">只能上传单个jpg/png文件</div>
-                        </el-upload>
                     </div>
 
 
@@ -310,16 +292,18 @@
                 blank_num: 0,
                 txt_type: '',
                 mode: 1,
-                prob_img_time: '',
-                prob_audio_time: '',
-                optionA_img_time: '',
-                optionB_img_time: '',
-                optionC_img_time: '',
-                optionD_img_time: '',
-                optionA_audio_time: '',
-                optionB_audio_time: '',
-                optionC_audio_time: '',
-                optionD_audio_time: '',
+                stem_img: '',
+                stem_audio: '',
+                stem_flag:0,
+                option_a_img: '',
+                option_b_img: '',
+                option_c_img: '',
+                option_d_img: '',
+                option_a_audio: '',
+                option_b_audio: '',
+                option_c_audio: '',
+                option_d_audio: '',
+                option_flag: 0,
             },
             level: '0',
             lesson_id: 0,
@@ -350,6 +334,12 @@
             view_point_text: '',
             imageData: {
                 prob_id: 0
+            },
+            audioData: {
+                file: '',
+                fileType: 'audio',
+                info: '',
+                option: '',
             }
         },
 
@@ -358,10 +348,47 @@
                 this.formData.blank_num = value;
             },
 
-            handleBefore(file) {
-                // this.imageData.prob_id =
+            chooseFlag: function (type) {
+                if(type == 'stem'){
+                    if(this.formData.stem_img != ''){
+                        this.formData.stem_flag = 2;
+                        if(this.formData.stem_audio != ''){
+                            this.formData.stem_flag = 4;
+                        }
+                    }else if(this.formData.stem_audio != ''){
+                        this.formData.stem_flag = 3;
+                    }else{
+                        this.formData.stem_flag = 1;
+                    }
+                }else if(type == 'option'){
+                    if(this.formData.option_a_img != ''){
+                        this.formData.option_flag = 2;
+                        if(this.formData.option_a_audio != ''){
+                            this.formData.option_flag = 4;
+                        }
+                    }else if(this.formData.option_a_audio != ''){
+                        this.formData.option_flag = 3;
+                    }else{
+                        this.formData.option_flag = 1;
+                    }
+                }
             },
-            uploadBefore()
+
+            uploadImgAfter(res){
+                this.formData.stem_img = res;
+                this.chooseFlag('stem');
+                console.log(this.formData)
+            },
+
+            uploadAudioAfter(res){
+                this.formData.stem_audio = res;
+                this.chooseFlag('stem');
+                console.log(this.formData)
+            },
+
+            uploadOption: function(num, type){
+
+            },
 
             back: function () {
                 window.location.replace("/upload_list");
