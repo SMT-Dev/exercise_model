@@ -9,6 +9,7 @@ import com.cisl.smt.po.Options;
 import com.cisl.smt.po.Point;
 import com.cisl.smt.po.Problem;
 import com.cisl.smt.service.OptionsService;
+import com.cisl.smt.web.Temp.FileInfo;
 import com.cisl.smt.web.Temp.ProblemDetail;
 import com.cisl.smt.web.Temp.SheetTemp;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -310,7 +311,7 @@ public class UploadController {
                                @RequestParam("option_c_audio") String option_c_audio, //add
                                @RequestParam("option_d_audio") String option_d_audio, //add
                                @RequestParam("option_flag") int option_flag, //add
-                               @RequestParam("answer_text") String answer_text,
+                               @RequestParam("answer") String answer_text,
                                @RequestParam("analysis") String analysis,
                                @RequestParam("prob_text") String prob_text,
                                @RequestParam("stem_image") String stem_image, //add
@@ -509,7 +510,7 @@ public class UploadController {
      * @throws FileNotFoundException
      */
     @PostMapping("/fileUpload1")
-    public String fileUpload(@RequestParam("file") MultipartFile file,
+    public FileInfo fileUpload(@RequestParam("file") MultipartFile file,
                              @RequestParam(value = "fileType") String fileType,
                              @RequestParam(value = "info") String info,
                              @RequestParam(value = "option", defaultValue = "A") String option)
@@ -545,8 +546,10 @@ public class UploadController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        FileInfo fileInfo = new FileInfo(info,option,url_path);
         //返回文件访问地址
-        return url_path;
+        return fileInfo;
     }
 
 }
