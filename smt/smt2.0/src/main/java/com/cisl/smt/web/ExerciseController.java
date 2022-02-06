@@ -356,11 +356,14 @@ public class ExerciseController {
          */
         ArrayList<Long> probNumList = new ArrayList<>();
         SettingTemp settingTemp = SettingTemp.getInstance();
+        //通过难度和lesson_id取Problem
         List<Problem> tempList = problemService.getProblemByLevelAndLesson_id(settingTemp.getLev().toString(), lesson_id);
+
         List<Problem> easyChoiceProbList = new ArrayList<>(),
                 easyTextProbList = new ArrayList<>(),
                 mediumProbList = new ArrayList<>(),
                 probList = new ArrayList<>();
+
         for (Problem p : tempList) {
             if (p.getProb_diff().equals("Easy") && p.getProb_attr().equals("Choice")) {
                 easyChoiceProbList.add(p);
@@ -379,9 +382,6 @@ public class ExerciseController {
             probList.addAll(easyChoiceProbList.subList(0, 9));
         } else {
             probList.addAll(easyChoiceProbList);
-            for (int i = 0; i < gap; i++) {
-                probList.add(problemService.getProblemByProb_id(getOneRandom()));
-            }
         }
 
         Collections.shuffle(easyTextProbList);
@@ -390,9 +390,7 @@ public class ExerciseController {
             probList.addAll(easyTextProbList.subList(0, 3));
         } else {
             probList.addAll(easyTextProbList);
-            for (int i = 0; i < gap; i++) {
-                probList.add(problemService.getProblemByProb_id(getOneRandom()));
-            }
+
         }
 
         Collections.shuffle(mediumProbList);
@@ -401,9 +399,6 @@ public class ExerciseController {
             probList.addAll(mediumProbList.subList(0, 3));
         } else {
             probList.addAll(mediumProbList);
-            for (int i = 0; i < gap; i++) {
-                probList.add(problemService.getProblemByProb_id(getOneRandom()));
-            }
         }
 
         for (Problem pro : probList)
@@ -424,20 +419,21 @@ public class ExerciseController {
         probEvalList = problemEvalService.getProblemEvalByUser(USER_ID);
         Collections.shuffle(probEvalList);
         if(probEvalList.size() >= partNum) {  //修复 bug 遗忘曲线题目量不足
-            for (int i = 0; i < partNum; i++)
-                probList.add(probEvalList.get(i).getProb_id());
-        }
-        else if (probEvalList.size() > 0) {
-            int margin = partNum - probEvalList.size();
-            for (ProblemEvaluation pe : probEvalList)
-                probList.add(pe.getProb_id());
-            for (int i = 0; i < margin; i++) {
-                probList.add(getOneRandom());
+            for (int i = 0; i < partNum; i++) {
+                Long prob_id = probEvalList.get(i).getProb_id();
+                Problem problem = problemService.getProblemByProb_id(prob_id);
+                if(problem!=null){
+                    probList.add(prob_id);
+                }
             }
-        } else {
-            for (int i = 0; i < partNum; i++)
-                probList.add(getOneRandom());
         }
+//        else if (probEvalList.size() > 0) {
+//            int margin = partNum - probEvalList.size();
+//            for (ProblemEvaluation pe : probEvalList)
+//                probList.add(pe.getProb_id());
+//
+//        }
+
         return probList;
     }
 
@@ -459,18 +455,23 @@ public class ExerciseController {
         ArrayList<Long> probList = new ArrayList<>();
         Integer curLevel = SettingTemp.getInstance().getLev();
         for (Long num : probEvalList) {
-            Long probId;
+            Long probId=0L;
             try {
                 probId = problemEvalService.getProblemEvalById(num).getProb_id();
             } catch (NullPointerException e){
-                probId = getOneRandom();
-                while (wrongList.contains(probId))
-                    probId = getOneRandom();
+
             }
             //只选取level 等于 当前level的题
-            if (Integer.valueOf(problemService.getProblemByProb_id(probId).getProb_level()).equals(curLevel))
-                wrongList.add(probId);
+            //qxy
+            System.out.println("probId:"+probId);
+            Problem problem = problemService.getProblemByProb_id(probId);
+            if(problem!=null){
+                if(Integer.valueOf(problemService.getProblemByProb_id(probId).getProb_level()).equals(curLevel)){
+                    wrongList.add(probId);
+                }
+            }
         }
+
         Collections.shuffle(wrongList);
 
         try {
@@ -680,7 +681,7 @@ public class ExerciseController {
         ArrayList<Long> probList = new ArrayList<>();
         Integer totalNum = settingTemp.getProbNum();  //lesson 默认 totalNum = 20
         Integer level = settingTemp.getLev();
-        System.out.println(settingTemp);
+
         if (settingTemp.getSrc().equals("ai")) {
             //进入 AI 刷题温故知新, 依次接收四个来源. 2.0 版本已废弃
         } else if (settingTemp.getSrc().equals("lesson")) {
@@ -695,11 +696,14 @@ public class ExerciseController {
 //            tmpList.addAll(getHighFrequency(3));
 
             //2021.11.03: 厦门海沧地区测试，15+3+2
+            System.out.println("lesson_id:"+lesson_id);
+            //begin
             tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
             tmpList.addAll(getFromSimilar(3, USER_ID));
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
+            //end
             //此处 tmpList 已固定题量g 20，不需要 shuffle
             HashSet<Long> hashSet = new HashSet<>(tmpList);
             assert tmpList.size() == hashSet.size(); //保证列表去重
@@ -801,13 +805,12 @@ public class ExerciseController {
             3. 双周测试中，sys=7-8 表示7-8周
             4. 如果有需要参考的 redId=8888，那么 sys 代表 refId，
          */
-
         SettingTemp settingTemp = SettingTemp.getInstance();
         settingTemp.setSrc(src);
         settingTemp.setLev(lev);
         settingTemp.setProbNum(probNum);
         settingTemp.setSys(sys);
-
+        System.out.println("settingTemp:"+settingTemp);
         return settingTemp;
     }
 
@@ -879,6 +882,8 @@ public class ExerciseController {
         ArrayList<Long> orderList = new ArrayList<>();
         for (Long tmpNum : tmpList)
             try {
+//                System.out.println("problem:"+problemService.getProblemByProb_id(tmpNum));
+//                System.out.println("problem_equals:"+problemService.getProblemByProb_id(tmpNum).getProb_attr().equals("Choice"));
                 if (problemService.getProblemByProb_id(tmpNum).getProb_attr().equals("Choice"))
                     orderList.add(tmpNum);
             }catch (Exception e){
@@ -924,8 +929,10 @@ public class ExerciseController {
          */
         int origin = tmpList.size();
         ArrayList<Long> newList = new ArrayList<>();
+        System.out.println("tmpList.length:"+tmpList.size());
+        System.out.println("tmpList:"+tmpList);
         for (Long prob_id : tmpList) {
-            if(!problemService.getProblemByProb_id(prob_id).getProb_text().contains("题目已被删除"))
+//            if(!problemService.getProblemByProb_id(prob_id).getProb_text().contains("题目已被删除"))
                 newList.add(prob_id);
         }
         int margin = origin - newList.size();

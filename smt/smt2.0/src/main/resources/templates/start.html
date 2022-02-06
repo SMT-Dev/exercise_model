@@ -153,6 +153,7 @@
             },
 
             choose: function (option) {
+                console.log("--执行了choose--");
                 if(this.chosen_lesson != 0) {
                     document.getElementById("star" + this.chosen_lesson.toString()).style.height = "90%";
                     document.getElementById("star" + this.chosen_lesson.toString()).style.width = "90%";
@@ -163,10 +164,14 @@
             },
 
             start: function () {
+                console.log("--执行了start--");
+
                 this.setting.sys = this.chosen_lesson.toString();
-                this.setting.lev = this.level;
+                // this.setting.lev = this.level;
+                this.setting.lev = "1";
                 axios.post("/postSetting",$.param(this.setting)
                 ).then((response) => {
+                    //400-参数不匹配
                     console.log("已设置参数: ", response.data);
                 });
                 sessionStorage.setItem("level",this.setting.lev.toString());
