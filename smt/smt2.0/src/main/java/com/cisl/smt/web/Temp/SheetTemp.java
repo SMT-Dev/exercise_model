@@ -1,7 +1,9 @@
 package com.cisl.smt.web.Temp;
 
-import java.util.ArrayList;
+import lombok.Data;
 
+import java.util.ArrayList;
+@Data
 public class SheetTemp {
     /**
      * @description: 答题卡数据临时类
@@ -14,6 +16,14 @@ public class SheetTemp {
     private ArrayList<Long> num_list;
     private Long opt_num;
     private Long txt_num;
+    //add begin
+    private int opt_choice_num;
+    private int opt_tingyinxuanwen_num;
+    private int opt_kantuxuanyin_num;
+    private int opt_tingyinxuanci_num;
+    private int opt_panduanzhengwu_num;
+
+    //add end
     private String exer_level;
     private String start_time;
     private String end_time;
@@ -27,53 +37,6 @@ public class SheetTemp {
         this.evaluated = false;
     };   //还要初始化自己的列表
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public ArrayList<ProblemAnsTemp> getSheet_list() {
-        return sheet_list;
-    }
-
-    public void setSheet_list(ArrayList<ProblemAnsTemp> sheet_list) {
-        this.sheet_list = sheet_list;
-    }
-
-    public Long getOpt_num() {
-        return opt_num;
-    }
-
-    public void setOpt_num(Long opt_num) {
-        this.opt_num = opt_num;
-    }
-
-    public Long getTxt_num() {
-        return txt_num;
-    }
-
-    public void setTxt_num(Long txt_num) {
-        this.txt_num = txt_num;
-    }
-
-    public String getExer_level() {
-        return exer_level;
-    }
-
-    public void setExer_level(String exer_level) {
-        this.exer_level = exer_level;
-    }
-
-    public ArrayList<Long> getNum_list() {
-        return num_list;
-    }
-
-    public void setNum_list(ArrayList<Long> num_list) {
-        this.num_list = num_list;
-    }
 
     public void addSheet_list(ProblemAnsTemp pt) {
         if(this.sheet_list == null){
@@ -88,42 +51,5 @@ public class SheetTemp {
         this.num_list.clear();
     }
 
-    public String getStart_time() {
-        return start_time;
-    }
 
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
-    }
-
-    public String getEnd_time() {
-        return end_time;
-    }
-
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
-    }
-
-    public boolean isEvaluated() {
-        return evaluated;
-    }
-
-    public void setEvaluated(boolean evaluated) {
-        this.evaluated = evaluated;
-    }
-
-    @Override
-    public String toString() {
-        return "SheetTemp{" +
-                "id=" + id +
-                ", sheet_list=" + sheet_list +
-                ", num_list=" + num_list +
-                ", opt_num=" + opt_num +
-                ", txt_num=" + txt_num +
-                ", exer_level='" + exer_level + '\'' +
-                ", start_time='" + start_time + '\'' +
-                ", end_time='" + end_time + '\'' +
-                ", evaluated=" + evaluated +
-                '}';
-    }
 }
