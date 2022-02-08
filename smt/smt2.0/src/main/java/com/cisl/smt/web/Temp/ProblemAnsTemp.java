@@ -1,5 +1,7 @@
 package com.cisl.smt.web.Temp;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -7,6 +9,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Data
 public class ProblemAnsTemp {
     /**
      * @description: 做题页面中某题的作答
@@ -27,25 +30,21 @@ public class ProblemAnsTemp {
     private String type;   // 新增了一个题型变量
     private int eval_res; // 本题做对与做错
 
-    public Long getIdx() {
-        return idx;
-    }
+    //以下为新增布局相关
+    private int showOrder;
+    private String layoutType;
+    private String stem_audio;
+    private String stem_image;
+    private String option_a_audio;
+    private String option_b_audio;
+    private String option_c_audio;
+    private String option_d_audio;
+    private String option_a_image;
+    private String option_b_image;
+    private String option_c_image;
+    private String option_d_image;
 
-    public void setIdx(Long idx) {
-        this.idx = idx;
-    }
 
-    public Long getFinish() {
-        return finish;
-    }
-
-    public void setFinish(Long finish) {
-        this.finish = finish;
-    }
-
-    public String getChoice() {
-        return choice;
-    }
 
     public void setChoice(String choice) {  // 设置选项的时候就判断正误
         this.choice = choice;
@@ -56,9 +55,6 @@ public class ProblemAnsTemp {
         }
     }
 
-    public String getChoice_text() {
-        return choice_text;
-    }
 
     public static String purify(String raw) {
         //筛选出所有字母
@@ -135,67 +131,4 @@ public class ProblemAnsTemp {
         }
     }
 
-    public String getProb_text() {
-        return prob_text;
-    }
-
-    public void setProb_text(String prob_text) {
-        this.prob_text = prob_text;
-    }
-
-    public String getAnalysis() {
-        return analysis;
-    }
-
-    public void setAnalysis(String analysis) {
-        this.analysis = analysis;
-    }
-
-    public String getAns() {
-        return ans;
-    }
-
-    public void setAns(String ans) {
-        this.ans = ans;
-    }
-
-    public String getPoint() {
-        return point;
-    }
-
-    public void setPoint(String point) {
-        this.point = point;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public int getEval_res() {
-        return eval_res;
-    }
-
-    public void setEval_res(int eval_res) {
-        this.eval_res = eval_res;
-    }
-
-    @Override
-    public String toString() {
-        return "ProblemAnsTemp{" +
-                "idx=" + idx +
-                ", finish=" + finish +
-                ", choice='" + choice + '\'' +
-                ", choice_text='" + choice_text + '\'' +
-                ", prob_text='" + prob_text + '\'' +
-                ", analysis='" + analysis + '\'' +
-                ", ans='" + ans + '\'' +
-                ", point='" + point + '\'' +
-                ", type='" + type + '\'' +
-                ", eval_res=" + eval_res +
-                '}';
-    }
 }
