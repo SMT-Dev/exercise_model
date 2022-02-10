@@ -521,9 +521,8 @@ li > p {
     align-items: center;
     left: 3.18%;
     width: 55%;
-    height: 13.3%;
+    height: 17.3%;
     padding: 0.5% 1.5%;
-    margin: 5% 0;
     border-radius: 30px;
     font-family: 'GothamRoundedMedium';
     cursor: pointer;
@@ -543,7 +542,12 @@ li > p {
     font-size: 1.3rem;
     float: left;
 }
-
+.optionBox{
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
 #question_a_text,#question_b_text,#question_c_text,#question_d_text {
     position: relative;
     display: flex;
