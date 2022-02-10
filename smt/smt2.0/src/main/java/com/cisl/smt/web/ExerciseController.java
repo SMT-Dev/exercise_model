@@ -703,10 +703,13 @@ public class ExerciseController {
             tmpList.add(14362L);
             tmpList.add(14363L);
             tmpList.add(14364L);
+            tmpList.add(14365L);
+            tmpList.add(14366L);
+
             //begin
-            tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
-            tmpList.addAll(getFromSimilar(3, USER_ID));
-            tmpList.addAll(getFromForgetCurve(2, USER_ID));
+//            tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
+//            tmpList.addAll(getFromSimilar(3, USER_ID));
+//            tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
 
@@ -765,6 +768,7 @@ public class ExerciseController {
         int opt_kantuxuanyin_num = 0;
         int opt_tingyinxuanci_num = 0;
         int opt_panduanzhengwu_num = 0;
+
         for (Long probNum : probList) {  //将题目填入 sheet_list
             ProblemAnsTemp pt = new ProblemAnsTemp();
 
@@ -811,10 +815,10 @@ public class ExerciseController {
                     pt.setShowOrder(5);
                     pt.setStem_audio(p.getAudio_url());
                     pt.setStem_image(p.getImage_url());
-                    pt.setOption_a_image(options.getA_image_url());
-                    pt.setOption_b_image(options.getB_image_url());
-                    pt.setOption_c_image(options.getC_image_url());
-                    pt.setOption_d_image(options.getD_image_url());
+                    pt.setOption_a_image("");
+                    pt.setOption_b_image("");
+                    pt.setOption_c_image("");
+                    pt.setOption_d_image("");
                     opt_panduanzhengwu_num++;
                 }
             } else {
