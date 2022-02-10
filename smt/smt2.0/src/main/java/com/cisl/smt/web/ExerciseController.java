@@ -777,13 +777,13 @@ public class ExerciseController {
                 pt.setType("opt");
                 //查询对应的option
                 Options options = optionsService.getOptions(p.getOptions_id());
-                if(p.getResource_flag()==2&&options.getResource_flag()==1){
+                if((p.getResource_flag()==2||p.getResource_flag()==0)&&(options.getResource_flag()==1||options.getResource_flag()==0)){
                     pt.setLayoutType("选择题");
                     pt.setShowOrder(1);
                     pt.setStem_image(p.getImage_url());
                     opt_choice_num++;
                 }
-                else if(p.getResource_flag()==3&&options.getResource_flag()==1){
+                else if(p.getResource_flag()==3&&(options.getResource_flag()==1||options.getResource_flag()==0)){
                     pt.setLayoutType("听音选文");
                     pt.setShowOrder(2);
                     pt.setStem_audio(p.getAudio_url());
@@ -799,7 +799,7 @@ public class ExerciseController {
                     pt.setOption_d_audio(options.getD_audio_url());
                     opt_kantuxuanyin_num++;
                 }
-                else if(p.getResource_flag()==3&&options.getResource_flag()==4){
+                else if(p.getResource_flag()==3&&(options.getResource_flag()==4||options.getResource_flag()==2)){
                     pt.setLayoutType("听音选词");
                     pt.setShowOrder(4);
                     pt.setStem_audio(p.getAudio_url());
