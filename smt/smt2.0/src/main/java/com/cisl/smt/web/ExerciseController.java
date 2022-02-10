@@ -705,7 +705,6 @@ public class ExerciseController {
             tmpList.add(14364L);
             tmpList.add(14365L);
             tmpList.add(14366L);
-
             //begin
 //            tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
 //            tmpList.addAll(getFromSimilar(3, USER_ID));
