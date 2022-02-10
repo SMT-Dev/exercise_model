@@ -698,12 +698,19 @@ public class ExerciseController {
 
             //2021.11.03: 厦门海沧地区测试，15+3+2
             System.out.println("lesson_id:"+lesson_id);
+            //直接造假的题号用于测试
+            tmpList.add(14361L);
+            tmpList.add(14362L);
+            tmpList.add(14363L);
+            tmpList.add(14364L);
             //begin
             tmpList.addAll(getFromLessonEasyAndMedium(lesson_id, 15));
             tmpList.addAll(getFromSimilar(3, USER_ID));
             tmpList.addAll(getFromForgetCurve(2, USER_ID));
 
             tmpList = uniqueProbList(tmpList);
+
+
             //end
             //此处 tmpList 已固定题量g 20，不需要 shuffle
             HashSet<Long> hashSet = new HashSet<>(tmpList);
