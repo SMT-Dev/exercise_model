@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="smt:war">
+    <output-path>$PROJECT_DIR$/smt/smt2.0/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>smt</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="smt-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="smt:war exploded" />
+    </root>
+  </artifact>
+</component>

@@ -8,16 +8,17 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="smt (1)" />
+        <module name="smt" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="smt" target="1.8" />
+      <module name="smt" target="1.7" />
       <module name="smt (1)" target="1.7" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="smt" options="-parameters" />
+      <module name="smt" options="" />
       <module name="smt (1)" options="" />
     </option>
   </component>
