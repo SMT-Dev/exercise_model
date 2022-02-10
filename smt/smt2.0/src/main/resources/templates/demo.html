@@ -1070,6 +1070,12 @@
             },
 
             fetchProblem: async function () {
+                console.log("opt_choice_num:" + this.opt_choice_num)
+                console.log("opt_tingyinxuanwen_num:" + this.opt_tingyinxuanwen_num)
+                console.log("opt_kantuxuanyin_num:" + this.opt_kantuxuanyin_num)
+                console.log("opt_tingyinxuanci_num:" + this.opt_tingyinxuanci_num)
+                console.log("opt_panduanzhengwu_num:" + this.opt_panduanzhengwu_num)
+                console.log("opt_num:" + this.opt_num)
                 if (this.num <= this.opt_num) {
                     var prob = await axios.get("/getProblem?num=" + this.prob_list[this.num - 1].toString());
                     this.prob_text = prob.data.prob_text;
