@@ -68,6 +68,7 @@
                                 </div>
                                 <div id="question_text">
                                     <p><span style="line-height: 55px">{{ prob_text }}</span><img v-if="stem_aud != ''" id="stem_audio" src="/image/audio-unchecked.png" @click="playAudio('stem')"></p>
+
                                 </div>
                                 <div id="opt_part">
                                 <div id="option_A" class="option" @click="chooseOption('a')">
@@ -86,6 +87,7 @@
                                 <button type="button" id="next_button" @click="nextProblem"></button>
                             </div>
                                 <div id="tingyinxuanwen_part" style="display: none">
+
                                     <div id="option-A" class="option_1" @click="chooseOption3('a')">
                                         <div id="question_a_text">A. {{ options.A }}</div>
                                     </div>
@@ -96,6 +98,7 @@
                                         <div id="question_c_text">C. {{ options.C }}</div>
                                     </div>
                                     <div id="option-D" class="option_1" style="display: none;" @click="chooseOption3('d')">
+
                                         <div id="question_d_text">D. {{ options.D }}</div>
                                     </div>
                                     <button type="button" id="last_button" @click="lastProblem"></button>
@@ -103,30 +106,37 @@
                                 </div>
                                 <div id="kantuxuanyin_part" style="display: none">
                                     <div class="option_2" >
+
                                         <div class="optionBox" id="option_A" style="float:left"><span>A.</span><img v-if="option_a_aud != ''" src="/image/audio-unselected.png" class="option_audio" id="option_a_audio" @click="playAudio('A')"></div>
                                         <div class="optionBox" id="option_B" style="float:left"><span>B.</span><img v-if="option_b_aud != ''" src="/image/audio-unselected.png" class="option_audio" id="option_b_audio" @click="playAudio('B')"></div>
                                     </div>
                                     <div class="option_2">
                                         <div class="optionBox" id="option_C" style="float:left"><span v-if="option_c_aud != ''">C.</span><img v-if="option_c_aud != ''" src="/image/audio-unselected.png" id="option_c_audio" class="option_audio" @click="playAudio('C')"></div>
                                         <div class="optionBox" id="option_D" style="float:left"><span v-if="option_d_aud != ''">D.</span><img v-if="option_d_aud != ''" src="/image/audio-unselected.png" id="option_d_audio" class="option_audio" @click="playAudio('D')"></div>
+
                                     </div>
                                     <button type="button" id="last_button" @click="lastProblem"></button>
                                     <button type="button" id="next_button" @click="nextProblem"></button>
                                 </div>
                                 <div id="tingyinxuanci_part" style="display: none">
                                     <div id="option_A" class="option_3" @click="chooseOption3('a')">
+
                                         <div class="option_img_container" v-if="option_a_img&&option_a_img != ''">
+
                                             <img class="option_img" id="option_a_img" :src=option_a_img onerror="defaultImg('option_a_img')">
                                         </div>
                                         <div id="problem_a_text">A. {{ options.A }}</div>
                                     </div>
                                     <div id="option_B" class="option_3" @click="chooseOption3('b')">
+
                                         <div class="option_img_container" v-if="option_b_img&&option_b_img != ''">
+
                                             <img class="option_img" id="option_b_img" :src=option_b_img onerror="defaultImg('option_b_img')">
                                         </div>
                                         <div id="problem_b_text">B. {{ options.B }}</div>
                                     </div>
                                     <div id="option_C" class="option_3" style="display: none;" @click="chooseOption3('c')">
+
                                         <div class="option_img_container" v-if="option_c_img && option_c_img != ''">
                                             <img class="option_img" id="option_c_img" :src=option_c_img onerror="defaultImg('option_c_img')">
                                         </div>
@@ -138,13 +148,16 @@
                                         </div>
                                         <div id="problem_d_text">D. {{ options.D }}</div>
                                     </div>
+
                                     <button type="button" id="last_button" @click="lastProblem"></button>
                                     <button type="button" id="next_button" @click="nextProblem"></button>
                                 </div>
                                 <div id="panduanzhengwu_part" style="display: none">
+
                                     <div class="option_2">
                                         <div class="optionBox" id="option_A" style="float:left"><span>A.</span><img src="/image/true-unselected.png" class="option_judge" id="option_a_judge" @click="judge('A')"></div>
                                         <div class="optionBox" id="option_B" style="float:left"><span>B.</span><img src="/image/false-unselected.png" class="option_judge" id="option_b_judge" @click="judge('B')"></div>
+
                                     </div>
                                     <button type="button" id="last_button" @click="lastProblem"></button>
                                     <button type="button" id="next_button" @click="nextProblem"></button>
@@ -360,6 +373,7 @@
             option_d_aud: "",
         },
         methods: {
+
             musicEnd: function (num) {
                 switch(num){
                     case 0: {
@@ -420,7 +434,9 @@
                                 this.intervals[i] = 0;
                             }
                         }
+
                         music.src = this.stem_aud;
+
                         music.play();
                         this.intervals[0] = setInterval(function () {
                             audioFlicker(el);
@@ -446,7 +462,9 @@
                             clearInterval(this.intervals[i]);
                             this.intervals[i] = 0;
                         }
+
                         music.src = this.option_a_aud;
+
                         music.play();
                         this.intervals[1] = setInterval(function () {
                             audioFlicker(el);
@@ -473,7 +491,9 @@
                             clearInterval(this.intervals[i]);
                             this.intervals[i] = 0;
                         }
+
                         music.src = this.option_b_aud;
+
                         music.play();
                         this.intervals[2] = setInterval(function () {
                             audioFlicker(el);
@@ -500,7 +520,9 @@
                             clearInterval(this.intervals[i]);
                             this.intervals[i] = 0;
                         }
+
                         music.src = this.option_c_aud;
+
                         music.play();
                         this.intervals[3] = setInterval(function () {
                             audioFlicker(el);
@@ -527,7 +549,9 @@
                             clearInterval(this.intervals[i]);
                             this.intervals[i] = 0;
                         }
+
                         music.src = this.option_d_aud;
+
                         music.play();
                         this.intervals[4] = setInterval(function () {
                             audioFlicker(el);
@@ -620,6 +644,33 @@
                 this.refreshAnswer();
                 document.getElementById('option-' + option.toUpperCase()).style.background = "#00D87E";
                 document.getElementById('option-' + option.toUpperCase()).style.color = "white";
+                this.formData.choice = option;
+                if (option === 'a') {
+                    this.formData.choice_text = this.options.A;
+                } else if (option === 'b') {
+                    this.formData.choice_text = this.options.B;
+                } else if (option === 'c') {
+                    this.formData.choice_text = this.options.C;
+                } else if (option === 'd') {
+                    this.formData.choice_text = this.options.D;
+                }
+                if(this.done_list.indexOf(this.num) === -1) {
+                    this.remain = this.totalNum-(this.done_list.push(this.num));
+                }
+                this.formData.idx = this.prob_list[this.num - 1];
+                this.formData.finish = 1;
+                axios.post("/postSheet", $.param(this.formData)  //引入jQuery的作用
+                ).then((response) => {
+                    this.$nextTick(() => {
+                        this.setSheet();
+                    });
+                });
+            },
+
+            chooseOption3: function (option) {
+                this.refreshAnswer2();
+                document.getElementById('problem_' + option + '_text').style.background = "#00D87E";
+                document.getElementById('problem_' + option + '_text').style.color = "white";
                 this.formData.choice = option;
                 if (option === 'a') {
                     this.formData.choice_text = this.options.A;
@@ -1053,6 +1104,7 @@
                         this.activities.push(activityTemp);
                         if(j <= this.opt_choice_num) {
                             this.opt_choice_box.push(j);
+
                             this.opt_box.push(j);
                         }else if(j <= this.opt_choice_num + this.opt_tingyinxuanwen_num){
                             this.opt_tingyinxuanwen_box.push(j);
@@ -1123,6 +1175,7 @@
             },
 
             fetchProblem: async function () {
+
                 console.log("opt_choice_num:" + this.opt_choice_num)
                 console.log("opt_tingyinxuanwen_num:" + this.opt_tingyinxuanwen_num)
                 console.log("opt_kantuxuanyin_num:" + this.opt_kantuxuanyin_num)
@@ -1139,6 +1192,7 @@
                 this.option_b_aud = "";
                 this.option_c_aud = "";
                 this.option_d_aud = "";
+
                 if (this.num <= this.opt_num) {
                     var prob = await axios.get("/getProblem?num=" + this.prob_list[this.num - 1].toString());
                     this.prob_text = prob.data.prob_text;
@@ -1146,6 +1200,7 @@
                         this.stem_img = prob.data.image_url;
                     if(prob.data.resource_flag == 3 || prob.data.resource_flag == 4)
                     this.stem_aud = prob.data.audio_url;
+
 
                     document.getElementById('image_container').style.display = "none";
                     if(this.num <= this.opt_choice_num) {
@@ -1178,14 +1233,17 @@
                         }else
                             document.getElementById('image').src = this.stem_img;
                     }
+
                     else if(this.num <= this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num)
                         this.prob_attr = "听音选词";
                     else
                         this.prob_attr = "判断正误";
                     this.options_id = prob.data.options_id;
 
+
                     var option = await axios.get("/getOptions?id=" + this.options_id);
                     console.log(option)
+
                     if(option.data.resource_flag == 1 || option.data.resource_flag == 4){
                         this.options.A = option.data.option_a;
                         this.options.B = option.data.option_b;
@@ -1204,7 +1262,9 @@
                             document.getElementById('option_D').style.display = "none";
                         }
                     }
+
                     if(option.data.resource_flag == 2||option.data.resource_flag == 4){
+
                         this.option_a_img = option.data.a_image_url;
                         this.option_b_img = option.data.b_image_url;
                         if (option.data.hasOwnProperty('c_image_url') && (option.data.c_image_url !== null) && (option.data.c_image_url.length > 0)) {
@@ -1470,6 +1530,7 @@
             }else {
                 this.rememberTxt(this.num);
                 this.openView('txt');
+
             }
         },
 
@@ -1479,7 +1540,14 @@
             };
             window["musicEnd"] = (num) => {
                 this.musicEnd(num);
+
             }
+        },
+
+        async mounted() {
+            window["defaultImg"] = () => {
+                this.defaultImg();
+            };
         },
     })
 </script>

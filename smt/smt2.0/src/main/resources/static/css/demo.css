@@ -548,6 +548,7 @@ li > p {
     flex-wrap: wrap;
     align-items: center;
 }
+
 #question_a_text,#question_b_text,#question_c_text,#question_d_text {
     position: relative;
     display: flex;
