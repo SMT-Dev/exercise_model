@@ -25,10 +25,10 @@
             <div id="app">
                 <div id="musicBox">
                     <audio id="stem_music" onended="musicEnd(0)"></audio>
-                    <audio id="option_a_music" onended="musicEnd(0)"></audio>
-                    <audio id="option_b_music" onended="musicEnd(0)"></audio>
-                    <audio id="option_c_music" onended="musicEnd(0)"></audio>
-                    <audio id="option_d_music" onended="musicEnd(0)"></audio>
+                    <audio id="option_a_music" onended="musicEnd(1)"></audio>
+                    <audio id="option_b_music" onended="musicEnd(2)"></audio>
+                    <audio id="option_c_music" onended="musicEnd(3)"></audio>
+                    <audio id="option_d_music" onended="musicEnd(4)"></audio>
                 </div>
                 <button type="button" id="back_button" @click="goBack"></button>
                 <div id="main">
@@ -67,7 +67,7 @@
                                     </div>
                                 </div>
                                 <div id="question_text">
-                                    <p><span style="line-height: 55px">{{ prob_text }}</span><img v-if="stem_aud != ''" id="stem_audio" src="/image/audio-unchecked.png" @click="playAudio('stem')"></p>
+                                    <p><span style="line-height: 55px">{{ prob_text }}</span><img v-if="stem_aud && stem_aud != ''" id="stem_audio" src="/image/audio-unchecked.png" @click="playAudio('stem')"></p>
                                 </div>
                                 <div id="opt_part">
                                 <div id="option_A" class="option" @click="chooseOption('a')">
@@ -86,16 +86,16 @@
                                 <button type="button" id="next_button" @click="nextProblem"></button>
                             </div>
                                 <div id="tingyinxuanwen_part" style="display: none">
-                                    <div id="option-A" class="option_1" @click="chooseOption3('a')">
+                                    <div id="option-A" class="option_1" @click="chooseOption4('a')">
                                         <div id="question_a_text">A. {{ options.A }}</div>
                                     </div>
-                                    <div id="option-B" class="option_1" @click="chooseOption3('b')">
+                                    <div id="option-B" class="option_1" @click="chooseOption4('b')">
                                         <div id="question_b_text">B. {{ options.B }}</div>
                                     </div>
-                                    <div id="option-C" class="option_1" style="display: none;" @click="chooseOption3('c')">
+                                    <div id="option-C" class="option_1" style="display: none;" @click="chooseOption4('c')">
                                         <div id="question_c_text">C. {{ options.C }}</div>
                                     </div>
-                                    <div id="option-D" class="option_1" style="display: none;" @click="chooseOption3('d')">
+                                    <div id="option-D" class="option_1" style="display: none;" @click="chooseOption4('d')">
                                         <div id="question_d_text">D. {{ options.D }}</div>
                                     </div>
                                     <button type="button" id="last_button" @click="lastProblem"></button>
@@ -103,12 +103,12 @@
                                 </div>
                                 <div id="kantuxuanyin_part" style="display: none">
                                     <div class="option_2" >
-                                        <div class="optionBox" id="option_A" style="float:left"><span>A.</span><img v-if="option_a_aud != ''" src="/image/audio-unselected.png" class="option_audio" id="option_a_audio" @click="playAudio('A')"></div>
-                                        <div class="optionBox" id="option_B" style="float:left"><span>B.</span><img v-if="option_b_aud != ''" src="/image/audio-unselected.png" class="option_audio" id="option_b_audio" @click="playAudio('B')"></div>
+                                        <div class="optionBox" id="option_A" style="float:left"><span>A.</span><img src="/image/audio-unselected.png" class="option_audio" id="option_a_audio" @click="playAudio('A')"></div>
+                                        <div class="optionBox" id="option_B" style="float:left"><span>B.</span><img src="/image/audio-unselected.png" class="option_audio" id="option_b_audio" @click="playAudio('B')"></div>
                                     </div>
                                     <div class="option_2">
-                                        <div class="optionBox" id="option_C" style="float:left"><span v-if="option_c_aud != ''">C.</span><img v-if="option_c_aud != ''" src="/image/audio-unselected.png" id="option_c_audio" class="option_audio" @click="playAudio('C')"></div>
-                                        <div class="optionBox" id="option_D" style="float:left"><span v-if="option_d_aud != ''">D.</span><img v-if="option_d_aud != ''" src="/image/audio-unselected.png" id="option_d_audio" class="option_audio" @click="playAudio('D')"></div>
+                                        <div class="optionBox" id="option_C" style="float:left;display: none"><span v-if="option_c_aud != ''">C.</span><img  src="/image/audio-unselected.png" id="option_c_audio" class="option_audio" @click="playAudio('C')"></div>
+                                        <div class="optionBox" id="option_D" style="float:left;display: none"><span v-if="option_d_aud != ''">D.</span><img  src="/image/audio-unselected.png" id="option_d_audio" class="option_audio" @click="playAudio('D')"></div>
                                     </div>
                                     <button type="button" id="last_button" @click="lastProblem"></button>
                                     <button type="button" id="next_button" @click="nextProblem"></button>
@@ -369,22 +369,22 @@
                     }
                     case 1: {
                         clearInterval(this.intervals[1]);
-                        document.getElementById('option_a_audio').src= "/image/audio-unselected.png";
+                        document.getElementById('option_a_audio').src= "/image/audio-checked.png";
                         break;
                     }
                     case 2: {
                         clearInterval(this.intervals[2]);
-                        document.getElementById('option_b_audio').src= "/image/audio-unselected.png";
+                        document.getElementById('option_b_audio').src= "/image/audio-checked.png";
                         break;
                     }
                     case 3: {
                         clearInterval(this.intervals[3]);
-                        document.getElementById('option_c_audio').src= "/image/audio-unselected.png";
+                        document.getElementById('option_c_audio').src= "/image/audio-checked.png";
                         break;
                     }
                     case 4: {
                         clearInterval(this.intervals[4]);
-                        document.getElementById('option_d_audio').src= "/image/audio-unselected.png";
+                        document.getElementById('option_d_audio').src= "/image/audio-checked.png";
                         break;
                     }
                 }
@@ -433,10 +433,13 @@
                         el.src = "/image/audio-unchecked.png";
                     }
                 }else if(problem == 'A'){
-                    document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
+                    if(document.getElementById('stem_audio'))
+                        document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
                     document.getElementById('option_a_audio').src = "/image/audio-unselected.png";
                     document.getElementById('option_b_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_c_audio'))
+                        document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_d_audio'))
                     document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
                     let el = document.getElementById('option_a_audio');
                     let music = document.getElementById('option_a_music');
@@ -460,11 +463,14 @@
                         el.src = "/image/audio-checked.png";
                     }
                 }else if(problem == 'B'){
-                    document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
+                    if(document.getElementById('stem_audio'))
+                        document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
                     document.getElementById('option_a_audio').src = "/image/audio-unselected.png";
                     document.getElementById('option_b_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_c_audio'))
+                        document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_d_audio'))
+                        document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
                     let el = document.getElementById('option_b_audio');
                     let music = document.getElementById('option_b_music');
                     if (music.paused) {
@@ -487,11 +493,14 @@
                         el.src = "/image/audio-checked.png";
                     }
                 }else if(problem == 'C'){
-                    document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
+                    if(document.getElementById('stem_audio'))
+                        document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
                     document.getElementById('option_a_audio').src = "/image/audio-unselected.png";
                     document.getElementById('option_b_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_c_audio'))
+                        document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_d_audio'))
+                        document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
                     let el = document.getElementById('option_c_audio');
                     let music = document.getElementById('option_c_music');
                     if (music.paused) {
@@ -514,11 +523,14 @@
                         el.src = "/image/audio-checked.png";
                     }
                 }else if(problem == 'D'){
-                    document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
+                    if(document.getElementById('stem_audio'))
+                        document.getElementById('stem_audio').src = "/image/audio-unchecked.png";
                     document.getElementById('option_a_audio').src = "/image/audio-unselected.png";
                     document.getElementById('option_b_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
-                    document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_c_audio'))
+                        document.getElementById('option_c_audio').src = "/image/audio-unselected.png";
+                    if(document.getElementById('option_d_audio'))
+                        document.getElementById('option_d_audio').src = "/image/audio-unselected.png";
                     let el = document.getElementById('option_d_audio');
                     let music = document.getElementById('option_d_music');
                     if (music.paused) {
@@ -616,8 +628,9 @@
                     });
                 });
             },
-            chooseOption3: function (option) {
-                this.refreshAnswer();
+
+            chooseOption4: function (option) {
+                this.refreshAnswer1();
                 document.getElementById('option-' + option.toUpperCase()).style.background = "#00D87E";
                 document.getElementById('option-' + option.toUpperCase()).style.color = "white";
                 this.formData.choice = option;
@@ -679,6 +692,17 @@
                 document.getElementById('option_C').style.color = "black";
                 document.getElementById('option_D').style.background = "#F0F0F0";
                 document.getElementById('option_D').style.color = "black";
+            },
+
+            refreshAnswer1: function () {
+                document.getElementById('option-A').style.background = "#F0F0F0";
+                document.getElementById('option-A').style.color = "black";
+                document.getElementById('option-B').style.background = "#F0F0F0";
+                document.getElementById('option-B').style.color = "black";
+                document.getElementById('option-C').style.background = "#F0F0F0";
+                document.getElementById('option-C').style.color = "black";
+                document.getElementById('option-D').style.background = "#F0F0F0";
+                document.getElementById('option-D').style.color = "black";
             },
 
             refreshAnswer2: function () {
@@ -757,6 +781,13 @@
             },
 
             lastProblem: function () {
+                pauseMusic();
+                for(let i = 0 ;i < 5; i++){
+                    if(this.intervals[i] != 0){
+                        clearInterval(this.intervals[i]);
+                        this.intervals[i] = 0;
+                    }
+                }
                 if(this.num > 1){
                     if(this.num === (this.opt_num + 1)){
                         for(var i = 0;i < this.txt.length;i++) {
@@ -766,42 +797,31 @@
                             }
                         }
                         this.num -= 1;
-                        if(this.opt_panduanzhengwu_num > 0) {
+                        document.getElementById('kantuxuanyin_part').style.display = "none";
+                        document.getElementById('tingyinxuanci_part').style.display = "none";
+                        document.getElementById('tingyinxuanwen_part').style.display = "none";
+                        document.getElementById('panduanzhengwu_part').style.display = "none";
+                        document.getElementById('opt_part').style.display = "none";
+                        document.getElementById('txt_part').style.display = "none";
+                        if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num + this.opt_panduanzhengwu_num) {
                             document.getElementById('panduanzhengwu_part').style.display = "";
-                            document.getElementById('tingyinxuanci_part').style.display = "none";
-                            document.getElementById('kantuxuanyin_part').style.display = "none";
-                            document.getElementById('tingyinxuanwen_part').style.display = "none";
-                            document.getElementById('opt_part').style.display = "none";
                         }
-                        else if(this.opt_tingyinxuanci_num > 0) {
+                        if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num) {
                             document.getElementById('tingyinxuanci_part').style.display = "";
-                            document.getElementById('kantuxuanyin_part').style.display = "none";
-                            document.getElementById('tingyinxuanwen_part').style.display = "none";
                             document.getElementById('panduanzhengwu_part').style.display = "none";
-                            document.getElementById('opt_part').style.display = "none";
                         }
-                        else if(this.opt_kantuxuanyin_num > 0) {
+                        if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num) {
                             document.getElementById('kantuxuanyin_part').style.display = "";
                             document.getElementById('tingyinxuanci_part').style.display = "none";
-                            document.getElementById('tingyinxuanwen_part').style.display = "none";
-                            document.getElementById('panduanzhengwu_part').style.display = "none";
-                            document.getElementById('opt_part').style.display = "none";
                         }
-                        else if(this.opt_tingyinxuanwen_num > 0) {
+                        if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num) {
                             document.getElementById('tingyinxuanwen_part').style.display = "";
-                            document.getElementById('tingyinxuanci_part').style.display = "none";
                             document.getElementById('kantuxuanyin_part').style.display = "none";
-                            document.getElementById('panduanzhengwu_part').style.display = "none";
-                            document.getElementById('opt_part').style.display = "none";
                         }
-                        else if(this.opt_choice_num > 0) {
+                        if(this.num == this.opt_choice_num) {
                             document.getElementById('opt_part').style.display = "";
-                            document.getElementById('tingyinxuanci_part').style.display = "none";
-                            document.getElementById('kantuxuanyin_part').style.display = "none";
                             document.getElementById('tingyinxuanwen_part').style.display = "none";
-                            document.getElementById('panduanzhengwu_part').style.display = "none";
                         }
-                        document.getElementById('txt_part').style.display = "none";
                         this.refreshAnswer();
                         this.refreshAnswer2();
                         this.rememberOpt(this.num);
@@ -816,75 +836,46 @@
                         this.rememberTxt(this.num);
                     }else {
                         this.num -= 1;
+                        document.getElementById('tingyinxuanci_part').style.display = "none";
+                        document.getElementById('kantuxuanyin_part').style.display = "none";
+                        document.getElementById('tingyinxuanwen_part').style.display = "none";
+                        document.getElementById('panduanzhengwu_part').style.display = "none";
+                        document.getElementById('opt_part').style.display = "none";
+                        if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num){
+                            document.getElementById('tingyinxuanci_part').style.display = "";
+                            if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num) {
+                                document.getElementById('tingyinxuanci_part').style.display = "none";
+                                document.getElementById('kantuxuanyin_part').style.display = "";
+                            }
+                            if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num) {
+                                document.getElementById('kantuxuanyin_part').style.display = "none";
+                                document.getElementById('tingyinxuanwen_part').style.display = "";
+                            }
+                            if(this.num == this.opt_choice_num) {
+                                document.getElementById('tingyinxuanwen_part').style.display = "none";
+                                document.getElementById('opt_part').style.display = "";
+                            }
+                        }else if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num){
+                            document.getElementById('kantuxuanyin_part').style.display = "";
+                            if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num) {
+                                document.getElementById('kantuxuanyin_part').style.display = "none";
+                                document.getElementById('tingyinxuanwen_part').style.display = "";
+                            }
+                            if(this.num == this.opt_choice_num) {
+                                document.getElementById('tingyinxuanwen_part').style.display = "none";
+                                document.getElementById('opt_part').style.display = "";
+                            }
+                        }else if(this.num == this.opt_choice_num + this.opt_tingyinxuanwen_num) {
+                            document.getElementById('tingyinxuanwen_part').style.display = "";
+                            if(this.num == this.opt_choice_num) {
+                                document.getElementById('tingyinxuanwen_part').style.display = "none";
+                                document.getElementById('opt_part').style.display = "";
+                            }
+                        }else if(this.num == this.opt_choice_num){
+                            document.getElementById('opt_part').style.display = "";
+                        }
                         this.refreshAnswer();
                         this.refreshAnswer2 ();
-                        if(num === this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num){
-                            if(this.opt_tingyinxuanci_num > 0) {
-                                document.getElementById('tingyinxuanci_part').style.display = "";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                                document.getElementById('opt_part').style.display = "none";
-                            } else if(this.opt_kantuxuanyin_num > 0) {
-                                document.getElementById('kantuxuanyin_part').style.display = "";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                                document.getElementById('opt_part').style.display = "none";
-                            }else if(this.opt_tingyinxuanwen_num > 0) {
-                                document.getElementById('tingyinxuanwen_part').style.display = "";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                                document.getElementById('opt_part').style.display = "none";
-                            }else if(this.opt_choice_num > 0) {
-                                document.getElementById('opt_part').style.display = "";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }
-                        }else if(num === this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num){
-                            if(this.opt_kantuxuanyin_num > 0) {
-                                document.getElementById('kantuxuanyin_part').style.display = "";
-                                document.getElementById('opt_part').style.display = "none";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }else if(this.opt_tingyinxuanwen_num > 0) {
-                                document.getElementById('tingyinxuanwen_part').style.display = "";
-                                document.getElementById('opt_part').style.display = "none";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }else if(this.opt_choice_num > 0) {
-                                document.getElementById('opt_part').style.display = "";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }
-                        }else if(num === this.opt_choice_num + this.opt_tingyinxuanwen_num) {
-                            if(this.opt_tingyinxuanwen_num > 0) {
-                                document.getElementById('tingyinxuanwen_part').style.display = "";
-                                document.getElementById('opt_part').style.display = "none";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }else if(this.opt_choice_num > 0) {
-                                document.getElementById('opt_part').style.display = "";
-                                document.getElementById('tingyinxuanci_part').style.display = "none";
-                                document.getElementById('kantuxuanyin_part').style.display = "none";
-                                document.getElementById('tingyinxuanwen_part').style.display = "none";
-                                document.getElementById('panduanzhengwu_part').style.display = "none";
-                            }
-                        }else if(num === this.opt_choice_num){
-                            document.getElementById('opt_part').style.display = "";
-                            document.getElementById('tingyinxuanci_part').style.display = "none";
-                            document.getElementById('kantuxuanyin_part').style.display = "none";
-                            document.getElementById('tingyinxuanwen_part').style.display = "none";
-                            document.getElementById('panduanzhengwu_part').style.display = "none";
-                        }
                         this.rememberOpt(this.num);
                     }
                     this.store();
@@ -901,6 +892,13 @@
             },
 
             nextProblem: function () {
+                pauseMusic();
+                for(let i = 0 ;i < 5; i++){
+                    if(this.intervals[i] != 0){
+                        clearInterval(this.intervals[i]);
+                        this.intervals[i] = 0;
+                    }
+                }
                 if(this.num < this.totalNum){
                     if(this.num === this.opt_num){
                         this.num += 1;
@@ -997,6 +995,7 @@
                 this.options_list = await this.getSheet();
                 for (var i = 0; i < this.options_list.length; i++) {
                     ans = this.options_list[i];
+                    console.log(ans);
                     if(ans.finish === 1) {
                         var index = this.prob_list.indexOf(ans["idx"]);
                         this.activities[index]["src"] = "/image/yellow-star.png";
@@ -1146,7 +1145,6 @@
                         this.stem_img = prob.data.image_url;
                     if(prob.data.resource_flag == 3 || prob.data.resource_flag == 4)
                     this.stem_aud = prob.data.audio_url;
-
                     document.getElementById('image_container').style.display = "none";
                     if(this.num <= this.opt_choice_num) {
                         this.prob_attr = "选择题";
@@ -1154,13 +1152,19 @@
                         tmp.style.display = "";
                         if(this.stem_img == ""||!this.stem_img){
                             tmp = document.getElementById('image');
-                            tmp.style.borderWidth = "0";
+                            tmp.style.width = "100%";
+                            tmp.style.height = "100%";
                             tmp.style.borderRadius = "0";
+                            tmp.src = "/image/logo.png";
                             tmp = document.getElementById('image_container');
-                            tmp.style.borderWidth = "0";
-                            tmp.style.borderRadius = "0";
-                        }else
+                            tmp.style.backgroundImage = "none";
+                        }else {
+                            document.getElementById('image_container').style.backgroundImage = "repeating-linear-gradient(60deg,RGB(255,149,60), RGB(255,200,0))"
                             document.getElementById('image').src = this.stem_img;
+                            document.getElementById('image').style.borderRadius = "16px";
+                            document.getElementById('image').style.width = "93.9%";
+                            document.getElementById('image').style.height = "93.2%";
+                        }
                     }
                     else if(this.num <= this.opt_choice_num + this.opt_tingyinxuanwen_num)
                         this.prob_attr = "听音选文";
@@ -1170,20 +1174,26 @@
                         tmp.style.display = "";
                         if(this.stem_img == ""||!this.stem_img){
                             tmp = document.getElementById('image');
-                            tmp.style.borderWidth = "0";
                             tmp.style.borderRadius = "0";
+                            tmp.style.width = "100%";
+                            tmp.style.height = "100%";
+                            tmp.style.borderRadius = "0";
+                            tmp.src = "/image/logo.png";
                             tmp = document.getElementById('image_container');
-                            tmp.style.borderWidth = "0";
-                            tmp.style.borderRadius = "0";
-                        }else
+                            tmp.style.backgroundImage = "none";
+                        }else {
+                            document.getElementById('image_container').style.backgroundImage = "repeating-linear-gradient(60deg,RGB(255,149,60), RGB(255,200,0))"
                             document.getElementById('image').src = this.stem_img;
+                            document.getElementById('image').style.borderRadius = "16px";
+                            document.getElementById('image').style.width = "93.9%";
+                            document.getElementById('image').style.height = "93.2%";
+                        }
                     }
                     else if(this.num <= this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num)
                         this.prob_attr = "听音选词";
                     else
                         this.prob_attr = "判断正误";
                     this.options_id = prob.data.options_id;
-
                     var option = await axios.get("/getOptions?id=" + this.options_id);
                     console.log(option)
                     if(option.data.resource_flag == 1 || option.data.resource_flag == 4){
@@ -1286,14 +1296,18 @@
                 axios.get("/getSheet").then((response) => {
                     for (var i=0; i<response.data.sheet_list.length; i++) {
                         if(((this.prob_list.indexOf(response.data.sheet_list[i].idx) + 1) === option) && (response.data.sheet_list[i].finish === 1)) {
-                            if(option <= this.opt_choice_num + this.opt_tingyinxuanwen_num){
+                            if(option <= this.opt_choice_num){
                                 document.getElementById('option_'+response.data.sheet_list[i].choice.toUpperCase()).style.background = "#00D87E";
                                 document.getElementById('option_'+response.data.sheet_list[i].choice.toUpperCase()).style.color = "white";
+                            }else if(option <= this.opt_choice_num + this.opt_tingyinxuanwen_num){
+                                document.getElementById('option-'+response.data.sheet_list[i].choice.toUpperCase()).style.background = "#00D87E";
+                                document.getElementById('option-'+response.data.sheet_list[i].choice.toUpperCase()).style.color = "white";
                             }else if(option <= this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num){
+                                console.log('option_'+response.data.sheet_list[i].choice.toLowerCase()+"_audio")
                                 document.getElementById('option_'+response.data.sheet_list[i].choice.toLowerCase()+"_audio").src = "/image/audio-checked.png";
                             }else if(option <= this.opt_choice_num + this.opt_tingyinxuanwen_num + this.opt_kantuxuanyin_num + this.opt_tingyinxuanci_num){
                                 document.getElementById('problem_'+response.data.sheet_list[i].choice.toLowerCase()+"_text").style.background = "#00D87E";
-                                document.getElementById('option_'+response.data.sheet_list[i].choice.toLowerCase()+"_text").style.color = "white";
+                                document.getElementById('problem_'+response.data.sheet_list[i].choice.toLowerCase()+"_text").style.color = "white";
                             }else{
                                 if(response.data.sheet_list[i].choice.toLowerCase() == 'a')
                                     document.getElementById('option_a_judge').src = "/image/true-selected.png";
